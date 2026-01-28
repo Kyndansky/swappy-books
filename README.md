@@ -11,66 +11,66 @@ The platform addresses common challenges in academic resource accessibility by p
 
 
 
-/backend
-├── /config
-│   ├── database.php      <-- Connessione al DB (PDO/MySQLi)
-│   └── cors.php          <-- Gestione intestazioni CORS (fondamentale per far parlare React con PHP)
+backend/
+├── config/
+│   ├── database.php      # Configurazione connessione DB (PDO)
+│   └── cors.php          # Gestione headers CORS per comunicare con React
 │
-├── /api
-│   ├── /users
-│   │   ├── register.php  <-- Endpoint registrazione
-│   │   ├── login.php     <-- Endpoint login (restituisce token o sessione)
-│   │   └── profile.php   <-- Ottieni dati utente loggato
+├── api/
+│   ├── users/
+│   │   ├── register.php  # Endpoint registrazione utente
+│   │   ├── login.php     # Endpoint login
+│   │   └── profile.php   # Recupero dati utente loggato
 │   │
-│   ├── /books
-│   │   ├── list.php      <-- GET: Tutti i libri disponibili (con filtri)
-│   │   ├── create.php    <-- POST: Inserimento nuovo libro (upload foto opzionale)
-│   │   ├── delete.php    <-- DELETE: Rimuovi annuncio (solo se sei il proprietario)
-│   │   └── detail.php    <-- GET: Dettagli singolo libro
+│   ├── books/
+│   │   ├── list.php      # GET: Lista libri (home page)
+│   │   ├── create.php    # POST: Inserimento nuovo libro
+│   │   ├── delete.php    # DELETE: Rimozione annuncio
+│   │   └── detail.php    # GET: Dettagli singolo libro
 │   │
-│   └── /sales
-│       ├── buy.php       <-- POST: Registra transazione (aggiorna tabelle books e sold_books)
-│       └── history.php   <-- GET: Storico acquisti/vendite dell'utente
+│   └── sales/
+│       ├── buy.php       # POST: Esecuzione transazione
+│       └── history.php   # GET: Storico ordini utente
 │
-├── .env                  <-- Credenziali DB (non caricare su git)
-└── index.php             <-- (Opzionale) Se usi un router centrale, altrimenti punta ai file in /api
+├── .env                  # Variabili d'ambiente (DB credentials) - NON COMMITTARE
+└── index.php             # Router opzionale / Entry point
 
 
 
 
 
-/frontend
-├── /public
-│   └── index.html
+frontend/
+├── public/
+│   └── index.html        # Entry point HTML
 │
-├── /src
-│   ├── /assets           <-- Immagini statiche, loghi, icone
+├── src/
+│   ├── assets/           # Immagini, loghi, icone statiche
 │   │
-│   ├── /components       <-- Componenti riutilizzabili (pezzi di UI)
-│   │   ├── Navbar.jsx    <-- Menu navigazione (cambia se loggato/sloggato)
-│   │   ├── Footer.jsx
-│   │   ├── BookCard.jsx  <-- La "card" che mostra l'anteprima del libro
-│   │   └── LoginForm.jsx
+│   ├── components/       # Componenti riutilizzabili
+│   │   ├── Navbar.jsx    # Barra di navigazione dinamica
+│   │   ├── Footer.jsx    # Piè di pagina
+│   │   ├── BookCard.jsx  # Card anteprima libro (usata in home)
+│   │   └── LoginForm.jsx # Form di accesso
 │   │
-│   ├── /context          <-- Gestione stato globale
-│   │   └── AuthContext.jsx <-- Gestisce lo stato dell'utente (è loggato? chi è?)
+│   ├── context/          # Gestione stato globale
+│   │   └── AuthContext.jsx # Context per gestire l'utente loggato
 │   │
-│   ├── /hooks            <-- Logica personalizzata
-│   │   └── useFetch.js   <-- Hook per chiamate API generiche
+│   ├── hooks/            # Custom Hooks
+│   │   └── useFetch.js   # Hook per chiamate API generiche
 │   │
-│   ├── /pages            <-- Le schermate intere del sito
-│   │   ├── HomePage.jsx  <-- Lista libri, ricerca
-│   │   ├── LoginPage.jsx
-│   │   ├── RegisterPage.jsx
-│   │   ├── Dashboard.jsx <-- Profilo utente, i miei annunci, storico vendite
-│   │   ├── SellBook.jsx  <-- Form per vendere un libro
-│   │   └── BookDetail.jsx <-- Pagina dettaglio singolo libro
+│   ├── pages/            # Pagine complete (Viste)
+│   │   ├── HomePage.jsx     # Landing page con lista libri
+│   │   ├── LoginPage.jsx    # Pagina di login
+│   │   ├── RegisterPage.jsx # Pagina di registrazione
+│   │   ├── Dashboard.jsx    # Area personale utente
+│   │   ├── SellBook.jsx     # Form vendita libro
+│   │   └── BookDetail.jsx   # Pagina dettaglio singolo libro
 │   │
-│   ├── /services         <-- Chiamate effettive al Backend
-│   │   └── api.js        <-- Configurazione Axios o Fetch (base URL verso il backend PHP)
+│   ├── services/         # Logica di comunicazione col Backend
+│   │   └── api.js        # Configurazione Axios/Fetch
 │   │
-│   ├── App.jsx           <-- Gestione Routing (React Router)
-│   └── main.jsx          <-- Entry point
+│   ├── App.jsx           # Gestione Routing principale
+│   └── main.jsx          # React Entry point
 │
-├── .env                  <-- Variabili ambiente (es. URL del backend)
-└── package.json
+├── .env                  # Variabili ambiente (API URL)
+└── package.json          # Dipendenze Node
