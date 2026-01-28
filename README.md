@@ -73,3 +73,12 @@ Di seguito l'organizzazione completa delle cartelle e dei file principali.
 │   │
 │   ├── .env                  # Variabili ambiente (URL API)
 │   └── package.json          # Dipendenze
+
+Pagine:
+Home
+Shop
+Libri in vendita utente
+Login/Register
+Gestione utente
+Pagina messaggi con altri utenti
+Carrello (lo salva in un context o cookie)
