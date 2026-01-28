@@ -9,68 +9,67 @@ The system facilitates peer-to-peer trading where users can list their used text
 The platform addresses common challenges in academic resource accessibility by providing an affordable alternative to purchasing new textbooks while promoting sustainability through material reuse. With intuitive categorization by subject, course code, edition, and institution, users can efficiently locate precisely the materials they need for their specific academic requirements.
 
 
+# 📂 Struttura del Progetto
 
+Di seguito l'organizzazione completa delle cartelle e dei file principali.
 
-backend/
-├── config/
-│   ├── database.php      # Configurazione connessione DB (PDO)
-│   └── cors.php          # Gestione headers CORS per comunicare con React
+```text
+/project-root
+├── backend/                  # Logica Server & API (PHP)
+│   ├── config/
+│   │   ├── database.php      # Connessione DB (PDO)
+│   │   └── cors.php          # Configurazione CORS
+│   │
+│   ├── api/
+│   │   ├── users/
+│   │   │   ├── register.php  # Registrazione
+│   │   │   ├── login.php     # Login
+│   │   │   └── profile.php   # Dati utente
+│   │   │
+│   │   ├── books/
+│   │   │   ├── list.php      # GET: Tutti i libri
+│   │   │   ├── create.php    # POST: Inserisci libro
+│   │   │   ├── delete.php    # DELETE: Rimuovi libro
+│   │   │   └── detail.php    # GET: Dettaglio singolo
+│   │   │
+│   │   └── sales/
+│   │       ├── buy.php       # POST: Compra libro
+│   │       └── history.php   # GET: Storico ordini
+│   │
+│   └── index.php             # Router/Entry point
 │
-├── api/
-│   ├── users/
-│   │   ├── register.php  # Endpoint registrazione utente
-│   │   ├── login.php     # Endpoint login
-│   │   └── profile.php   # Recupero dati utente loggato
+├── frontend/                 # Interfaccia Utente (React)
+│   ├── public/
+│   │   └── index.html        # HTML Base
 │   │
-│   ├── books/
-│   │   ├── list.php      # GET: Lista libri (home page)
-│   │   ├── create.php    # POST: Inserimento nuovo libro
-│   │   ├── delete.php    # DELETE: Rimozione annuncio
-│   │   └── detail.php    # GET: Dettagli singolo libro
+│   ├── src/
+│   │   ├── assets/           # Immagini statiche
+│   │   │
+│   │   ├── components/       # Componenti UI parziali
+│   │   │   ├── Navbar.jsx    # Menu navigazione
+│   │   │   ├── Footer.jsx    # Piè di pagina
+│   │   │   ├── BookCard.jsx  # Anteprima libro in lista
+│   │   │   └── LoginForm.jsx # Modulo di accesso
+│   │   │
+│   │   ├── context/          # Stato Globale
+│   │   │   └── AuthContext.jsx # Gestione utente loggato
+│   │   │
+│   │   ├── hooks/            # Logica riutilizzabile
+│   │   │   └── useFetch.js   # Chiamate API generiche
+│   │   │
+│   │   ├── pages/            # Pagine complete del sito
+│   │   │   ├── HomePage.jsx     # Home (Lista libri)
+│   │   │   ├── LoginPage.jsx    # Pagina Login
+│   │   │   ├── RegisterPage.jsx # Pagina Registrazione
+│   │   │   ├── Dashboard.jsx    # Profilo e miei annunci
+│   │   │   ├── SellBook.jsx     # Form vendita
+│   │   │   └── BookDetail.jsx   # Pagina dettaglio libro
+│   │   │
+│   │   ├── services/         # Comunicazione col Backend
+│   │   │   └── api.js        # Configurazione Axios/Fetch
+│   │   │
+│   │   ├── App.jsx           # Gestione Routing
+│   │   └── main.jsx          # Entry point React
 │   │
-│   └── sales/
-│       ├── buy.php       # POST: Esecuzione transazione
-│       └── history.php   # GET: Storico ordini utente
-│
-├── .env                  # Variabili d'ambiente (DB credentials) - NON COMMITTARE
-└── index.php             # Router opzionale / Entry point
-
-
-
-
-
-frontend/
-├── public/
-│   └── index.html        # Entry point HTML
-│
-├── src/
-│   ├── assets/           # Immagini, loghi, icone statiche
-│   │
-│   ├── components/       # Componenti riutilizzabili
-│   │   ├── Navbar.jsx    # Barra di navigazione dinamica
-│   │   ├── Footer.jsx    # Piè di pagina
-│   │   ├── BookCard.jsx  # Card anteprima libro (usata in home)
-│   │   └── LoginForm.jsx # Form di accesso
-│   │
-│   ├── context/          # Gestione stato globale
-│   │   └── AuthContext.jsx # Context per gestire l'utente loggato
-│   │
-│   ├── hooks/            # Custom Hooks
-│   │   └── useFetch.js   # Hook per chiamate API generiche
-│   │
-│   ├── pages/            # Pagine complete (Viste)
-│   │   ├── HomePage.jsx     # Landing page con lista libri
-│   │   ├── LoginPage.jsx    # Pagina di login
-│   │   ├── RegisterPage.jsx # Pagina di registrazione
-│   │   ├── Dashboard.jsx    # Area personale utente
-│   │   ├── SellBook.jsx     # Form vendita libro
-│   │   └── BookDetail.jsx   # Pagina dettaglio singolo libro
-│   │
-│   ├── services/         # Logica di comunicazione col Backend
-│   │   └── api.js        # Configurazione Axios/Fetch
-│   │
-│   ├── App.jsx           # Gestione Routing principale
-│   └── main.jsx          # React Entry point
-│
-├── .env                  # Variabili ambiente (API URL)
-└── package.json          # Dipendenze Node
+│   ├── .env                  # Variabili ambiente (URL API)
+│   └── package.json          # Dipendenze
