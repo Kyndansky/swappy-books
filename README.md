@@ -2,16 +2,18 @@
 
 Description
 
-SwappyBooks is a dedicated online marketplace and community platform designed specifically for the exchange of used academic textbooks and educational materials. The platform combines core marketplace functionality with integrated real-time communication tools to create a seamless experience for students, educators, and academic institutions.
+## Introduction
+**SwappyBooks is an online marketplace** designed **for the exchange of used academic textbooks**. 
+This website integrates a messaging feature to ease the communication between sellers and buyers.
 
-The system facilitates peer-to-peer trading where users can list their used textbooks with detailed condition descriptions, search for required materials by various academic parameters, and negotiate exchanges through a built-in messaging system. Beyond basic trading, SwappyBooks implements trust features such as user rating systems, verified academic email integration, and secure transaction guidelines to ensure reliability within the academic community.
+## Project information
+**Swappy books uses php for the backend** (with apache and mysql) **and** the **react** framework **for the frontend**, **along with typescript and** libraries such as **tailwindcss and heroui** to ease the development process.
+Thanks to react the application will be easier to develop, especially because we can split the development between backend and frontend (which wouldn't be possible with pure .php files)
+React offers a component based approach, making code modular
 
-The platform addresses common challenges in academic resource accessibility by providing an affordable alternative to purchasing new textbooks while promoting sustainability through material reuse. With intuitive categorization by subject, course code, edition, and institution, users can efficiently locate precisely the materials they need for their specific academic requirements.
+### Project structure
 
-
-# 📂 Struttura del Progetto
-
-Di seguito l'organizzazione completa delle cartelle e dei file principali.
+This is a simple and temporary organizational scheme to simplify project planning by our team.
 
 ```text
 /project-root
@@ -73,12 +75,3 @@ Di seguito l'organizzazione completa delle cartelle e dei file principali.
 │   │
 │   ├── .env                  # Variabili ambiente (URL API)
 │   └── package.json          # Dipendenze
-
-Pagine:
-Home
-Shop
-Libri in vendita utente
-Login/Register
-Gestione utente
-Pagina messaggi con altri utenti
-Carrello (lo salva in un context o cookie)
