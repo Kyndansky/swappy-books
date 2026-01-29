@@ -1,6 +1,4 @@
-# swappy-books
-
-Description
+# Swappy Books
 
 ## Introduction
 **SwappyBooks is an online marketplace** designed **for the exchange of used academic textbooks**. 
