@@ -3,7 +3,7 @@ class Database {
     // Credenziali del database
     // NOTA: In produzione dovresti usare variabili d'ambiente (.env)
     private $host = "localhost";
-    private $db_name = "school_books_db"; // Assicurati di aver creato il DB con questo nome
+    private $db_name = "swappybooks"; // Assicurati di aver creato il DB con questo nome
     private $username = "root";           // Di default su XAMPP/MAMP è "root"
     private $password = "";               // Di default su XAMPP è vuota, su MAMP è "root"
     public $conn;
