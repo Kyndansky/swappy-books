@@ -5,7 +5,7 @@ WORKDIR /swappyBooksFrontend
 #copies package,json inside workdir
 COPY package.json .
 #runs npm install as a command inside the image
-RUN npm install
+RUN npm install --legacy-peer-deps
 #copies everything from outside the image (basically everything in frontend) inside the workdir
 COPY . .
 #exposes port 5173
