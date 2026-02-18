@@ -39,7 +39,7 @@ if(!empty($data->email) && !empty($data->password)) {
         if(password_verify($data->password, $hashed_password)){
             
             // LOGIN OK
-            echo json_encode(array("stato" => True));
+            echo json_encode(array("stato" => true));
             
             // Restituiamo i dati dell'utente (Utile per React per mostrare "Ciao, Nome")
             echo json_encode(array(
@@ -53,18 +53,18 @@ if(!empty($data->email) && !empty($data->password)) {
 
         } else {
             // Password Sbagliata
-            echo json_encode(array("stato" => False));
+            echo json_encode(array("stato" => false));
             echo json_encode(array("message" => "Password errata."));
         }
 
     } else {
         // Email non trovata
-        echo json_encode(array("stato" => False));
+        echo json_encode(array("stato" => false));
         echo json_encode(array("message" => "Nessun account trovato con questa email."));
     }
 } else {
     // Dati mancanti nella richiesta
-    echo json_encode(array("stato" => False));
+    echo json_encode(array("stato" => false));
     echo json_encode(array("message" => "Inserire email e password."));
 }
 ?>

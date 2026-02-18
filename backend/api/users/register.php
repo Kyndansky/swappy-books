@@ -36,12 +36,12 @@ if(
     // 8. Esecuzione
     try {
         if($stmt->execute()){
-            echo json_encode(array("stato" => True));
+            echo json_encode(array("stato" => true));
             echo json_encode(array("message" => "Registrazione completata con successo."));
         }
     } catch (PDOException $e) {
         // Gestione errore (es. se l'email esiste già)
-        echo json_encode(array("stato" => False));
+        echo json_encode(array("stato" => false));
         
         // Se l'errore contiene "Duplicate entry", diamo un messaggio più chiaro
         if(strpos($e->getMessage(), 'Duplicate entry') !== false){
@@ -52,7 +52,7 @@ if(
     }
 } else {
     // Dati mancanti
-    echo json_encode(array("stato" => False));
+    echo json_encode(array("stato" => false));
     echo json_encode(array("message" => "Impossibile registrare. Dati incompleti (username, email o password mancanti)."));
 }
 ?>
