@@ -48,18 +48,18 @@ if(
     try {
         if($stmt->execute()){
             // Successo: 201 Created
-            http_response_code(201);
+            echo json_encode(array("stato" => true));
             echo json_encode(array("message" => "Libro messo in vendita con successo."));
         }
     } catch (PDOException $e) {
         // Errore del server o del database
-        http_response_code(503); // 503 Service Unavailable
+        echo json_encode(array("stato" => false));
         echo json_encode(array("message" => "Impossibile creare l'annuncio.", "error" => $e->getMessage()));
     }
 
 } else {
     // Dati mancanti
-    http_response_code(400); // 400 Bad Request
+    echo json_encode(array("stato" => false));
     echo json_encode(array("message" => "Dati incompleti. Assicurati di inviare seller_id, titolo e prezzo."));
 }
 ?>
