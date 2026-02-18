@@ -39,32 +39,32 @@ if(!empty($data->email) && !empty($data->password)) {
         if(password_verify($data->password, $hashed_password)){
             
             // LOGIN OK
-            http_response_code(200);
+            echo json_encode(array("stato" => True));
             
             // Restituiamo i dati dell'utente (Utile per React per mostrare "Ciao, Nome")
             echo json_encode(array(
                 "message" => "Login effettuato.",
                 "user" => array(
                     "id" => $id,
-                    "username" => $username,
+                    "username" => $username
                     "email" => $stored_email
                 )
             ));
 
         } else {
             // Password Sbagliata
-            http_response_code(401); // 401 Unauthorized
+            echo json_encode(array("stato" => False));
             echo json_encode(array("message" => "Password errata."));
         }
 
     } else {
         // Email non trovata
-        http_response_code(401);
+        echo json_encode(array("stato" => False));
         echo json_encode(array("message" => "Nessun account trovato con questa email."));
     }
 } else {
     // Dati mancanti nella richiesta
-    http_response_code(400);
+    echo json_encode(array("stato" => False));
     echo json_encode(array("message" => "Inserire email e password."));
 }
 ?>
