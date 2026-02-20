@@ -3,7 +3,7 @@ import DefaultLayout from "@/layouts/default";
 export default function LandingPage() {
   return (
     <DefaultLayout>
-      This is the home page
+      This is a simple home page example
     </DefaultLayout>
   );
 }
