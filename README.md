@@ -2,6 +2,7 @@
 
 ## Frontend setup
  We use **docker** for the frontend to avoid problems such as incompatible node or npm versions. When setiing up frontend to start working on it, use the following commands to setup a docker container and run it:
+ 
  **old commands**
  1. `cd frontend`
  2. `docker build . -t "swappybooksfrontend"`
@@ -13,7 +14,10 @@
  1. `cd frontend`
  2. `sudo docker compose up --build -d`
 
- **To clean old docker containers**:
+**Cleaning up**
+To stop all running containers:
+`sudo docker stop $(sudo docker ps -q)`
+ To delete all containers that are not running:
  `sudo docker system prune -a --volumes -f`
 
 ## Introduction
