@@ -1,12 +1,21 @@
 # Swappy Books
 
 ## Frontend setup
- We use docker for the frontend to avoid problems such as incompatible node or npm versions. When setiing up frontend to start working on it, use the following commands to setup a docker container and run it:
+ We use **docker** for the frontend to avoid problems such as incompatible node or npm versions. When setiing up frontend to start working on it, use the following commands to setup a docker container and run it:
+ **old commands**
  1. `cd frontend`
  2. `docker build . -t "swappybooksfrontend"`
  3. `docker run -p 5173:5173 swappybooksfrontend`
     where swappybooksfrontend is the name of the docker image (can be any name)
     remember to use `sudo` before the commands if using linux
+
+**new commands**
+ 1. `cd frontend`
+ 2. `sudo docker compose up --build -d`
+
+ **To clean old docker containers**:
+ `sudo docker system prune -a --volumes -f`
+
 ## Introduction
 **SwappyBooks is an online marketplace** designed **for the exchange of used academic textbooks**. 
 This website integrates a messaging feature to ease the communication between sellers and buyers.
