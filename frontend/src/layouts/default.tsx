@@ -21,6 +21,7 @@ export default function DefaultLayout({
           className="flex items-center gap-1 text-current"
           href="https://heroui.com"
           title="heroui.com homepage"
+          
         ></Link>
       </footer>
     </div>
