@@ -34,3 +34,8 @@ interface UserChat{
     bookTitle:string;
     
 }
+
+
+export interface Message{
+    content:string;
+}

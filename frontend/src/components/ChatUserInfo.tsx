@@ -1,16 +1,18 @@
-import {User} from "@heroui/react";
+import { User } from "@heroui/react";
 
-interface ChatUserInfoProps{
-    username:String;
-    bookName:String;
-    userIconUrl:String;
+interface ChatUserInfoProps {
+  username: string;
+  bookName: string;
+  userIconUrl: string;
 }
-export default function ChatUserInfo(){
+export default function ChatUserInfo(props: ChatUserInfoProps) {
+  return (
     <User
       avatarProps={{
-        src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+        src: props.userIconUrl,
       }}
-      description="Product Designer"
-      name="Jane Doe"
+      description={props.bookName}
+      name={props.username}
     />
+  );
 }
