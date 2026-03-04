@@ -20,7 +20,7 @@ CREATE TABLE books (
     
     -- Dati di vendita (NULL finché il libro non viene acquistato)
     buyer_id INT DEFAULT NULL,
-    sale_date TIMESTAMP DEFAULT NULL,
+    sale_date TIMESTAMP NULL DEFAULT NULL,
     sale_price DECIMAL(10, 2) DEFAULT NULL,
     
     -- Vincoli di integrità
