@@ -43,18 +43,16 @@ if(!empty($user_id)) {
         );
 
         // 8. Risposta OK
-        http_response_code(200);
+        echo json_encode(array("stato" => true));
         echo json_encode($user_item);
 
     } else {
         // ID non trovato nel database
-        http_response_code(404); // 404 Not Found
-        echo json_encode(array("message" => "Utente non trovato."));
+        echo json_encode(array("stato" => false));
     }
 
 } else {
     // ID mancante nella richiesta URL
-    http_response_code(400); // 400 Bad Request
-    echo json_encode(array("message" => "Impossibile visualizzare il profilo. ID utente mancante."));
+    echo json_encode(array("stato" => false));
 }
 ?>
