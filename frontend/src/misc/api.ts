@@ -1,3 +1,4 @@
+import { SwappyBooksResponse } from "@/types/interfaces";
 import axios from "axios";
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL;

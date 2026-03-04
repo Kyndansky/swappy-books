@@ -1,8 +1,7 @@
 
-interface SwappyBooksResponse{
+export interface SwappyBooksResponse{
     successful:boolean;
     message:string;
-    username:string;
 }
 
 // src/types/interfaces.ts - AGGIUNGIAMO:
@@ -18,9 +17,20 @@ export interface Book {
   createdAt: string;
 }
 
-export interface SwappyBooksResponse {
-  successful: boolean;
-  message: string;
-  username: string;
-  data?: any;  // Opzionale per quando ci sono dati aggiuntivi
+
+export interface SwappyBooksSwapsResponse extends SwappyBooksResponse{
+    swaps:Swap[]
+}
+
+export interface Swap{
+    uploadDate:string;
+    sellDate?:string;
+    title:string;
+    description:string;   
+}
+
+interface UserChat{
+    username:string;
+    bookTitle:string;
+    
 }
