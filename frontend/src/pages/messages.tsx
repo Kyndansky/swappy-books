@@ -2,7 +2,7 @@ import Chat from "@/components/chat/chat";
 import ChatUserInfo from "@/components/chat/ChatUserInfo";
 import DefaultLayout from "@/layouts/default";
 import { Message, UserChatInfo } from "@/types/interfaces";
-import { Avatar, Divider, Listbox, ListboxItem } from "@heroui/react";
+import { Avatar, Button, Divider, Listbox, ListboxItem } from "@heroui/react";
 import React, { useState } from "react";
 
 interface MessagesPageProps { }
@@ -99,23 +99,34 @@ export default function Messages(props: MessagesPageProps) {
   const [selectedChat, setSelectedChat] = useState<UserChatInfo>();
   return (
     <DefaultLayout>
-      <div className="flex flex-row justify-center">
-        <Listbox aria-label="Listbox menu with descriptions" variant="flat" className="w-auto" selectionMode="single" selectionBehavior={"replace"}>
+      <div className="flex flex-row justify-center h-full">
+        <Listbox variant="faded" color="primary" className="w-auto" selectionBehavior={"replace"}
+        >
           {chats.map((chat, index) => (
-            <ListboxItem key={index}>
+            <ListboxItem key={index} onClick={() => {
+              setSelectedChat(chat);
+            }}
+              showDivider={true}
+            >
               <ChatUserInfo
                 username={chat.username}
-                bookName={chat.swapBookTitle} />
+                bookName={chat.swapBookTitle}
+                showAsSelected={(selectedChat?.swapId===chat.swapId && selectedChat.username===chat.username)?true:false}
+              />
             </ListboxItem>
           ))}
         </Listbox>
-        <Divider orientation="vertical" className="mx-20 h-auto" />
-        <div className="flex w-1/2 justify-center align-items-center">
+        <Divider orientation="vertical" className="mx-10 h-auto" />
+        <div className="flex w-3/4 justify-center align-items-center">
           {selectedChat ? (
-            <Chat
-              chatInfo={selectedChat}
-              messages={messages}
-            />
+            <div className="flex flex-col items-center w-full">
+              <Chat
+                chatInfo={selectedChat}
+                messages={messages}
+                onClose={() => { setSelectedChat(undefined) }}
+              />
+            </div>
+
           ) : (
             <p className="my-auto">select a chat to view messages</p>
           )}

@@ -3,6 +3,7 @@ import { User } from "@heroui/react";
 interface ChatUserInfoProps {
   username: string;
   bookName: string;
+  showAsSelected?:boolean;
 }
 export default function ChatUserInfo(props: ChatUserInfoProps) {
   return (
@@ -13,6 +14,7 @@ export default function ChatUserInfo(props: ChatUserInfoProps) {
         }}
         description={props.bookName}
         name={props.username}
+        className={props.showAsSelected?"text-primary":""}
       />
     </div>
 
