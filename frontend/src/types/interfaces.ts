@@ -29,13 +29,16 @@ export interface Swap{
     description:string;   
 }
 
-interface UserChat{
+export interface UserChatInfo{
     username:string;
-    bookTitle:string;
-    
+    swapId:number;
+    swapBookTitle:string;
 }
-
 
 export interface Message{
     content:string;
+    sender:string;
+    swapId:number;
+    receiver:string;
+    messageTime:string;
 }
