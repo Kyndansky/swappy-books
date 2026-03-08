@@ -11,8 +11,13 @@ import clsx from "clsx";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { BookMarked } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContextHandler";
+import { Button } from "@heroui/react";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
+  const { username } = useAuth();
+  const navigate = useNavigate();
   return (
     <HeroUINavbar maxWidth="xl" position="sticky" isBordered={true}>
       <NavbarContent className="basis-full" justify="start">
@@ -28,7 +33,7 @@ export const Navbar = () => {
             </div>
           </Link>
         </NavbarBrand>
-        
+
         {/* Navigazione sempre visibile */}
         <div className="flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
@@ -51,6 +56,11 @@ export const Navbar = () => {
       <NavbarContent className="basis-full" justify="end">
         <NavbarItem className="flex gap-2">
           <ThemeSwitch />
+          {!username ? (
+            <Button color="primary" size="sm" onPress={() => {
+              navigate("/login");
+            }}>Login</Button>
+          ) : username}
         </NavbarItem>
       </NavbarContent>
     </HeroUINavbar>

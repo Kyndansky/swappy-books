@@ -4,6 +4,12 @@ export interface SwappyBooksResponse{
     message:string;
 }
 
+export interface SwappyBooksProfileResponse{
+    successful:boolean;
+    message:string;
+    username:string;
+}
+
 // src/types/interfaces.ts - AGGIUNGIAMO:
 export interface Book {
   id: number;

@@ -1,21 +1,24 @@
 <?php
-// Consenti l'accesso da qualsiasi origine (in produzione metti l'URL specifico del frontend es. http://localhost:5173)
-header("Access-Control-Allow-Origin: *");
 
-// Imposta il tipo di contenuto restituito come JSON
-header("Content-Type: application/json; charset=UTF-8");
+// get request's origin
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
-// Metodi HTTP consentiti
-header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
+// create an array with authorized origins (in this case it's react frontend)
+$allowed_origins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1',
+];
 
-// Header consentiti nelle richieste
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
-// Gestione della richiesta "Preflight" (OPTIONS)
-// Il browser invia prima una richiesta OPTIONS per controllare se è permesso inviare dati.
-// Se il metodo è OPTIONS, terminiamo l'esecuzione qui restituendo 200 OK.
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit();
+// if request comes from allowed origins or if the request is empty (this condition was added because i use postman (postman origin is generally empty))
+// it is allowed (i would use * directly but doing so apparently makes session not work)
+if (in_array($origin, $allowed_origins) || empty($origin)) {
+    header("Access-Control-Allow-Origin: " . ($origin ?: '*'));
 }
-?>
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("content-type: application/json; charset=UTF-8");
+ini_set('session.cookie_secure', "1"); 
+ini_set('session.cookie_httponly', "1"); 
+ini_set('session.cookie_samesite','None');

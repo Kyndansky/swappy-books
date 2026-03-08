@@ -1,58 +1,76 @@
 <?php
-// 1. Includiamo i file del tuo collega
-include_once '../../config/cors.php';
-include_once '../../config/database.php';
+require_once("../../config/cors.php");
 
-// 2. Connessione al Database
-$database = new Database();
-$db = $database->getConnection();
+$json_data = file_get_contents('php://input');
+$data = json_decode($json_data, true);
 
-// 3. Ricezione dei dati JSON (lo "scatolone" di cui parlavamo prima)
-$data = json_decode(file_get_contents("php://input"));
-
-// 4. Verifica dati obbligatori
-if(
-    !empty($data->username) &&
-    !empty($data->email) &&
-    !empty($data->password)
-){
-    // Query SQL (usa i nomi delle colonne della TUA tabella 'users')
-    $query = "INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)";
-
-    $stmt = $db->prepare($query);
-
-    // 5. Sanitizzazione (Pulizia frutta)
-    $username = htmlspecialchars(strip_tags($data->username));
-    $email = htmlspecialchars(strip_tags($data->email));
-    
-    // 6. Hashing Password (Sicurezza)
-    $password_hash = password_hash($data->password, PASSWORD_DEFAULT);
-
-    // 7. Binding parametri
-    $stmt->bindParam(":username", $username);
-    $stmt->bindParam(":email", $email);
-    $stmt->bindParam(":password_hash", $password_hash);
-
-    // 8. Esecuzione
-    try {
-        if($stmt->execute()){
-            echo json_encode(array("stato" => true));
-            echo json_encode(array("message" => "Registrazione completata con successo."));
-        }
-    } catch (PDOException $e) {
-        // Gestione errore (es. se l'email esiste già)
-        echo json_encode(array("stato" => false));
-        
-        // Se l'errore contiene "Duplicate entry", diamo un messaggio più chiaro
-        if(strpos($e->getMessage(), 'Duplicate entry') !== false){
-            echo json_encode(array("message" => "Questa email risulta già registrata."));
-        } else {
-            echo json_encode(array("message" => "Errore durante la registrazione.", "error" => $e->getMessage()));
-        }
-    }
-} else {
-    // Dati mancanti
-    echo json_encode(array("stato" => false));
-    echo json_encode(array("message" => "Impossibile registrare. Dati incompleti (username, email o password mancanti)."));
+if (!is_array($data)) {
+    echo json_encode([
+        "successful" => false,
+        "message" => "Username and password are required",
+        "username" => ""
+    ]);
+    exit();
 }
+
+
+
+$username = $data['username'] ?? null;
+$password = $data['password'] ?? null;
+$input_password = $password;
+
+if (!$username || !$password) {
+    echo json_encode([
+        "successful" => false,
+        "message" => "Username and password are required",
+        "username" => ""
+    ]);
+    exit();
+}
+
+
+
+require_once("../../config/database.php");
+
+
+
+// Controlla se l'utente esiste già
+$stmtCheck = $dbConnection->prepare("SELECT COUNT(*) FROM users WHERE username = ?");
+$stmtCheck->bind_param("s", $username);
+$stmtCheck->execute();
+$result = $stmtCheck->get_result();
+$row = $result->fetch_row();
+
+
+
+if ($row[0] > 0) {
+    echo json_encode([
+        "successful" => false,
+        "message" => "User already exists",
+        "username" => "",
+    ]);
+    $stmtCheck->close();
+    exit();
+}
+$stmtCheck->close();
+
+// Inserisce il nuovo utente
+$stmt = $dbConnection->prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)");
+$hashed_password = password_hash($input_password, PASSWORD_BCRYPT);
+$stmt->bind_param("ss", $username, $hashed_password);
+$stmt->execute();
+
+if (!isset($_SESSION)) {
+    session_start();
+}
+$_SESSION["username"] = $username;
+
+echo json_encode([
+    "successful" => true,
+    "message" => "User registered successfully",
+    "username" => $username
+]);
+
+$stmt->close();
+$dbConnection->close();
 ?>

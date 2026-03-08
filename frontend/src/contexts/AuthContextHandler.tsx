@@ -5,6 +5,7 @@ interface AuthInfo{
     isAuthenticated:boolean;
     isLoadingAuthentication:boolean;
     setIsAuthenticated: (isAuthenticated: boolean) => void;
+    setUsername: (username: string) => void;
     username?:string;
 }
 
@@ -24,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         })();
     }, []);
 
-    const contextValue = { isAuthenticated, isLoadingAuthentication, setIsAuthenticated, username};
+    const contextValue = { isAuthenticated, isLoadingAuthentication, setIsAuthenticated, username, setUsername};
 
     return (
         <AuthContext.Provider value={contextValue}>

@@ -1,70 +1,63 @@
 <?php
-// 1. Includiamo i file del tuo collega
-include_once '../../config/cors.php';
-include_once '../../config/database.php';
+require_once("../../config/cors.php");
 
-// 2. Connessione al Database
-$database = new Database();
-$db = $database->getConnection();
+//retrieves the JSON data from the request body
+$json_data = file_get_contents("php://input");
+$data = json_decode($json_data, true);
+$username = $data['username'];
+$password = $data['password'];
+//the password variable is stored here because when using get_result() its value becomes ""
+$input_password = $password;
 
-// 3. Ricezione dati JSON
-$data = json_decode(file_get_contents("php://input"));
-
-// 4. Verifica esistenza email e password nel pacchetto ricevuto
-if(!empty($data->email) && !empty($data->password)) {
-
-    // Query: Cerchiamo l'utente tramite email
-    $query = "SELECT user_id, username, email, password_hash FROM users WHERE email = :email LIMIT 1";
-
-    $stmt = $db->prepare($query);
-    
-    // Sanitizziamo l'email prima di passarla alla query
-    $email = htmlspecialchars(strip_tags($data->email));
-    $stmt->bindParam(":email", $email);
-    
-    $stmt->execute();
-    
-    // 5. Se troviamo l'utente
-    if($stmt->rowCount() > 0){
-        // fetch() estrae la riga. Grazie al file del tuo amico, è già un array associativo!
-        $row = $stmt->fetch();
-        
-        $id = $row['user_id'];
-        $username = $row['username'];
-        $stored_email = $row['email'];
-        $hashed_password = $row['password_hash'];
-
-        // 6. Verifica della Password
-        // Confrontiamo la password in chiaro ($data->password) con l'hash ($hashed_password)
-        if(password_verify($data->password, $hashed_password)){
-            
-            // LOGIN OK
-            echo json_encode(array("stato" => true));
-            
-            // Restituiamo i dati dell'utente (Utile per React per mostrare "Ciao, Nome")
-            echo json_encode(array(
-                "message" => "Login effettuato.",
-                "user" => array(
-                    "id" => $id,
-                    "username" => $username
-                    "email" => $stored_email
-                )
-            ));
-
-        } else {
-            // Password Sbagliata
-            echo json_encode(array("stato" => false));
-            echo json_encode(array("message" => "Password errata."));
-        }
-
-    } else {
-        // Email non trovata
-        echo json_encode(array("stato" => false));
-        echo json_encode(array("message" => "Nessun account trovato con questa email."));
-    }
-} else {
-    // Dati mancanti nella richiesta
-    echo json_encode(array("stato" => false));
-    echo json_encode(array("message" => "Inserire email e password."));
+if (!isset($username) || !isset($password)) {
+    $response = [
+        "successful" => false,
+        "message" => "Username and password are required"
+    ];
+    echo json_encode($response);
+    exit();
 }
-?>
+require_once("../../config/database.php");
+
+$stmt = $dbConnection->prepare("SELECT * FROM users WHERE username = ?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+
+$result = $stmt->get_result();
+
+//checks if the user exists
+if ($result->num_rows < 1) {
+    $response = [
+        "successful" => false,
+        "message" => "User does not exist"
+    ];
+    echo json_encode($response);
+    exit();
+}
+//checks if password is correct
+$row = $result->fetch_assoc();
+$dbPass = $row['password_hash'];
+$stmt->close();
+
+if (password_verify($input_password, $dbPass) === false) {
+    $response = [
+        "successful" => false,
+        "message" => "Incorrect password",
+
+    ];
+    echo json_encode($response);
+    exit();
+} else {
+    $response = [
+        "successful" => true,
+        "message" => "Login successful",
+        "username" => $username
+    ];
+}
+
+
+if (!isset($_SESSION))
+    session_start();
+
+$_SESSION['username'] = $username;
+echo json_encode($response);
