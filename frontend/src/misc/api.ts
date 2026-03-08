@@ -1,6 +1,6 @@
-import { SwappyBooksProfileResponse, SwappyBooksResponse } from "@/types/interfaces";
+import { SwappyBooksProfileResponse } from "@/types/interfaces";
 import axios from "axios";
-
+axios.defaults.withCredentials = true;
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL;
 //const api = axios.create({ baseURL: BACKEND_API_URL });
 const apiAuth = axios.create({ baseURL: `${BACKEND_API_URL}/users/` });
@@ -9,7 +9,7 @@ const apiAuth = axios.create({ baseURL: `${BACKEND_API_URL}/users/` });
 export async function getAuthenticationInfo(): Promise<SwappyBooksProfileResponse> {
 
     try {
-        const response = await apiAuth.get("profile.php", {
+        const response = await apiAuth.get("getAuthInfo.php", {
             headers: {
                 "Content-Type": "application/json",
             },

@@ -1,5 +1,18 @@
 <?php
 
+$session_options = [
+    'cookie_lifetime' => 86400,
+    'cookie_path'     => '/',
+    'cookie_domain'   => '', // Lascia vuoto per il dominio corrente
+    'cookie_secure'   => true, // Obbligatorio se SameSite è None
+    'cookie_httponly' => true, // Protegge da attacchi XSS
+    'cookie_samesite' => 'None', // Permette cross-origin (React -> PHP)
+];
+
+if (!isset($_SESSION)) {
+    session_start($session_options);
+}
+
 // get request's origin
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
@@ -19,6 +32,4 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("content-type: application/json; charset=UTF-8");
-ini_set('session.cookie_secure', "1"); 
-ini_set('session.cookie_httponly', "1"); 
-ini_set('session.cookie_samesite','None');
+

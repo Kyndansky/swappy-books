@@ -55,9 +55,5 @@ if (password_verify($input_password, $dbPass) === false) {
     ];
 }
 
-
-if (!isset($_SESSION))
-    session_start();
-
 $_SESSION['username'] = $username;
 echo json_encode($response);

@@ -13,8 +13,6 @@ if (!is_array($data)) {
     exit();
 }
 
-
-
 $username = $data['username'] ?? null;
 $password = $data['password'] ?? null;
 $input_password = $password;
@@ -28,11 +26,7 @@ if (!$username || !$password) {
     exit();
 }
 
-
-
 require_once("../../config/database.php");
-
-
 
 // Controlla se l'utente esiste già
 $stmtCheck = $dbConnection->prepare("SELECT COUNT(*) FROM users WHERE username = ?");
@@ -40,8 +34,6 @@ $stmtCheck->bind_param("s", $username);
 $stmtCheck->execute();
 $result = $stmtCheck->get_result();
 $row = $result->fetch_row();
-
-
 
 if ($row[0] > 0) {
     echo json_encode([
@@ -60,9 +52,6 @@ $hashed_password = password_hash($input_password, PASSWORD_BCRYPT);
 $stmt->bind_param("ss", $username, $hashed_password);
 $stmt->execute();
 
-if (!isset($_SESSION)) {
-    session_start();
-}
 $_SESSION["username"] = $username;
 
 echo json_encode([

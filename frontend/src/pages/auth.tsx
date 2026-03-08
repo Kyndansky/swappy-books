@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContextHandler";
 import DefaultLayout from "@/layouts/default";
 import { login, register } from "@/misc/api";
-import { SwappyBooksProfileResponse, SwappyBooksResponse } from "@/types/interfaces";
+import { SwappyBooksProfileResponse } from "@/types/interfaces";
 import { Input } from "@heroui/input";
 import { addToast, Button, Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useState } from "react";
@@ -13,19 +13,25 @@ interface AuthenticationPageProps {
 export default function AuthenticatePage(props: AuthenticationPageProps) {
     const [username, setPageUsername] = useState<string>("");
     const [password, setPagePassword] = useState<string>("");
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const { setIsAuthenticated, setUsername } = useAuth();
+
     async function authenticate() {
         const response: SwappyBooksProfileResponse = props.authType === "login" ? await login(username, password) : await register(username, password);
-        console.log(response.message);
         if (response.successful === true) {
             setIsAuthenticated(true);
             setUsername(response.username);
             navigate("/");
         }
 
-        addToast({ title: response.message });
+        addToast(
+            {
+                title: response.message,
+                color: response.successful === true ? "success" : "danger"
+            }
+        );
     }
+
     return (
         <DefaultLayout>
             <div className="flex w-full h-full items-center justify-center w-1/2 ">
