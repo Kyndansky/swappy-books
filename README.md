@@ -216,5 +216,3 @@ Grazie della collaborazione fate con calma (probabilmente poi vi devo chiedere u
 
 **P.S** Ah e se potete cambiate anche tutti gli altri file php in modo che abbiano una risposta con quel formato, quindi con il campo successful booleano e il campo message stringa. successful puo' anche avere un'altro nome basta che fate tutto uniforme per tutto il backend cosi che nel frontend sappiamo cosa aspettarci
 o chiedere un'altro file nel backend per inviare messaggi)
-
-**P.S** Ah e se potete cambiate anche tutti gli altri file php in modo che abbiano una risposta con quel formato, quindi con il campo successful booleano e il campo message stringa. successful puo' anche avere un'altro nome basta che fate tutto uniforme per tutto il backend cosi che nel frontend sappiamo cosa aspettarci
