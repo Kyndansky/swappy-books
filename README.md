@@ -93,7 +93,7 @@ This is a simple and temporary organizational scheme to simplify project plannin
 │   │
 │   ├── .env                  # Variabili ambiente (URL API)
 │   └── package.json          # Dipendenze
-
+```
 
 ## File backend che mi servono per la feature dei messaggi (Riccobene)
 
@@ -213,5 +213,8 @@ $response = [
 ---
 
 Grazie della collaborazione fate con calma (probabilmente poi vi devo chiedere un'altro file nel backend per inviare messaggi)
+
+**P.S** Ah e se potete cambiate anche tutti gli altri file php in modo che abbiano una risposta con quel formato, quindi con il campo successful booleano e il campo message stringa. successful puo' anche avere un'altro nome basta che fate tutto uniforme per tutto il backend cosi che nel frontend sappiamo cosa aspettarci
+o chiedere un'altro file nel backend per inviare messaggi)
 
 **P.S** Ah e se potete cambiate anche tutti gli altri file php in modo che abbiano una risposta con quel formato, quindi con il campo successful booleano e il campo message stringa. successful puo' anche avere un'altro nome basta che fate tutto uniforme per tutto il backend cosi che nel frontend sappiamo cosa aspettarci
