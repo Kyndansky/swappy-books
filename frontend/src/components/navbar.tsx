@@ -12,8 +12,10 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { BookMarked } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContextHandler";
-import { Button } from "@heroui/react";
+import { addToast, Button } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
+import React from "react";
+import { logout } from "@/misc/api";
 
 export const Navbar = () => {
   const { username } = useAuth();
@@ -60,7 +62,25 @@ export const Navbar = () => {
             <Button color="primary" size="sm" onPress={() => {
               navigate("/login");
             }}>Login</Button>
-          ) : username}
+          ) : (
+            <div className="flex flex-row items-center gap-3">
+              {username}
+              <Button
+                size="sm" color="danger" variant="light"
+                onPress={async () => {
+                  const response = await logout();
+                  addToast(
+                    {
+                      title: response.message,
+                      color: response.successful === true ? "success" : "danger"
+                    }
+                  );
+                }}>
+                Logout
+              </Button>
+            </div>
+
+          )}
         </NavbarItem>
       </NavbarContent>
     </HeroUINavbar>

@@ -87,3 +87,28 @@ export async function login(username: string, password: string): Promise<SwappyB
         return result;
     }
 }
+
+export async function logout(): Promise<SwappyBooksProfileResponse> {
+    try {
+        const response = await apiAuth.get("login.php", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        const data = response.data;
+        const result: SwappyBooksProfileResponse = {
+            successful: data["successful"],
+            message: data["message"],
+            username: data["username"]
+        };
+        return result;
+    } catch (error) {
+        console.log("error from php server:", error);
+        const result: SwappyBooksProfileResponse = {
+            successful: false,
+            message: "server error",
+            username: ""
+        };
+        return result;
+    }
+}
