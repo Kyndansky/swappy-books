@@ -90,7 +90,7 @@ export async function login(username: string, password: string): Promise<SwappyB
 
 export async function logout(): Promise<SwappyBooksProfileResponse> {
     try {
-        const response = await apiAuth.get("login.php", {
+        const response = await apiAuth.get("logout.php", {
             headers: {
                 "Content-Type": "application/json",
             },
