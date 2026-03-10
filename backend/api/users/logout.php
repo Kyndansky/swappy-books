@@ -16,7 +16,7 @@ if(!isset($_SESSION["username"]) || $_SESSION["username"]===""){
 else{
     echo json_encode([
         "successful"=>true,
-        "message"=>"Sigma logged out",
+        "message"=>"Logged out successfully",
         "username"=>$_SESSION["username"]
     ]);
 }

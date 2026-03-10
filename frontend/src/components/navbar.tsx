@@ -20,6 +20,7 @@ import { logout } from "@/misc/api";
 export const Navbar = () => {
   const { username } = useAuth();
   const navigate = useNavigate();
+  const { setIsAuthenticated, setUsername } = useAuth();
   return (
     <HeroUINavbar maxWidth="xl" position="sticky" isBordered={true}>
       <NavbarContent className="basis-full" justify="start">
@@ -75,6 +76,10 @@ export const Navbar = () => {
                       color: response.successful === true ? "success" : "danger"
                     }
                   );
+                  if (response.successful === true) {
+                    setUsername("");
+                    setIsAuthenticated(false);
+                  }
                 }}>
                 Logout
               </Button>

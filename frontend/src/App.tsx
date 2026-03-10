@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import LandingPage from "@/pages/index";
 import AuthenticatePage from "./pages/auth";
 import Messages from "./pages/messages";
-
+import NotFound from "./pages/404";
 
 function App() {
   return (
@@ -12,6 +12,7 @@ function App() {
       <Route element={<AuthenticatePage authType="login"/>} path="/login"/>
       <Route element={<AuthenticatePage authType="register"/>} path="/register"/>
       <Route element={<Messages/>} path="/messages"/>
+      <Route path="*" element={<NotFound />}/>
     </Routes>
   );
 }
