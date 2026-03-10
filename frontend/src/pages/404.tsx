@@ -6,7 +6,8 @@ export default function NotFound() {
     return (
         <DefaultLayout>
             <div className="flex flex-col mx-auto h-full items-center justify-center">
-                <Card className="" isPressable>
+                <Card isPressable>
+                    <div className="absolute bg-danger/40 blur-xl w-full h-full rounded-full" />
                     <CardHeader>
                         <p className="mx-auto text-xl">
                             Page not found
@@ -14,8 +15,9 @@ export default function NotFound() {
 
                     </CardHeader>
                     <CardBody className="p-10">
-                        <p className="text-9xl overflow-y-hidden text-danger font-bold">
+                        <p className="text-9xl overflow-y-hidden text-white font-bold">
                             404
+
                         </p>
                     </CardBody>
 
