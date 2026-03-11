@@ -215,4 +215,13 @@ $response = [
 Grazie della collaborazione fate con calma (probabilmente poi vi devo chiedere un'altro file nel backend per inviare messaggi)
 
 **P.S** Ah e se potete cambiate anche tutti gli altri file php in modo che abbiano una risposta con quel formato, quindi con il campo successful booleano e il campo message stringa. successful puo' anche avere un'altro nome basta che fate tutto uniforme per tutto il backend cosi che nel frontend sappiamo cosa aspettarci
+
+
+---
+
+FIle che prende in richiesta tramite GET un messaggio di un utente e l'username del destinatario e aggiunge il messaggio al db:
+prevelare la data e l'ora di invio del messaggio quando viene inviato, (per l'username del mittente bisogna controllare la session e in caso l'user non e' loggato va ritornato un messaggio di errore)
+per i dettagli fate in modo simile a quello che vi ho chiesto negli altri file per metodologia ecc...
+naturalmente dovete anche controllare se il destinatario esiste (se non esiste il messaggio non viene inviato)
+ritornate una risposta con successful a true o false e un message, come al solito
 o chiedere un'altro file nel backend per inviare messaggi)
