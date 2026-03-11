@@ -1,6 +1,8 @@
 import {
+    SwappyBooksMessagesResponse,
   SwappyBooksProfileResponse,
   SwappyBooksUserChatsResponse,
+  UserChatInfo,
 } from "@/types/interfaces";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -147,32 +149,32 @@ export async function getUserChats(): Promise<SwappyBooksUserChatsResponse> {
 }
 
 export async function getChatMessages(
-  swapId: number,
-  user: string,
-): Promise<SwappyBooksUserChatsResponse> {
+  chatInfo: UserChatInfo,
+): Promise<SwappyBooksMessagesResponse> {
   try {
-    const response = await apiChats.post("getchat.php", {
+    const response = await apiChats.get("getchat.php", {
       params: {
-        other_user:user,
-        swapId:swapId
+        other_user: chatInfo.username,
+        swapId: chatInfo.swapId,
       },
       headers: {
         "Content-Type": "application/json",
       },
     });
     const data = response.data;
-    const result: SwappyBooksUserChatsResponse = {
+    console.log(response.data);
+    const result: SwappyBooksMessagesResponse = {
       successful: data["successful"],
       message: data["message"],
-      chats: [],
+      messages: [],
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: SwappyBooksUserChatsResponse = {
+    const result: SwappyBooksMessagesResponse = {
       successful: false,
       message: "server error",
-      chats: [],
+      messages: [],
     };
     return result;
   }

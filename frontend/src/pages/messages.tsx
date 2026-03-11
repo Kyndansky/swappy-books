@@ -1,117 +1,152 @@
 import Chat from "@/components/chat/chat";
 import ChatUserInfo from "@/components/chat/ChatUserInfo";
 import DefaultLayout from "@/layouts/default";
+import { getChatMessages } from "@/misc/api";
 import { Message, UserChatInfo } from "@/types/interfaces";
-import { Avatar, Button, Divider, Listbox, ListboxItem } from "@heroui/react";
-import React, { useState } from "react";
+import { addToast, Divider, Listbox, ListboxItem } from "@heroui/react";
+import { useEffect, useState } from "react";
 
-interface MessagesPageProps { }
+interface MessagesPageProps {}
 
 export default function Messages(props: MessagesPageProps) {
-
   const chats: UserChatInfo[] = [
     {
       username: "Riccardo Colaninno",
       swapBookTitle: "Internetworking",
-      swapId: 3
+      swapId: 3,
     },
     {
       username: "Galimberti Pietro",
       swapBookTitle: "Matematica Verde",
-      swapId: 1
+      swapId: 1,
     },
     {
       username: "Matteo Sartori",
       swapBookTitle: "Protech",
-      swapId: 2
+      swapId: 2,
     },
     {
       username: "Davide Riccobene",
       swapBookTitle: "Matematica Verde",
-      swapId: 1
+      swapId: 1,
     },
-  ]
+  ];
   const messages: Message[] = [
     {
       content: "ciao",
       sender: "Sigma2",
       receiver: "sigma",
       swapId: 1,
-      messageTime: "15:45"
-    }, {
-      content: "ho detto ciaoo",
-      sender: "sigma",
-      receiver: "Sigma2",
-      swapId: 1,
-      messageTime: "15:45"
-    }, {
-      content: "come va?",
-      sender: "Sigma2",
-      receiver: "sigma",
-      swapId: 1,
-      messageTime: "15:45"
-    }, {
-      content: "ci sei? ",
-      sender: "sigma",
-      receiver: "Sigma2",
-      swapId: 1,
-      messageTime: "15:45"
-    },
-    {
-      content: "ho detto ciaoo",
-      sender: "Sigma2",
-      receiver: "sigma",
-      swapId: 1,
-      messageTime: "15:45"
-    }, {
-      content: "come va?",
-      sender: "sigma",
-      receiver: "Sigma2",
-      swapId: 1,
-      messageTime: "15:45"
-    }, {
-      content: "ci sei? ",
-      sender: "Sigma2",
-      receiver: "sigma",
-      swapId: 1,
-      messageTime: "15:45"
+      messageTime: "15:45",
     },
     {
       content: "ho detto ciaoo",
       sender: "sigma",
       receiver: "Sigma2",
       swapId: 1,
-      messageTime: "15:45"
-    }, {
+      messageTime: "15:45",
+    },
+    {
       content: "come va?",
-      sender: "sigma",
-      receiver: "Sigma2",
+      sender: "Sigma2",
+      receiver: "sigma",
       swapId: 1,
-      messageTime: "15:45"
-    }, {
+      messageTime: "15:45",
+    },
+    {
       content: "ci sei? ",
       sender: "sigma",
       receiver: "Sigma2",
       swapId: 1,
-      messageTime: "15:45"
+      messageTime: "15:45",
     },
-  ]
+    {
+      content: "ho detto ciaoo",
+      sender: "Sigma2",
+      receiver: "sigma",
+      swapId: 1,
+      messageTime: "15:45",
+    },
+    {
+      content: "come va?",
+      sender: "sigma",
+      receiver: "Sigma2",
+      swapId: 1,
+      messageTime: "15:45",
+    },
+    {
+      content: "ci sei? ",
+      sender: "Sigma2",
+      receiver: "sigma",
+      swapId: 1,
+      messageTime: "15:45",
+    },
+    {
+      content: "ho detto ciaoo",
+      sender: "sigma",
+      receiver: "Sigma2",
+      swapId: 1,
+      messageTime: "15:45",
+    },
+    {
+      content: "come va?",
+      sender: "sigma",
+      receiver: "Sigma2",
+      swapId: 1,
+      messageTime: "15:45",
+    },
+    {
+      content: "ci sei? ",
+      sender: "sigma",
+      receiver: "Sigma2",
+      swapId: 1,
+      messageTime: "15:45",
+    },
+  ];
   const [selectedChat, setSelectedChat] = useState<UserChatInfo>();
+  const [currentChatMessages, setCurrentChatMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      if (selectedChat) {
+        const response = await getChatMessages(selectedChat);
+        if (response.successful) {
+          setCurrentChatMessages(response.messages);
+        } else {
+          addToast({
+            color: "danger",
+            title: response.message,
+          });
+        }
+      }
+    })();
+  }, [selectedChat]);
   return (
     <DefaultLayout>
       <div className="flex flex-row justify-center h-full">
-        <Listbox variant="faded" color="primary" className="w-auto" selectionBehavior={"replace"}
+        <Listbox
+          variant="faded"
+          color="primary"
+          className="w-auto"
+          selectionBehavior={"replace"}
         >
           {chats.map((chat, index) => (
-            <ListboxItem key={index} onClick={() => {
-              setSelectedChat(chat);
-            }}
+            <ListboxItem
+              key={index}
+              onClick={() => {
+                setSelectedChat(chat);
+              }}
               showDivider={true}
             >
               <ChatUserInfo
                 username={chat.username}
                 bookName={chat.swapBookTitle}
-                showAsSelected={(selectedChat?.swapId===chat.swapId && selectedChat.username===chat.username)?true:false}
+                showAsSelected={
+                  selectedChat?.swapId === chat.swapId &&
+                  selectedChat.username === chat.username
+                    ? true
+                    : false
+                }
               />
             </ListboxItem>
           ))}
@@ -123,14 +158,14 @@ export default function Messages(props: MessagesPageProps) {
               <Chat
                 chatInfo={selectedChat}
                 messages={messages}
-                onClose={() => { setSelectedChat(undefined) }}
+                onClose={() => {
+                  setSelectedChat(undefined);
+                }}
               />
             </div>
-
           ) : (
             <p className="my-auto">select a chat to view messages</p>
           )}
-
         </div>
       </div>
     </DefaultLayout>

@@ -4,9 +4,7 @@ export interface SwappyBooksResponse{
     message:string;
 }
 
-export interface SwappyBooksProfileResponse{
-    successful:boolean;
-    message:string;
+export interface SwappyBooksProfileResponse extends SwappyBooksResponse{
     username:string;
 }
 
@@ -30,6 +28,10 @@ export interface SwappyBooksSwapsResponse extends SwappyBooksResponse{
 
 export interface SwappyBooksUserChatsResponse extends SwappyBooksResponse{
     chats:UserChatInfo[];
+}
+
+export interface SwappyBooksMessagesResponse extends SwappyBooksResponse{
+    messages:Message[];
 }
 
 export interface Swap{
