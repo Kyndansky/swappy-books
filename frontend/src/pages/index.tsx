@@ -209,26 +209,26 @@ export default function LandingPage() {
 
         {/* Griglia/Lista libri */}
         {filteredBooks.length > 0 ? (
-          <div className={
-            viewMode === 'grid' 
-              ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center"
-              : "flex flex-col gap-4"
-          }>
-            {filteredBooks.map((book) => (
-              <div key={book.id} className={viewMode === 'list' ? "w-full" : ""}>
-                <BookCard 
-                  book={book} 
-                  sellerName={`Venditore ${book.seller}`}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-default-500 text-lg">Nessun libro trovato per "{searchTerm}"</p>
-          </div>
-        )}
+  <div className={
+    viewMode === 'grid' 
+      ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center"
+      : "flex flex-col gap-4"
+  }>
+    {filteredBooks.map((book) => (
+      <div key={book.id} className={viewMode === 'list' ? "w-full" : ""}>
+        <BookCard 
+          book={book} 
+          sellerName={`Venditore ${book.seller}`}
+          isListView={viewMode === 'list'}
+        />
       </div>
+    ))}
+  </div>
+) : (
+  <div className="text-center py-12">
+    <p className="text-default-500 text-lg">Nessun libro trovato per "{searchTerm}"</p>
+  </div>
+)}      </div>
     </DefaultLayout>
   );
 }

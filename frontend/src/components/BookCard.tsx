@@ -8,6 +8,7 @@ interface BookCardProps {
   book: Book;
   sellerName?: string;
   sellerAvatar?: string;
+  isListView?: boolean;  // Nuova prop per distinguere la vista
 }
 
 // Funzione per formattare data senza librerie esterne
@@ -32,18 +33,107 @@ const formatTimeAgo = (dateString: string) => {
 const BookCard: React.FC<BookCardProps> = ({ 
   book, 
   sellerName = "Venditore", 
-  sellerAvatar 
+  sellerAvatar,
+  isListView = false  // Default a false (vista griglia)
 }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [views] = useState(Math.floor(Math.random() * 500) + 50);
   
-  const truncatedDescription = book.description.length > 80 
-    ? book.description.substring(0, 80) + '...' 
+  const truncatedDescription = book.description.length > (isListView ? 200 : 80) 
+    ? book.description.substring(0, isListView ? 200 : 80) + '...' 
     : book.description;
 
   const timeAgo = formatTimeAgo(book.createdAt);
   const rating = (Math.random() * 1.5 + 3.5).toFixed(1);
 
+  // Se è vista lista, layout orizzontale
+  if (isListView) {
+    return (
+      <Card className="w-full hover:scale-[1.02] transition-transform">
+        <div className="flex flex-row">
+          {/* Immagine a sinistra - dimensioni fisse quadrate */}
+          <div className="w-[180px] h-[180px] flex-shrink-0">
+            <Image
+              alt={book.title}
+              className="w-full h-full object-cover"
+              src={book.coverImage || 'https://via.placeholder.com/180x180?text=Libro'}
+              radius="none"
+            />
+          </div>
+
+          {/* Contenuto a destra - prende tutto lo spazio rimanente */}
+          <div className="flex-1 p-4">
+            {/* Riga superiore con titolo e cuore */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-xl font-bold">{book.title}</h3>
+                <p className="text-default-500">{book.author}</p>
+              </div>
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                onPress={() => setIsLiked(!isLiked)}
+              >
+                <Heart 
+                  size={20} 
+                  className={isLiked ? "fill-red-500 text-red-500" : "text-gray-600"}
+                />
+              </Button>
+            </div>
+
+            {/* Descrizione più lunga nella vista lista */}
+            <p className="text-default-500 my-3 line-clamp-2">
+              {truncatedDescription}
+            </p>
+
+            {/* Info venditore e metadata in riga */}
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center gap-4">
+                {/* Avatar e nome venditore */}
+                <div className="flex items-center gap-2">
+                  <Avatar 
+                    src={sellerAvatar || `https://i.pravatar.cc/150?u=${book.seller}`} 
+                    size="sm"
+                  />
+                  <span className="text-small text-default-600">{sellerName}</span>
+                </div>
+                
+                {/* Rating */}
+                <div className="flex items-center gap-1">
+                  <span className="text-yellow-500">★</span>
+                  <span className="text-small text-default-500">{rating}</span>
+                </div>
+
+                {/* Visualizzazioni e data */}
+                <div className="flex items-center gap-2 text-default-400">
+                  <div className="flex items-center gap-1">
+                    <Eye size={14} />
+                    <span className="text-tiny">{views}</span>
+                  </div>
+                  <span>•</span>
+                  <span className="text-tiny">{timeAgo}</span>
+                </div>
+              </div>
+
+              {/* Prezzo e condizione */}
+              <div className="flex items-center gap-3">
+                <span className="text-primary font-bold text-xl">€{book.price}</span>
+                <span className="text-tiny text-default-400 bg-default-100 px-3 py-1 rounded-full">
+                  {book.condition === 'new' && 'Nuovo'}
+                  {book.condition === 'like-new' && 'Come nuovo'}
+                  {book.condition === 'good' && 'Buono'}
+                  {book.condition === 'acceptable' && 'Accettabile'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  // Vista griglia (quella originale)
   return (
     <Card className="w-full max-w-[280px] hover:scale-105 transition-transform">
       <CardBody className="overflow-visible p-0 relative">
@@ -90,7 +180,7 @@ const BookCard: React.FC<BookCardProps> = ({
 
         <p className="text-small text-default-500 line-clamp-2 relative">
           {truncatedDescription}
-          {book.description.length > 80 && (
+          {!isListView && book.description.length > 80 && (
             <span className="absolute bottom-0 right-0 bg-gradient-to-l from-white dark:from-black to-transparent pl-2">
               {' '}
             </span>
