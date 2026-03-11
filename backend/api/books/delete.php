@@ -3,46 +3,62 @@
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
+// Ricezione dati JSON
 $data = json_decode(file_get_contents("php://input"));
 
+// Controllo dei dati in entrata (usiamo seller_username per coerenza con il DB)
+if(!empty($data->book_id) && !empty($data->seller_username)) {
 
-if(!empty($data->book_id) && !empty($data->seller_id)) {
-
-    // 5. Query di cancellazione "Sicura"
-    // Cancelliamo SOLO SE l'ID del libro corrisponde E SE il venditore è quello giusto.
-    $query = "DELETE FROM books WHERE book_id = :book_id AND seller_id = :seller_id";
+    // Query di cancellazione sicura usando parametri posizionali '?'
+    $query = "DELETE FROM books WHERE book_id = ? AND seller_username = ?";
 
     $stmt = $dbConnection->prepare($query);
 
-    // 6. Sanitizzazione
-    $book_id = htmlspecialchars(strip_tags($data->book_id));
-    $seller_id = htmlspecialchars(strip_tags($data->seller_id));
+    // Sanitizzazione e cast
+    $book_id = (int)$data->book_id;
+    $seller_username = htmlspecialchars(strip_tags($data->seller_username));
 
-    // 7. Binding
-    $stmt->bindParam(":book_id", $book_id);
-    $stmt->bindParam(":seller_id", $seller_id);
+    // Binding: "is" significa che il primo parametro è un Intero, il secondo una Stringa
+    $stmt->bind_param("is", $book_id, $seller_username);
 
-    // 8. Esecuzione
-    if($stmt->execute()) {
-        
-        // Controllo magico: rowCount() ci dice quante righe sono state cancellate.
-        if($stmt->rowCount() > 0) {
-            // Se è > 0, il libro esisteva ed era dell'utente giusto.
-            echo json_encode(array("stato" => true));
-            echo json_encode(array("message" => "Libro eliminato con successo."));
+    try {
+        if($stmt->execute()) {
+            
+            // In mysqli, si usa affected_rows per contare le righe modificate/eliminate
+            if($stmt->affected_rows > 0) {
+                // Il libro esisteva ed era dell'utente corretto
+                echo json_encode(array(
+                    "stato" => true,
+                    "message" => "Libro eliminato con successo."
+                ));
+            } else {
+                // Nessuna riga eliminata
+                echo json_encode(array(
+                    "stato" => false,
+                    "message" => "Impossibile eliminare. Il libro non esiste o non sei il proprietario."
+                ));
+            }
+
         } else {
-            // Se è 0, o il libro non esiste, O l'utente non è il proprietario.
-            echo json_encode(array("stato" => false));
-            echo json_encode(array("message" => "Impossibile eliminare. Il libro non esiste o non sei il proprietario."));
+            echo json_encode(array(
+                "stato" => false,
+                "message" => "Errore del server durante l'esecuzione."
+            ));
         }
-
-    } else {
-        echo json_encode(array("stato" => false));
-        echo json_encode(array("message" => "Errore del server."));
+    } catch (Exception $e) {
+        echo json_encode(array(
+            "stato" => false,
+            "message" => "Errore del server."
+        ));
     }
 
+    $stmt->close();
+
 } else {
-    echo json_encode(array("stato" => false));
-    echo json_encode(array("message" => "Dati mancanti. Inviare book_id e seller_id."));
+    // Dati mancanti
+    echo json_encode(array(
+        "stato" => false,
+        "message" => "Dati mancanti. Inviare book_id e seller_username."
+    ));
 }
 ?>

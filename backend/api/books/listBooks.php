@@ -1,69 +1,67 @@
 <?php
-// 1. Includiamo i file di configurazione
+// Includiamo i file di configurazione
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
-
-
 $query = "SELECT 
-            b.book_id, 
-            b.title, 
-            b.subject, 
-            b.price, 
-            b.condition_status, 
-            b.isbn, 
-            b.created_at,
-            u.username as seller_name 
+            book_id, 
+            title, 
+            subject, 
+            price, 
+            condition_status, 
+            isbn, 
+            created_at,
+            seller_username AS seller_name 
           FROM 
-            books b
-          INNER JOIN 
-            users u ON b.seller_id = u.user_id
+            books 
           WHERE 
-            b.is_available = 1
+            buyer_username IS NULL
           ORDER BY 
-            b.created_at DESC";
+            created_at DESC";
 
-// 4. Esecuzione
+// Esecuzione con mysqli
 $stmt = $dbConnection->prepare($query);
-$stmt->execute();
 
-// Contiamo quanti libri abbiamo trovato
-$num = $stmt->rowCount();
+try {
+    $stmt->execute();
+    
+    // Otteniamo il set di risultati
+    $result = $stmt->get_result();
 
-// 5. Verifica se ci sono risultati
-if($num > 0) {
+    // Contiamo le righe
+    $num = $result->num_rows;
 
-    // Array che conterrà tutti i libri
-    $books_arr = array();
+    if($num > 0) {
+        $books_arr = array();
 
-    // Ciclo su ogni riga trovata nel database
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-        
-        // Estraiamo i valori dalla riga
-        // (es. $row['title'] diventa la variabile $title)
-        extract($row);
+        while ($row = $result->fetch_assoc()){
+            extract($row);
 
-        // Creiamo l'oggetto singolo libro
-        $book_item = array(
-            "id" => $book_id,
-            "title" => html_entity_decode($title),
-            "subject" => $subject,
-            "price" => $price,
-            "condition" => $condition_status,
-            "isbn" => $isbn,
-            "seller" => $seller_name, // Qui c'è il nome dell'utente, non l'ID!
-            "posted_at" => $created_at
-        );
+            $book_item = array(
+                "id" => $book_id,
+                "title" => html_entity_decode($title),
+                "subject" => $subject,
+                "price" => $price,
+                "condition" => $condition_status,
+                "isbn" => $isbn,
+                "seller" => $seller_name,
+                "posted_at" => $created_at
+            );
 
-        // Aggiungiamo il libro alla lista principale
-        array_push($books_arr, $book_item);
+            array_push($books_arr, $book_item);
+        }
+
+        echo json_encode($books_arr);
+
+    } else {
+        // Nessun libro trovato
+        echo json_encode(array()); 
     }
 
-   
-    echo json_encode($books_arr);
+    $stmt->close();
 
-} else {
-    
-    echo json_encode(array()); 
+} catch (Exception $e) {
+    // In caso di errore SQL restituisce un array vuoto o gestisci l'errore diversamente
+    echo json_encode(array());
 }
 ?>

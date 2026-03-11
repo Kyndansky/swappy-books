@@ -1,61 +1,69 @@
 <?php
-// 1. Inclusione file di configurazione
+// Inclusione file di configurazione
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
-
-
-
 $data = json_decode(file_get_contents("php://input"));
 
-
+// Controllo dei campi obbligatori (usando seller_username invece di seller_id)
 if(
-    !empty($data->seller_id) &&
+    !empty($data->seller_username) &&
     !empty($data->title) &&
     !empty($data->price)
 ){
-    // 5. Query di inserimento
-    // Non inseriamo 'created_at' o 'is_available' perché il DB li mette in automatico (DEFAULT)
+    // Query di inserimento con placeholder posizionali '?'
     $query = "INSERT INTO books 
-              (seller_id, title, isbn, subject, price, condition_status) 
+              (seller_username, title, isbn, subject, price, condition_status) 
               VALUES 
-              (:seller_id, :title, :isbn, :subject, :price, :condition_status)";
+              (?, ?, ?, ?, ?, ?)";
 
     $stmt = $dbConnection->prepare($query);
 
-    // 6. Sanitizzazione dei dati (Pulizia)
-    // Rimuoviamo tag HTML e caratteri speciali pericolosi
-    $seller_id = htmlspecialchars(strip_tags($data->seller_id));
+    // Sanitizzazione dati obbligatori
+    $seller_username = htmlspecialchars(strip_tags($data->seller_username));
     $title = htmlspecialchars(strip_tags($data->title));
-    $isbn = htmlspecialchars(strip_tags($data->isbn)); // Opzionale, ma se c'è lo puliamo
-    $subject = htmlspecialchars(strip_tags($data->subject));
-    $price = htmlspecialchars(strip_tags($data->price));
-    $condition_status = htmlspecialchars(strip_tags($data->condition_status));
+    $price = (float) $data->price; // Cast a float per il prezzo
 
-    // 7. Binding dei parametri
-    $stmt->bindParam(":seller_id", $seller_id);
-    $stmt->bindParam(":title", $title);
-    $stmt->bindParam(":isbn", $isbn);
-    $stmt->bindParam(":subject", $subject);
-    $stmt->bindParam(":price", $price);
-    $stmt->bindParam(":condition_status", $condition_status);
+    // Gestione e sanitizzazione dati opzionali
+    $isbn = isset($data->isbn) ? htmlspecialchars(strip_tags($data->isbn)) : null;
+    $subject = isset($data->subject) ? htmlspecialchars(strip_tags($data->subject)) : null;
+    $condition_status = isset($data->condition_status) && !empty($data->condition_status) 
+                        ? htmlspecialchars(strip_tags($data->condition_status)) 
+                        : 'buono'; // Default corrispondente al database
 
-    // 8. Esecuzione della query
+    // Binding dei parametri
+    // "s" = stringa, "d" = double/float. 
+    // Ordine: seller_username (s), title (s), isbn (s), subject (s), price (d), condition_status (s)
+    $stmt->bind_param("ssssds", $seller_username, $title, $isbn, $subject, $price, $condition_status);
+
     try {
         if($stmt->execute()){
-            // Successo: 201 Created
-            echo json_encode(array("stato" => true));
-            echo json_encode(array("message" => "Libro messo in vendita con successo."));
+            // Successo: 201 Created logicamente
+            echo json_encode(array(
+                "stato" => true,
+                "message" => "Libro messo in vendita con successo."
+            ));
+        } else {
+            echo json_encode(array(
+                "stato" => false,
+                "message" => "Errore durante l'esecuzione della query."
+            ));
         }
-    } catch (PDOException $e) {
-        // Errore del server o del database
-        echo json_encode(array("stato" => false));
-        echo json_encode(array("message" => "Impossibile creare l'annuncio.", "error" => $e->getMessage()));
+        $stmt->close();
+    } catch (Exception $e) {
+        // Errore del server o del database (es. seller_username inesistente)
+        echo json_encode(array(
+            "stato" => false,
+            "message" => "Impossibile creare l'annuncio.", 
+            "error" => $e->getMessage()
+        ));
     }
 
 } else {
     // Dati mancanti
-    echo json_encode(array("stato" => false));
-    echo json_encode(array("message" => "Dati incompleti. Assicurati di inviare seller_id, titolo e prezzo."));
+    echo json_encode(array(
+        "stato" => false,
+        "message" => "Dati incompleti. Assicurati di inviare seller_username, titolo e prezzo."
+    ));
 }
 ?>

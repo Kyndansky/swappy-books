@@ -10,7 +10,6 @@ $response = array(
     "chats" => array()
 );
 
-
 if (!isset($_SESSION['username'])) {
     $response['message'] = "user is not logged in";
     echo json_encode($response);
@@ -19,27 +18,31 @@ if (!isset($_SESSION['username'])) {
 
 $current_username = $_SESSION['username'];
 
-
 $query = "SELECT DISTINCT
             CASE 
-                WHEN m.sender_username = :username THEN m.receiver_username 
+                WHEN m.sender_username = ? THEN m.receiver_username 
                 ELSE m.sender_username 
             END AS username,
             b.title AS swapBookTitle,
             b.book_id AS swapId
           FROM messages m
           JOIN books b ON b.book_id = m.book_id
-          WHERE m.sender_username = :username OR m.receiver_username = :username";
-
-$stmt = $dbConnection->prepare($query);
-$stmt->bindParam(':username', $current_username, PDO::PARAM_STR);
+          WHERE m.sender_username = ? OR m.receiver_username = ?";
 
 try {
+    $stmt = $dbConnection->prepare($query);
+    
+    // "sss" indica che passiamo 3 parametri di tipo stringa
+    $stmt->bind_param("sss", $current_username, $current_username, $current_username);
     $stmt->execute();
+    
+    // Con mysqli è necessario ottenere il risultato prima di fare il fetch
+    $result = $stmt->get_result();
     
     $chats = array();
     
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    // fetch_assoc() estrae le righe come array associativo
+    while ($row = $result->fetch_assoc()) {
         array_push($chats, array(
             "username" => $row['username'],
             "swapBookTitle" => $row['swapBookTitle'],
@@ -51,8 +54,8 @@ try {
     $response['message'] = "successfully retrieved user chats";
     $response['chats'] = $chats;
     
-
-} catch (PDOException $e) {
+} catch (Exception $e) {
+    // Cattura le eccezioni generiche o mysqli_sql_exception
     $response['successful'] = false;
     $response['message'] = "failed"; 
 }
