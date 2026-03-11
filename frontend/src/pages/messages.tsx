@@ -31,78 +31,78 @@ export default function Messages(props: MessagesPageProps) {
       swapId: 1,
     },
   ];
-  const messages: Message[] = [
-    {
-      content: "ciao",
-      sender: "Sigma2",
-      receiver: "sigma",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-    {
-      content: "ho detto ciaoo",
-      sender: "sigma",
-      receiver: "Sigma2",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-    {
-      content: "come va?",
-      sender: "Sigma2",
-      receiver: "sigma",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-    {
-      content: "ci sei? ",
-      sender: "sigma",
-      receiver: "Sigma2",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-    {
-      content: "ho detto ciaoo",
-      sender: "Sigma2",
-      receiver: "sigma",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-    {
-      content: "come va?",
-      sender: "sigma",
-      receiver: "Sigma2",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-    {
-      content: "ci sei? ",
-      sender: "Sigma2",
-      receiver: "sigma",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-    {
-      content: "ho detto ciaoo",
-      sender: "sigma",
-      receiver: "Sigma2",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-    {
-      content: "come va?",
-      sender: "sigma",
-      receiver: "Sigma2",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-    {
-      content: "ci sei? ",
-      sender: "sigma",
-      receiver: "Sigma2",
-      swapId: 1,
-      messageTime: "15:45",
-    },
-  ];
+  // const messages: Message[] = [
+  //   {
+  //     content: "ciao",
+  //     sender: "Sigma2",
+  //     receiver: "sigma",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  //   {
+  //     content: "ho detto ciaoo",
+  //     sender: "sigma",
+  //     receiver: "Sigma2",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  //   {
+  //     content: "come va?",
+  //     sender: "Sigma2",
+  //     receiver: "sigma",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  //   {
+  //     content: "ci sei? ",
+  //     sender: "sigma",
+  //     receiver: "Sigma2",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  //   {
+  //     content: "ho detto ciaoo",
+  //     sender: "Sigma2",
+  //     receiver: "sigma",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  //   {
+  //     content: "come va?",
+  //     sender: "sigma",
+  //     receiver: "Sigma2",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  //   {
+  //     content: "ci sei? ",
+  //     sender: "Sigma2",
+  //     receiver: "sigma",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  //   {
+  //     content: "ho detto ciaoo",
+  //     sender: "sigma",
+  //     receiver: "Sigma2",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  //   {
+  //     content: "come va?",
+  //     sender: "sigma",
+  //     receiver: "Sigma2",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  //   {
+  //     content: "ci sei? ",
+  //     sender: "sigma",
+  //     receiver: "Sigma2",
+  //     swapId: 1,
+  //     messageTime: "15:45",
+  //   },
+  // ];
   const [selectedChat, setSelectedChat] = useState<UserChatInfo>();
   const [currentChatMessages, setCurrentChatMessages] = useState<Message[]>([]);
 
@@ -157,7 +157,7 @@ export default function Messages(props: MessagesPageProps) {
             <div className="flex flex-col items-center w-full">
               <Chat
                 chatInfo={selectedChat}
-                messages={messages}
+                messages={currentChatMessages}
                 onClose={() => {
                   setSelectedChat(undefined);
                 }}
