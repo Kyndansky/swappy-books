@@ -28,6 +28,10 @@ export interface SwappyBooksSwapsResponse extends SwappyBooksResponse{
     swaps:Swap[]
 }
 
+export interface SwappyBooksUserChatsResponse extends SwappyBooksResponse{
+    chats:UserChatInfo[];
+}
+
 export interface Swap{
     uploadDate:string;
     sellDate?:string;

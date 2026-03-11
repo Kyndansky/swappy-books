@@ -1,114 +1,179 @@
-import { SwappyBooksProfileResponse } from "@/types/interfaces";
+import {
+  SwappyBooksProfileResponse,
+  SwappyBooksUserChatsResponse,
+} from "@/types/interfaces";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 axios.defaults.withCredentials = true;
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL;
 //const api = axios.create({ baseURL: BACKEND_API_URL });
 const apiAuth = axios.create({ baseURL: `${BACKEND_API_URL}/users/` });
-
+const apiChats = axios.create({ baseURL: `${BACKEND_API_URL}/messages/` });
 
 export async function getAuthenticationInfo(): Promise<SwappyBooksProfileResponse> {
+  try {
+    const response = await apiAuth.get("getAuthInfo.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
 
-    try {
-        const response = await apiAuth.get("getAuthInfo.php", {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const data = response.data;
-
-        const result: SwappyBooksProfileResponse = {
-            successful: data["successful"],
-            message: data["message"],
-            username: data["username"]
-        };
-        return result;
-    } catch (error) {
-        console.log("error from php server:", error);
-        const result: SwappyBooksProfileResponse = {
-            successful: false,
-            message: "server error",
-            username: ""
-        };
-        return result;
-    }
+    const result: SwappyBooksProfileResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      username: data["username"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksProfileResponse = {
+      successful: false,
+      message: "server error",
+      username: "",
+    };
+    return result;
+  }
 }
 
-
-export async function register(username: string, password: string): Promise<SwappyBooksProfileResponse> {
-    try {
-        const credentials = { username: username, password: password };
-        const response = await apiAuth.post("register.php", credentials, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const data = response.data;
-        const result: SwappyBooksProfileResponse = {
-            successful: data["successful"],
-            message: data["message"],
-            username: data["username"]
-        };
-        console.log(result.message);
-        return result;
-    } catch (error) {
-        console.log("error from php server:", error);
-        const result: SwappyBooksProfileResponse = {
-            successful: false,
-            message: "server error",
-            username: ""
-        };
-        return result;
-    }
+export async function register(
+  username: string,
+  password: string,
+): Promise<SwappyBooksProfileResponse> {
+  try {
+    const credentials = { username: username, password: password };
+    const response = await apiAuth.post("register.php", credentials, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    const result: SwappyBooksProfileResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      username: data["username"],
+    };
+    console.log(result.message);
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksProfileResponse = {
+      successful: false,
+      message: "server error",
+      username: "",
+    };
+    return result;
+  }
 }
 
-export async function login(username: string, password: string): Promise<SwappyBooksProfileResponse> {
-    try {
-        const credentials = { username: username, password: password };
-        const response = await apiAuth.post("login.php", credentials, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const data = response.data;
+export async function login(
+  username: string,
+  password: string,
+): Promise<SwappyBooksProfileResponse> {
+  try {
+    const credentials = { username: username, password: password };
+    const response = await apiAuth.post("login.php", credentials, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
 
-        const result: SwappyBooksProfileResponse = {
-            successful: data["successful"],
-            message: data["message"],
-            username: data["username"]
-        };
-        return result;
-    } catch (error) {
-        console.log("error from php server:", error);
-        const result: SwappyBooksProfileResponse = {
-            successful: false,
-            message: "server error",
-            username: ""
-        };
-        return result;
-    }
+    const result: SwappyBooksProfileResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      username: data["username"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksProfileResponse = {
+      successful: false,
+      message: "server error",
+      username: "",
+    };
+    return result;
+  }
 }
 
 export async function logout(): Promise<SwappyBooksProfileResponse> {
-    try {
-        const response = await apiAuth.get("logout.php", {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const data = response.data;
-        const result: SwappyBooksProfileResponse = {
-            successful: data["successful"],
-            message: data["message"],
-            username: data["username"]
-        };
-        return result;
-    } catch (error) {
-        console.log("error from php server:", error);
-        const result: SwappyBooksProfileResponse = {
-            successful: false,
-            message: "server error",
-            username: ""
-        };
-        return result;
-    }
+  try {
+    const response = await apiAuth.get("logout.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    const result: SwappyBooksProfileResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      username: data["username"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksProfileResponse = {
+      successful: false,
+      message: "server error",
+      username: "",
+    };
+    return result;
+  }
+}
+
+export async function getUserChats(): Promise<SwappyBooksUserChatsResponse> {
+  try {
+    const response = await apiAuth.get("userChats.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    const result: SwappyBooksUserChatsResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      chats: [],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksUserChatsResponse = {
+      successful: false,
+      message: "server error",
+      chats: [],
+    };
+    return result;
+  }
+}
+
+export async function getChatMessages(
+  swapId: number,
+  user: string,
+): Promise<SwappyBooksUserChatsResponse> {
+  try {
+    const response = await apiChats.post("getchat.php", {
+      params: {
+        other_user:user,
+        swapId:swapId
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    const result: SwappyBooksUserChatsResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      chats: [],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksUserChatsResponse = {
+      successful: false,
+      message: "server error",
+      chats: [],
+    };
+    return result;
+  }
 }
