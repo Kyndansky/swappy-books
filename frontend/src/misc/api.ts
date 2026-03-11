@@ -5,7 +5,6 @@ import {
   UserChatInfo,
 } from "@/types/interfaces";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 axios.defaults.withCredentials = true;
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL;
 //const api = axios.create({ baseURL: BACKEND_API_URL });
@@ -125,7 +124,7 @@ export async function logout(): Promise<SwappyBooksProfileResponse> {
 
 export async function getUserChats(): Promise<SwappyBooksUserChatsResponse> {
   try {
-    const response = await apiAuth.get("userChats.php", {
+    const response = await apiChats.get("getUserChats.php", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -134,7 +133,7 @@ export async function getUserChats(): Promise<SwappyBooksUserChatsResponse> {
     const result: SwappyBooksUserChatsResponse = {
       successful: data["successful"],
       message: data["message"],
-      chats: [],
+      chats: data["chats"],
     };
     return result;
   } catch (error) {
