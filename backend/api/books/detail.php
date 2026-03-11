@@ -4,17 +4,12 @@ include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
 // 2. Connessione al Database
-$database = new Database();
-$db = $database->getConnection();
+
 
 // 3. Verifica presenza ID nella richiesta (es. detail.php?id=5)
 if(isset($_GET['id']) && !empty($_GET['id'])) {
 
     $book_id = $_GET['id'];
-
-    // 4. Query SQL
-    // Usiamo LEFT JOIN per ottenere anche i dati di chi vende il libro
-    // NOTA: Selezioniamo specificamente i campi per evitare di inviare la password_hash del venditore!
     $query = "SELECT 
                 b.book_id, 
                 b.title, 
@@ -36,7 +31,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
               LIMIT 0,1";
 
     // 5. Preparazione ed esecuzione
-    $stmt = $db->prepare($query);
+    $stmt = $dbConnection->prepare($query);
     
     // Bind del parametro (il punto interrogativo nella query)
     $stmt->bindParam(1, $book_id);
@@ -67,19 +62,16 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
             )
         );
 
-        // Risposta 200 OK
-        http_response_code(200);
+    
         echo json_encode($book_detail);
 
     } else {
-        // Libro non trovato (ID inesistente)
-        http_response_code(404);
+     
         echo json_encode(array("message" => "Libro non trovato."));
     }
 
 } else {
-    // ID mancante nell'URL
-    http_response_code(400);
+    
     echo json_encode(array("message" => "Specificare un ID valido."));
 }
 ?>

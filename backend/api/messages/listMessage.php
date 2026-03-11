@@ -19,8 +19,6 @@ if (!isset($_SESSION['username'])) {
 
 $current_username = $_SESSION['username'];
 
-$database = new Database();
-$db = $database->getConnection();
 
 $query = "SELECT DISTINCT
             CASE 
@@ -33,7 +31,7 @@ $query = "SELECT DISTINCT
           JOIN books b ON b.book_id = m.book_id
           WHERE m.sender_username = :username OR m.receiver_username = :username";
 
-$stmt = $db->prepare($query);
+$stmt = $dbConnection->prepare($query);
 $stmt->bindParam(':username', $current_username, PDO::PARAM_STR);
 
 try {

@@ -3,24 +3,16 @@
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
-// 2. Connessione al DB
-$database = new Database();
-$db = $database->getConnection();
-
-// 3. Ricezione dati JSON
 $data = json_decode(file_get_contents("php://input"));
 
-// 4. Verifica dati
-// Ci servono DUE cose:
-// - L'ID del libro da cancellare
-// - L'ID dell'utente che vuole cancellarlo (per sicurezza)
+
 if(!empty($data->book_id) && !empty($data->seller_id)) {
 
     // 5. Query di cancellazione "Sicura"
     // Cancelliamo SOLO SE l'ID del libro corrisponde E SE il venditore è quello giusto.
     $query = "DELETE FROM books WHERE book_id = :book_id AND seller_id = :seller_id";
 
-    $stmt = $db->prepare($query);
+    $stmt = $dbConnection->prepare($query);
 
     // 6. Sanitizzazione
     $book_id = htmlspecialchars(strip_tags($data->book_id));

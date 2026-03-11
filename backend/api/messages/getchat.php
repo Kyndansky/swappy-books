@@ -14,12 +14,7 @@ if(!isset($_SESSION['username'])) {
 
 $logged_user = $_SESSION['username'];
 
-// connessione al DB
-$database = new Database();
-$db = $database->getConnection();
 
-// controllo dei parametri in ingresso dal Frontend
-// Ora il frontend deve inviare solo l'altro utente e l'ID del libro: ?other_user=Luigi&swapId=1
 if(isset($_GET['other_user']) && isset($_GET['swapId'])) {
     
     $other_user = htmlspecialchars(strip_tags($_GET['other_user']));
@@ -36,7 +31,7 @@ if(isset($_GET['other_user']) && isset($_GET['swapId'])) {
               )
               ORDER BY sent_at ASC";
 
-    $stmt = $db->prepare($query);
+    $stmt = $dbConnection->prepare($query);
 
     $stmt->bindParam(":swapId", $swapId);
     $stmt->bindParam(":logged_user", $logged_user);

@@ -3,16 +3,12 @@
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
-// 2. Connessione al Database
-$database = new Database();
-$db = $database->getConnection();
 
-// 3. Ricezione dei dati JSON dal Frontend
+
+
 $data = json_decode(file_get_contents("php://input"));
 
-// 4. Verifica dei campi OBBLIGATORI
-// Secondo il tuo DB: seller_id, title e price sono NOT NULL.
-// condition_status ha un default, ma è meglio che il frontend lo invii.
+
 if(
     !empty($data->seller_id) &&
     !empty($data->title) &&
@@ -25,7 +21,7 @@ if(
               VALUES 
               (:seller_id, :title, :isbn, :subject, :price, :condition_status)";
 
-    $stmt = $db->prepare($query);
+    $stmt = $dbConnection->prepare($query);
 
     // 6. Sanitizzazione dei dati (Pulizia)
     // Rimuoviamo tag HTML e caratteri speciali pericolosi

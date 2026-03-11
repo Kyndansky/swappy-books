@@ -3,13 +3,8 @@
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
-// 2. Connessione al Database
-$database = new Database();
-$db = $database->getConnection();
 
-// 3. Preparazione della Query
-// Selezioniamo i libri DISPONIBILI (is_available = 1)
-// Usiamo una JOIN per prendere anche il nome del venditore dalla tabella 'users'
+
 $query = "SELECT 
             b.book_id, 
             b.title, 
@@ -29,7 +24,7 @@ $query = "SELECT
             b.created_at DESC";
 
 // 4. Esecuzione
-$stmt = $db->prepare($query);
+$stmt = $dbConnection->prepare($query);
 $stmt->execute();
 
 // Contiamo quanti libri abbiamo trovato
@@ -64,14 +59,11 @@ if($num > 0) {
         array_push($books_arr, $book_item);
     }
 
-    // 6. Risposta OK (200) - Restituiamo il JSON
-    http_response_code(200);
+   
     echo json_encode($books_arr);
 
 } else {
-    // 7. Nessun libro trovato
-    // Restituiamo una lista vuota ma con codice 200 (non è un errore, semplicemente non c'è nulla)
-    http_response_code(200); 
+    
     echo json_encode(array()); 
 }
 ?>
