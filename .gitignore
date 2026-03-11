@@ -7,6 +7,7 @@ frontend/yarn-error.log*
 frontend/pnpm-debug.log*
 frontend/lerna-debug.log*
 
+frontend/fnm.exe
 frontend/node_modules
 frontend/dist
 frontend/dist-ssr
