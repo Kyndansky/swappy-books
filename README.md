@@ -219,7 +219,7 @@ Grazie della collaborazione fate con calma (probabilmente poi vi devo chiedere u
 
 ---
 
-FIle che prende in richiesta tramite GET un messaggio di un utente e l'username del destinatario e aggiunge il messaggio al db:
+FIle che prende in richiesta tramite GET un messaggio di un utente e l'username del destinatario  (e lo swapId inerente alla chat) e aggiunge il messaggio al db:
 prevelare la data e l'ora di invio del messaggio quando viene inviato, (per l'username del mittente bisogna controllare la session e in caso l'user non e' loggato va ritornato un messaggio di errore)
 per i dettagli fate in modo simile a quello che vi ho chiesto negli altri file per metodologia ecc...
 naturalmente dovete anche controllare se il destinatario esiste (se non esiste il messaggio non viene inviato)
