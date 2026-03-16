@@ -178,3 +178,35 @@ export async function getChatMessages(
     return result;
   }
 }
+
+
+
+export async function getPersonalSwaps(): Promise<SwappyBooksMessagesResponse> {
+  try {
+    const response = await apiChats.get("getchat.php", {
+      params: {
+        other_user: chatInfo.username,
+        swapId: chatInfo.swapId,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    console.log(response.data);
+    const result: SwappyBooksMessagesResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      messages: [],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksMessagesResponse = {
+      successful: false,
+      message: "server error",
+      messages: [],
+    };
+    return result;
+  }
+}
