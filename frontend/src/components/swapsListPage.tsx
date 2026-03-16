@@ -1,5 +1,5 @@
 // src/pages/index.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Input,
   Button,
@@ -13,7 +13,7 @@ import {
 import { Search, Grid, List, ChevronDown } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import BookCard from "@/components/BookCard";
-import { Book } from "@/types/interfaces";
+import { Book, Swap, SwappyBooksSwapsResponse } from "@/types/interfaces";
 
 const categories = [
   "Tutti",
@@ -122,10 +122,12 @@ const sampleBooks: Book[] = [
     createdAt: "2025-03-05",
   },
 ];
-interface BookListPageProps{
-    
+interface SwapsListPageProps {
+  swapsCollection: "Shop" | "Personal";
+  retrieveSwapsFunction: () => Promise<SwappyBooksSwapsResponse>;
 }
-export default function BookListPage() {
+export default function SwapsListPage(props: SwapsListPageProps) {
+  const [swaps, setSwaps] = useState<Swap[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tutti");
   const [selectedCondition, setSelectedCondition] = useState("all");
@@ -142,6 +144,7 @@ export default function BookListPage() {
 
     return matchesSearch && matchesCondition;
   });
+
 
   return (
     <DefaultLayout>
