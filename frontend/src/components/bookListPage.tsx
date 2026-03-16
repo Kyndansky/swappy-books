@@ -122,7 +122,9 @@ const sampleBooks: Book[] = [
     createdAt: "2025-03-05",
   },
 ];
-
+interface BookListPageProps{
+    
+}
 export default function BookListPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tutti");

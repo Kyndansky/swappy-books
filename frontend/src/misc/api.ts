@@ -1,6 +1,7 @@
 import {
-    SwappyBooksMessagesResponse,
+  SwappyBooksMessagesResponse,
   SwappyBooksProfileResponse,
+  SwappyBooksSwapsResponse,
   SwappyBooksUserChatsResponse,
   UserChatInfo,
 } from "@/types/interfaces";
@@ -10,6 +11,7 @@ const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL;
 //const api = axios.create({ baseURL: BACKEND_API_URL });
 const apiAuth = axios.create({ baseURL: `${BACKEND_API_URL}/users/` });
 const apiChats = axios.create({ baseURL: `${BACKEND_API_URL}/messages/` });
+const apiSwaps = axios.create({ baseURL: `${BACKEND_API_URL}/swaps/` });
 
 export async function getAuthenticationInfo(): Promise<SwappyBooksProfileResponse> {
   try {
@@ -179,33 +181,52 @@ export async function getChatMessages(
   }
 }
 
-
-
-export async function getPersonalSwaps(): Promise<SwappyBooksMessagesResponse> {
+export async function getPersonalSwaps(): Promise<SwappyBooksSwapsResponse> {
   try {
-    const response = await apiChats.get("getchat.php", {
-      params: {
-        other_user: chatInfo.username,
-        swapId: chatInfo.swapId,
-      },
+    const response = await apiSwaps.get("getPersonalSwaps.php", {
       headers: {
         "Content-Type": "application/json",
       },
     });
     const data = response.data;
-    console.log(response.data);
-    const result: SwappyBooksMessagesResponse = {
+    const result: SwappyBooksSwapsResponse = {
       successful: data["successful"],
       message: data["message"],
-      messages: [],
+      swaps: [],
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: SwappyBooksMessagesResponse = {
+    const result: SwappyBooksSwapsResponse = {
       successful: false,
       message: "server error",
-      messages: [],
+      swaps: [],
+    };
+    return result;
+  }
+}
+
+
+export async function getShopSwaps(): Promise<SwappyBooksSwapsResponse> {
+  try {
+    const response = await apiSwaps.get("getShopSwaps.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    const result: SwappyBooksSwapsResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      swaps: [],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksSwapsResponse = {
+      successful: false,
+      message: "server error",
+      swaps: [],
     };
     return result;
   }
