@@ -13,6 +13,7 @@ function App() {
       <Route element={<AuthenticatePage authType="register"/>} path="/register"/>
       <Route element={<Messages/>} path="/messages"/>
       <Route path="*" element={<NotFound />}/>
+      <Route element={<Book />} path="/book" />
     </Routes>
   );
 }
