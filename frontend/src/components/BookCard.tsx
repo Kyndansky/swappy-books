@@ -212,44 +212,4 @@ const BookCard: React.FC<BookCardProps> = ({
 
 export default BookCard;
 
-/*
-================================================================================
-PROPOSTE DI MIGLIORAMENTO
-================================================================================
-
-1. TIPI E INTERFACCE
-   - Spostare BookCardProps in un file separato (es. types/components.ts)
-   - Aggiungere validazione con Zod per il tipo Book
-
-2. STATO E LOGICA
-   - views e rating sono hardcoded come random: dovrebbero venire dal backend
-   - Considerare useMemo per computed values (truncatedDescription, timeAgo, rating)
-   - Il like non persiste: servirebbe chiamata API
-
-3. PERFORMANCE
-   - Aggiungere lazy loading per le immagini con loading="lazy"
-   - Memoizzare il componente con React.memo per evitare re-render inutili
-   - Considerare skeleton loading state
-
-4. ACCESSIBILITÀ
-   - Button like dovrebbe avere aria-label per screen readers
-   - Immagini mancano di alt text descrittivo (già presente ma migliorabile)
-   - Aggiungere role="article" per la card
-
-5. UX
-   - Toast/feedback visivo quando si clicca like
-   - Click sulla card dovrebbe navigare ai dettagli del libro
-   - Prezzo dovrebbe essere formattato (es. €9,90 invece di €9.9)
-   - Considerare skeleton quando i dati sono in loading
-
-6. CODE STYLE
-   - Estrarre i badge (condizione, rating) in componenti separati
-   - CreareCostanti per le stringhe hardcoded ("Venditore", placeholder URL)
-   - Unificare la logica di visualizzazione condizione (-duplicate in entrambe le viste)
-
-7. TEST
-   - Aggiungere test unitari per formatTimeAgo
-   - Testare entrambe le viste (isListView true/false)
-   - Testare il comportamento del like button
-*/
 
