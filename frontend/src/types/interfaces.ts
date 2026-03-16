@@ -54,3 +54,37 @@ export interface Message{
     receiver:string;
     messageTime:string;
 }
+
+export interface BookImage {
+  id: number;
+  url: string;
+  isPrimary: boolean;
+}
+
+export interface BookDetail extends Book {
+  images: BookImage[];
+  isbn?: string;
+  pages?: number;
+  year?: number;
+  language?: string;
+  category: string;
+  sellerInfo: {
+    id: number;
+    name: string;
+    avatar?: string;
+    memberSince: string;
+    rating: number;
+    totalReviews: number;
+    activeListings: number;
+  };
+}
+
+export interface Review {
+  id: number;
+  userId: number;
+  userName: string;
+  userAvatar?: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
