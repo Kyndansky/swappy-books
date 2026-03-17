@@ -145,6 +145,20 @@ export default function SwapsListPage(props: SwapsListPageProps) {
     return matchesSearch && matchesCondition;
   });
 
+  //fetching swap on page load
+  useEffect(() => {
+    (async () => {
+      const response = await props.retrieveSwapsFunction();
+      if (response.successful) {
+        setSwaps(response.swaps);
+      } else {
+        addToast({
+          title: response.message,
+          color: "danger",
+        });
+      }
+    })();
+  }, []);
 
   return (
     <DefaultLayout>

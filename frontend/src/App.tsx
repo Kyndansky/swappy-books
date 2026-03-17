@@ -4,7 +4,7 @@ import LandingPage from "@/pages/index";
 import AuthenticatePage from "./pages/auth";
 import Messages from "./pages/messages";
 import NotFound from "./pages/404";
-import SwapsListPage from "./components/swapsListPage";
+import SwapsListPage from "./pages/swapsListPage";
 import { getPersonalSwaps, getShopSwaps } from "./misc/api";
 
 function App() {

@@ -10,28 +10,28 @@ import { useEffect, useState } from "react";
 interface MessagesPageProps {}
 
 export default function Messages(props: MessagesPageProps) {
-  const chatss: UserChatInfo[] = [
-    {
-      username: "Riccardo Colaninno",
-      swapBookTitle: "Internetworking",
-      swapId: 3,
-    },
-    {
-      username: "Galimberti Pietro",
-      swapBookTitle: "Matematica Verde",
-      swapId: 1,
-    },
-    {
-      username: "Matteo Sartori",
-      swapBookTitle: "Protech",
-      swapId: 2,
-    },
-    {
-      username: "Davide Riccobene",
-      swapBookTitle: "Matematica Verde",
-      swapId: 1,
-    },
-  ];
+  // const chatss: UserChatInfo[] = [
+  //   {
+  //     username: "Riccardo Colaninno",
+  //     swapBookTitle: "Internetworking",
+  //     swapId: 3,
+  //   },
+  //   {
+  //     username: "Galimberti Pietro",
+  //     swapBookTitle: "Matematica Verde",
+  //     swapId: 1,
+  //   },
+  //   {
+  //     username: "Matteo Sartori",
+  //     swapBookTitle: "Protech",
+  //     swapId: 2,
+  //   },
+  //   {
+  //     username: "Davide Riccobene",
+  //     swapBookTitle: "Matematica Verde",
+  //     swapId: 1,
+  //   },
+  // ];
   // const messages: Message[] = [
   //   {
   //     content: "ciao",
