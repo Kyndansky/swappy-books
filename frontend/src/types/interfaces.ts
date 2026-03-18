@@ -34,6 +34,10 @@ export interface SwappyBooksMessagesResponse extends SwappyBooksResponse{
     messages:Message[];
 }
 
+export interface SwappyBooksSendMessageResponse extends SwappyBooksResponse{
+  sentMessage?:Message;
+}
+
 export interface Swap{
     uploadDate:string;
     sellDate?:string;

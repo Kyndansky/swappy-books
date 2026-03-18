@@ -1,6 +1,7 @@
 import {
   SwappyBooksMessagesResponse,
   SwappyBooksProfileResponse,
+  SwappyBooksSendMessageResponse,
   SwappyBooksSwapsResponse,
   SwappyBooksUserChatsResponse,
   UserChatInfo,
@@ -206,7 +207,6 @@ export async function getPersonalSwaps(): Promise<SwappyBooksSwapsResponse> {
   }
 }
 
-
 export async function getShopSwaps(): Promise<SwappyBooksSwapsResponse> {
   try {
     const response = await apiSwaps.get("getShopSwaps.php", {
@@ -227,6 +227,38 @@ export async function getShopSwaps(): Promise<SwappyBooksSwapsResponse> {
       successful: false,
       message: "server error",
       swaps: [],
+    };
+    return result;
+  }
+}
+
+export async function sendMessage(
+  content: string,
+  chat: UserChatInfo,
+): Promise<SwappyBooksSendMessageResponse> {
+  try {
+    const response = await apiChats.get("sendMessage.php", {
+      params: {
+        content: content,
+        receiver: chat.username,
+        swapId: chat.swapId,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    const result: SwappyBooksSendMessageResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      sentMessage: data["sentMessage"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksSendMessageResponse = {
+      successful: false,
+      message: "server error",
     };
     return result;
   }

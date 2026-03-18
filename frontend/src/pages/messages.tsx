@@ -2,36 +2,45 @@ import Chat from "@/components/chat/chat";
 import ChatUserInfo from "@/components/chat/ChatUserInfo";
 import { useAuth } from "@/contexts/AuthContextHandler";
 import DefaultLayout from "@/layouts/default";
-import { getChatMessages, getUserChats } from "@/misc/api";
+import { getChatMessages, getUserChats, sendMessage } from "@/misc/api";
 import { Message, UserChatInfo } from "@/types/interfaces";
-import { addToast, Alert, Divider, Listbox, ListboxItem } from "@heroui/react";
+import {
+  addToast,
+  Alert,
+  Button,
+  Divider,
+  Input,
+  Listbox,
+  ListboxItem,
+} from "@heroui/react";
+import { SendHorizonal } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface MessagesPageProps {}
 
 export default function Messages(props: MessagesPageProps) {
-  // const chatss: UserChatInfo[] = [
-  //   {
-  //     username: "Riccardo Colaninno",
-  //     swapBookTitle: "Internetworking",
-  //     swapId: 3,
-  //   },
-  //   {
-  //     username: "Galimberti Pietro",
-  //     swapBookTitle: "Matematica Verde",
-  //     swapId: 1,
-  //   },
-  //   {
-  //     username: "Matteo Sartori",
-  //     swapBookTitle: "Protech",
-  //     swapId: 2,
-  //   },
-  //   {
-  //     username: "Davide Riccobene",
-  //     swapBookTitle: "Matematica Verde",
-  //     swapId: 1,
-  //   },
-  // ];
+  const chatss: UserChatInfo[] = [
+    {
+      username: "Riccardo Colaninno",
+      swapBookTitle: "Internetworking",
+      swapId: 3,
+    },
+    {
+      username: "Galimberti Pietro",
+      swapBookTitle: "Matematica Verde",
+      swapId: 1,
+    },
+    {
+      username: "Matteo Sartori",
+      swapBookTitle: "Protech",
+      swapId: 2,
+    },
+    {
+      username: "Davide Riccobene",
+      swapBookTitle: "Matematica Verde",
+      swapId: 1,
+    },
+  ];
   // const messages: Message[] = [
   //   {
   //     content: "ciao",
@@ -107,7 +116,8 @@ export default function Messages(props: MessagesPageProps) {
   const [chats, setChats] = useState<UserChatInfo[]>([]);
   const [selectedChat, setSelectedChat] = useState<UserChatInfo>();
   const [currentChatMessages, setCurrentChatMessages] = useState<Message[]>([]);
-  const { isAuthenticated, isLoadingAuthentication } = useAuth();
+  const [messageInput, setMessageInput] = useState<string>("");
+  const { isAuthenticated, isLoadingAuthentication, username } = useAuth();
   useEffect(() => {
     (async () => {
       const response = await getUserChats();
@@ -138,6 +148,24 @@ export default function Messages(props: MessagesPageProps) {
     })();
   }, [selectedChat]);
 
+  async function handleSendMessage() {
+    if (selectedChat && username) {
+      const response = await sendMessage(messageInput, selectedChat);
+      if (response.successful) {
+        const newMsg = response.sentMessage;
+        if (newMsg) {
+          setCurrentChatMessages((prevMessages) => [...prevMessages, newMsg]);
+        }
+      } else {
+        addToast({
+          title: response.message,
+          color: "danger",
+        });
+      }
+      setMessageInput("");
+    }
+  }
+
   return (
     <DefaultLayout>
       {isLoadingAuthentication === false && isAuthenticated === false ? (
@@ -154,7 +182,7 @@ export default function Messages(props: MessagesPageProps) {
             className="w-auto"
             selectionBehavior={"replace"}
           >
-            {chats?.map((chat, index) => (
+            {chatss?.map((chat, index) => (
               <ListboxItem
                 key={index}
                 onClick={() => {
@@ -186,6 +214,33 @@ export default function Messages(props: MessagesPageProps) {
                     setSelectedChat(undefined);
                   }}
                 />
+                <div className="flex flex-row gap-2 w-full mt-auto">
+                  <Input
+                    value={messageInput}
+                    type="text"
+                    className="mt-auto"
+                    placeholder="Type message here"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        if (messageInput !== "") {
+                          handleSendMessage();
+                        }
+                      }
+                    }}
+                    onChange={(e) => {
+                      setMessageInput(e.target.value);
+                    }}
+                  />
+                  <Button
+                    color="primary"
+                    onPress={() => {
+                      handleSendMessage();
+                      setMessageInput("");
+                    }}
+                  >
+                    <SendHorizonal />
+                  </Button>
+                </div>
               </div>
             ) : (
               <p className="my-auto">select a chat to view messages</p>
