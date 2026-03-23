@@ -1,5 +1,5 @@
 // src/pages/index.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Input,
   Button,
@@ -8,12 +8,13 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Modal,
+  addToast,
 } from "@heroui/react";
-import { Search, Grid, List, ChevronDown } from "lucide-react";
+import { Search, Grid, List, ChevronDown, PlusCircle } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import BookCard from "@/components/BookCard";
 import { Book, Swap, SwappyBooksSwapsResponse } from "@/types/interfaces";
+import AddSwapModal from "@/components/addSwapModal";
 
 const categories = [
   "Tutti",
@@ -162,7 +163,28 @@ export default function SwapsListPage(props: SwapsListPageProps) {
 
   return (
     <DefaultLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 relative">
+        {props.swapsCollection === "Personal" && (
+          <div>
+            <Button
+              color="primary"
+              className="absolute right-5 items-center"
+              isIconOnly
+              onPress={() => {
+                setIsAddSwapModalOpen(true);
+              }}
+            >
+              <PlusCircle />
+            </Button>
+
+            <AddSwapModal
+              isOpen={isAddSwapModalOpen}
+              onOpenChange={() => {
+                setIsAddSwapModalOpen(!isAddSwapModalOpen);
+              }}
+            />
+          </div>
+        )}
         {/* Barra di ricerca */}
         <div className="max-w-2xl mx-auto mb-6">
           <Input
@@ -278,9 +300,6 @@ export default function SwapsListPage(props: SwapsListPageProps) {
           </div>
         )}{" "}
       </div>
-      <Modal isOpen={isAddSwapModalOpen}>hello</Modal>
     </DefaultLayout>
   );
 }
-
-//test

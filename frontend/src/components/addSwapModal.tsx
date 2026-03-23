@@ -1,5 +1,13 @@
-import React from "react";
+import { Modal, ModalContent } from "@heroui/react";
 
-export default function addSwapModal() {
-  return <React.Fragment>gad</React.Fragment>;
+interface addSwapModalProps {
+  isOpen: boolean;
+  onOpenChange: () => void;
+}
+export default function AddSwapModal(props: addSwapModalProps) {
+  return (
+    <Modal isOpen={props.isOpen}>
+      <ModalContent>w</ModalContent>
+    </Modal>
+  );
 }
