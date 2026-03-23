@@ -2,13 +2,14 @@
 import React, { useState } from 'react';
 import { Card, CardBody, CardFooter, Image, Button, Avatar } from "@heroui/react";
 import { Heart, Eye } from "lucide-react";
+import { useNavigate } from 'react-router-dom';  // <-- IMPORT PER NAVIGARE
 import { Book } from '@/types/interfaces';
 
 interface BookCardProps {
   book: Book;
   sellerName?: string;
   sellerAvatar?: string;
-  isListView?: boolean;  // Nuova prop per distinguere la vista
+  isListView?: boolean;
 }
 
 // Funzione per formattare data senza librerie esterne
@@ -34,8 +35,9 @@ const BookCard: React.FC<BookCardProps> = ({
   book, 
   sellerName = "Venditore", 
   sellerAvatar,
-  isListView = false  // Default a false (vista griglia)
+  isListView = false
 }) => {
+  const navigate = useNavigate();  // <-- HOOK PER NAVIGARE
   const [isLiked, setIsLiked] = useState(false);
   const [views] = useState(Math.floor(Math.random() * 500) + 50);
   
@@ -46,10 +48,19 @@ const BookCard: React.FC<BookCardProps> = ({
   const timeAgo = formatTimeAgo(book.createdAt);
   const rating = (Math.random() * 1.5 + 3.5).toFixed(1);
 
+  // Funzione per gestire il click sulla card
+  const handleCardClick = () => {
+    navigate(`/book/${book.id}`);
+  };
+
   // Se è vista lista, layout orizzontale
   if (isListView) {
     return (
-      <Card className="w-full hover:scale-[1.02] transition-transform">
+      <Card 
+        className="w-full hover:scale-[1.02] transition-transform cursor-pointer"
+        isPressable
+        onPress={handleCardClick}  // <-- CLICK NAVIGA AL DETTAGLIO
+      >
         <div className="flex flex-row">
           {/* Immagine a sinistra - dimensioni fisse quadrate */}
           <div className="w-[180px] h-[180px] flex-shrink-0">
@@ -73,7 +84,10 @@ const BookCard: React.FC<BookCardProps> = ({
                 isIconOnly
                 size="sm"
                 variant="light"
-                onPress={() => setIsLiked(!isLiked)}
+                onPress={(e) => {
+                  e.stopPropagation();  // Impedisce che il click arrivi alla card
+                  setIsLiked(!isLiked);
+                }}
               >
                 <Heart 
                   size={20} 
@@ -135,7 +149,11 @@ const BookCard: React.FC<BookCardProps> = ({
 
   // Vista griglia (quella originale)
   return (
-    <Card className="w-full max-w-[280px] hover:scale-105 transition-transform">
+    <Card 
+      className="w-full max-w-[280px] hover:scale-105 transition-transform cursor-pointer"
+      isPressable
+      onPress={handleCardClick}  // <-- CLICK NAVIGA AL DETTAGLIO
+    >
       <CardBody className="overflow-visible p-0 relative">
         <Image
           alt={book.title}
@@ -148,7 +166,10 @@ const BookCard: React.FC<BookCardProps> = ({
           className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm"
           size="sm"
           variant="flat"
-          onPress={() => setIsLiked(!isLiked)}
+          onPress={(e) => {
+            e.stopPropagation();  // Impedisce che il click arrivi alla card
+            setIsLiked(!isLiked);
+          }}
         >
           <Heart 
             size={18} 
@@ -211,5 +232,3 @@ const BookCard: React.FC<BookCardProps> = ({
 };
 
 export default BookCard;
-
-
