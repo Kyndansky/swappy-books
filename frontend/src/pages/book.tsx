@@ -13,10 +13,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Spinner, Divider } from "@heroui/react";
 import { ArrowLeft } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import { BookDetail, Review } from '@/types/interfaces';
+import { Button, Spinner, Divider } from "@heroui/react";
 
 // Import componenti
 import BookCarousel from '@/components/book/bookCarousel';
@@ -26,6 +26,7 @@ import BookDescription from '@/components/book/bookDescription';
 import BookSellerCard from '@/components/book/bookSellerCard';
 import BookReviews from '@/components/book/bookReviews';
 import BookSellerBooks from '@/components/book/bookSellerBooks';
+
 
 // DATI MOCK (quando il backend è pronto, li sostituiremo con chiamate API)
 const mockGetBookById = async (id: number): Promise<BookDetail> => {
