@@ -1,7 +1,7 @@
 # Swappy Books
 
 ## Frontend setup
- We use **docker** for the frontend to avoid problems such as incompatible node or npm versions. When setiing up frontend to start working on it, use the following commands to setup a docker container and run it:
+ We use **docker** for the frontend to avoid problems such as incompatible node or npm versions. When setting up frontend to start working on it, use the following commands to setup a docker container and run it:
  
  **old commands**
  1. `cd frontend`
