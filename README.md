@@ -1,7 +1,7 @@
 # Swappy Books
 
 ## Frontend setup
- We use **docker** for the frontend to avoid problems such as incompatible node or npm versions. When setiing up frontend to start working on it, use the following commands to setup a docker container and run it:
+ We use **docker** for the frontend to avoid problems such as incompatible node or npm versions. When setting up frontend to start working on it, use the following commands to setup a docker container and run it:
  
  **old commands**
  1. `cd frontend`
@@ -97,12 +97,12 @@ This is a simple and temporary organizational scheme to simplify project plannin
 # Roba backend
 
 ## FIle che ritorna tutti gli swap
-### Prende in input tramite post:
-	conditions: ["new","like-new","acceptable"]
+### Prende in input tramite get:
+	conditions: ["new" | "like-new" | "good" | "acceptable" | "damaged"]
 	minPrice: float
 	maxPrice: float
 	type: "academic" , "fiction"
-	searchString: "Matematica verde"
+	searchString: string
 
 vincoli:
 
@@ -137,12 +137,15 @@ in poche parole bisogna fare un file php che funge da filtro ritornando tutti gl
 		condition: string,
 		seller: string,
 		createdAtDate:string,
-		price: float
-		favorite: boolean
+		price: float.
+		favorite: boolean,
+		condition:"new" | "like-new" | "good" | "acceptable" | "damaged",
+		
 	},
 	]
 
 il campo favorite e' true se l'utente e' loggato e se ha gia' quello swap nei preferiti.
+se l'utente che fa la richiesta non e' loggato allora puo' anche non essere passato
 
 ## File che aggiunge uno swap
 ### Prende in input tramite post:
@@ -182,3 +185,26 @@ in poche parole bisogna fare un file php che accetta le informazioni su uno swap
 ---
 
 **Mi raccomando prendete come esempio gli altri file, non usate pdo e controllate che il db abbia le tabelle necessarie**
+---
+
+Nel file getAllSwaps.php mettete che in richiesta vi arriva un campo chiamato materia, ma noi dividiamo gli swap tra academic e fiction (quindi in poche parole filtrate per una cosa non richiesta e non controllate il campo type come avevo scritto poco piu' sopra, fixate accettando un campo type al posto della materia (e poi cambiate il db in caso necessitasse di cambiamenti)).
+getSwaps.php deve inoltre formattare la risposta come ho specificato dentro alla parte del readme (sopra) dove specifico tutti i campi ecc...
+pls chi l'ha fatto riguardi direttamente la parte del readme dove dico cosa fare e lo rifaccia (bene)
+Una volta che siete sicuri al 1000% che il file che ritorna tutti gli swap filtrati sia PERFETTO, allora fate:
+<ul>
+	<li>
+		uno per tutti gli swap di un determinato venditore (dove il venditore viene passato tramite get)
+	</li>
+	<li>
+		un file per tutti gli swap che l'utente che fa la richiesta ha messo in vendita (quindi bisogna controllare dalla session l'username di chi fa la richiesta)
+	</li>
+	<li>
+		uno per tutti gli swap che un utente ha messo nei preferiti
+	</li>
+</ul>
+
+**tuttiquesti file devono ritornare una lista di swap nello stesso formato di getSwaps.php, quindi fate prima bene quello e poi il resto e' un copia incolla leggermente modificato**
+se volete fare le cose bene vi consiglio di gestire tutto a classi come facciamo adesso per gli esercizi di informatica lab anche se dubito ne avrete voglia
+Qualsiasi cambiamento al db vedetevelo voi, vi chiedo solo, una volto finito di cambiare il db, esportatelo in un file .sql dentro alla cartella config (dove c'e' gia' un file .sql, sostituite quel file (e usate lo stesso nome))
+
+Leggete tutto prima di fare cose che non workano pls
