@@ -4,18 +4,22 @@ import { Chip } from "@heroui/react";
 
 const TITLE = "Swappy Books";
 
-const DIRS = ["-translate-x-32", "translate-x-32", "-translate-y-24", "translate-y-24"];
+const OFFSETS = [
+  { x: -120, y: 0 },
+  { x: 120, y: 0 },
+  { x: 0, y: -80 },
+  { x: 0, y: 80 },
+];
 
 export function TypewriterTitle() {
-  const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState<boolean[]>(Array(TITLE.length).fill(false));
-  const [offsets, setOffsets] = useState<string[]>([]);
+  const [offsets, setOffsets] = useState<{ x: number; y: number }[]>([]);
 
   useEffect(() => {
-    const off = TITLE.split("").map(() => DIRS[Math.floor(Math.random() * DIRS.length)]);
+    const off = TITLE.split("").map(() => OFFSETS[Math.floor(Math.random() * OFFSETS.length)]);
     setOffsets(off);
 
-    visible.forEach((_, i) => {
+    TITLE.split("").forEach((_, i) => {
       setTimeout(() => {
         setVisible(prev => {
           const next = [...prev];
@@ -27,19 +31,35 @@ export function TypewriterTitle() {
   }, []);
 
   return (
-    <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-center">
-      <span className="bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/60">
-        {TITLE.split("").map((char, i) => (
+    <h1 
+      className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-center"
+      style={{
+        background: "linear-gradient(to bottom, var(--foreground), color-mix(in srgb, var(--foreground) 60%, transparent))",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        backgroundClip: "text",
+      }}
+    >
+      {TITLE.split("").map((char, i) => {
+        const offset = offsets[i] || { x: 0, y: 0 };
+        return (
           <span
             key={i}
-            className={`inline-block transition-all duration-500 ${
-              visible[i] ? "opacity-100 translate-x-0 translate-y-0" : `opacity-0 ${offsets[i]}`
-            }`}
+            style={{
+              display: "inline-block",
+              opacity: visible[i] ? 1 : 0,
+              transform: visible[i] ? "translate(0, 0)" : `translate(${offset.x}px, ${offset.y}px)`,
+              transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              willChange: "transform, opacity",
+              background: "inherit",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
           >
             {char === " " ? "\u00A0" : char}
           </span>
-        ))}
-      </span>
+        );
+      })}
     </h1>
   );
 }
