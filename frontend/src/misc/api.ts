@@ -207,6 +207,34 @@ export async function getPersonalSwaps(): Promise<SwappyBooksSwapsResponse> {
   }
 }
 
+export async function getSwaps(): Promise<SwappyBooksSwapsResponse> {
+  try {
+    const response = await apiSwaps.post("getSwaps.php", {
+
+    },{
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    console.log(data);
+    const result: SwappyBooksSwapsResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      swaps: [],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksSwapsResponse = {
+      successful: false,
+      message: "server error",
+      swaps: [],
+    };
+    return result;
+  }
+}
+
 export async function getShopSwaps(): Promise<SwappyBooksSwapsResponse> {
   try {
     const response = await apiSwaps.get("getShopSwaps.php", {
