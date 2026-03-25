@@ -202,7 +202,8 @@ Una volta che siete sicuri al 1000% che il file che ritorna tutti gli swap filtr
 		uno per tutti gli swap che un utente ha messo nei preferiti
 	</li>
 </ul>
-**tutti questi file devono ritornare una lista di swap nello stesso formato di getSwaps.php, quindi fate prima bene quello e poi il resto e' un copia incolla leggermente modificato**
+
+**tuttiquesti file devono ritornare una lista di swap nello stesso formato di getSwaps.php, quindi fate prima bene quello e poi il resto e' un copia incolla leggermente modificato**
 se volete fare le cose bene vi consiglio di gestire tutto a classi come facciamo adesso per gli esercizi di informatica lab anche se dubito ne avrete voglia
 Qualsiasi cambiamento al db vedetevelo voi, vi chiedo solo, una volto finito di cambiare il db, esportatelo in un file .sql dentro alla cartella config (dove c'e' gia' un file .sql, sostituite quel file (e usate lo stesso nome))
 
