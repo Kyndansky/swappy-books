@@ -31,15 +31,7 @@ export function TypewriterTitle() {
   }, []);
 
   return (
-    <h1 
-      className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-center"
-      style={{
-        background: "linear-gradient(to bottom, var(--foreground), color-mix(in srgb, var(--foreground) 60%, transparent))",
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        backgroundClip: "text",
-      }}
-    >
+    <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-center text-black dark:text-white">
       {TITLE.split("").map((char, i) => {
         const offset = offsets[i] || { x: 0, y: 0 };
         return (
@@ -50,10 +42,6 @@ export function TypewriterTitle() {
               opacity: visible[i] ? 1 : 0,
               transform: visible[i] ? "translate(0, 0)" : `translate(${offset.x}px, ${offset.y}px)`,
               transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-              willChange: "transform, opacity",
-              background: "inherit",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
             }}
           >
             {char === " " ? "\u00A0" : char}
