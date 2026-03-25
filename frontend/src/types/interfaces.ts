@@ -1,56 +1,62 @@
-
-export interface SwappyBooksResponse{
-    successful:boolean;
-    message:string;
+//base backend api response interface to encapsulate and standardize backend responses
+export interface SwappyBooksResponse {
+  successful: boolean;
+  message: string;
 }
 
-export interface SwappyBooksProfileResponse extends SwappyBooksResponse{
-    username:string;
+//inherits base backend response and contains info about a user current authentication info
+export interface SwappyBooksProfileResponse extends SwappyBooksResponse {
+  username: string;
 }
 
-// src/types/interfaces.ts - AGGIUNGIAMO:
+//contains info about a book that is being sold/has already been sold
 export interface Swap {
   id: number;
   title: string;
   author: string;
   description: string;
   price: number;
-  coverImage?: string;
+  isbn?: string;
   condition: 'new' | 'like-new' | 'good' | 'acceptable';
-  seller: number;
+  type: "academic" | "fiction";
+  seller: string;
   createdAt: string;
 }
 
-
-export interface SwappyBooksSwapsResponse extends SwappyBooksResponse{
-    swaps:Swap[]
+//inherits base backend response and contains info about swaps (either being sold, in the personal swaps of a user, or in favorites, etc..)
+export interface SwappyBooksSwapsResponse extends SwappyBooksResponse {
+  swaps: Swap[]
 }
 
-export interface SwappyBooksUserChatsResponse extends SwappyBooksResponse{
-    chats:UserChatInfo[];
+//inherits base backend response and contains all the chats a user has ever involved themselves in
+export interface SwappyBooksUserChatsResponse extends SwappyBooksResponse {
+  chats: UserChatInfo[];
 }
 
-export interface SwappyBooksMessagesResponse extends SwappyBooksResponse{
-    messages:Message[];
+//inherits base backend response and contains all messages of a chat between the user and another user regarding a specific swap
+export interface SwappyBooksMessagesResponse extends SwappyBooksResponse {
+  messages: Message[];
 }
 
-export interface SwappyBooksSendMessageResponse extends SwappyBooksResponse{
-  sentMessage?:Message;
+//inherits base backend response and is used to return the message an user has sent to confirm the fact that it was sent
+export interface SwappyBooksSendMessageResponse extends SwappyBooksResponse {
+  sentMessage?: Message;
 }
 
-
-export interface UserChatInfo{
-    username:string;
-    swapId:number;
-    swapBookTitle:string;
+//contains information about a chat with another user
+export interface UserChatInfo {
+  username: string;
+  swapId: number;
+  swapBookTitle: string;
 }
 
-export interface Message{
-    content:string;
-    sender:string;
-    swapId:number;
-    receiver:string;
-    messageTime:string;
+//contains information about a message, such as the time it was sent, its content etc...
+export interface Message {
+  content: string;
+  sender: string;
+  swapId: number;
+  receiver: string;
+  messageTime: string;
 }
 
 export interface BookImage {

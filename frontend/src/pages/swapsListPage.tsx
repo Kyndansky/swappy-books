@@ -3,27 +3,18 @@ import { useEffect, useState } from "react";
 import {
   Input,
   Button,
-  Chip,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
   addToast,
 } from "@heroui/react";
-import { Search, Grid, List, ChevronDown, PlusCircle, Plus } from "lucide-react";
+import { Search, Grid, List, ChevronDown, Plus } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import BookCard from "@/components/BookCard";
 import { Swap, SwappyBooksSwapsResponse } from "@/types/interfaces";
 import AddSwapModal from "@/components/addSwapModal";
 
-const categories = [
-  "Tutti",
-  "Romanzi",
-  "Tecnici",
-  "Universitari",
-  "Classici",
-  "Best seller",
-];
 
 const conditions = [
   { key: "all", label: "Tutte le condizioni" },
@@ -33,96 +24,6 @@ const conditions = [
   { key: "acceptable", label: "Accettabile" },
 ];
 
-const sampleBooks: Swap[] = [
-  {
-    id: 1,
-    title: "Il Nome della Rosa",
-    author: "Umberto Eco",
-    description:
-      "Un monastero benedettino nell'Italia del XIV secolo, dove si susseguono misteriose morti. Il frate francescano Guglielmo da Baskerville indaga...",
-    price: 15.5,
-    condition: "good",
-    seller: 1,
-    createdAt: "2025-03-01",
-  },
-  {
-    id: 2,
-    title: "Clean Code",
-    author: "Robert C. Martin",
-    description:
-      "Un classico della programmazione che insegna le migliori pratiche per scrivere codice pulito e manutenibile.",
-    price: 45.0,
-    condition: "like-new",
-    seller: 2,
-    createdAt: "2025-03-05",
-  },
-  {
-    id: 3,
-    title: "1984",
-    author: "George Orwell",
-    description:
-      "Il capolavoro distopico che descrive un futuro totalitario dove il Grande Fratello controlla ogni aspetto della vita.",
-    price: 12.0,
-    condition: "acceptable",
-    seller: 3,
-    createdAt: "2025-03-02",
-  },
-  {
-    id: 4,
-    title: "Il Piccolo Principe",
-    author: "Antoine de Saint-Exupéry",
-    description:
-      "Un racconto poetico e filosofico sotto forma di favola per bambini, ma ricco di significati profondi per adulti.",
-    price: 8.5,
-    condition: "new",
-    seller: 4,
-    createdAt: "2025-03-07",
-  },
-  {
-    id: 5,
-    title: "Dune",
-    author: "Frank Herbert",
-    description:
-      "Sul pianeta desertico Arrakis, il giovane Paul Atreides si trova al centro di una complessa guerra per il controllo della spezia.",
-    price: 120.0,
-    condition: "good",
-    seller: 5,
-    createdAt: "2025-03-03",
-  },
-  {
-    id: 6,
-    title: "Fahrenheit 451",
-    author: "Ray Bradbury",
-    description:
-      "In un futuro dove i libri sono proibiti, i pompieri non spengono incendi ma li appiccano per bruciare ogni volume.",
-    price: 14.0,
-    condition: "acceptable",
-    seller: 6,
-    createdAt: "2025-03-04",
-  },
-  {
-    id: 7,
-    title: "Cent'anni di solitudine",
-    author: "Gabriel García Márquez",
-    description:
-      "La storia della famiglia Buendía attraverso sette generazioni nel villaggio immaginario di Macondo.",
-    price: 18.5,
-    condition: "good",
-    seller: 7,
-    createdAt: "2025-03-06",
-  },
-  {
-    id: 8,
-    title: "L'alchimista",
-    author: "Paulo Coelho",
-    description:
-      "Un giovane pastore andaluso viaggia in cerca di un tesoro e scopre il vero significato della vita.",
-    price: 11.0,
-    condition: "like-new",
-    seller: 8,
-    createdAt: "2025-03-05",
-  },
-];
 interface SwapsListPageProps {
   swapsCollection: "Shop" | "Personal";
   retrieveSwapsFunction: () => Promise<SwappyBooksSwapsResponse>;
@@ -130,21 +31,23 @@ interface SwapsListPageProps {
 export default function SwapsListPage(props: SwapsListPageProps) {
   const [swaps, setSwaps] = useState<Swap[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Tutti");
   const [selectedCondition, setSelectedCondition] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isAddSwapModalOpen, setIsAddSwapModalOpen] = useState<boolean>(false);
-  const filteredBooks = sampleBooks.filter((book) => {
-    const matchesSearch =
-      book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesCondition =
-      selectedCondition === "all" || book.condition === selectedCondition;
-
-    return matchesSearch && matchesCondition;
-  });
+  const swapss: Swap[] = [
+    {
+      id: 1,
+      author: "GuiltyThree",
+      title: "Shadow Slave",
+      condition: "new",
+      createdAt: "",
+      description: "This is a very cool book which talks about the adventures of Sunless",
+      price: 25.12,
+      seller: "Kynda",
+      type: "fiction"
+    }
+  ]
 
   //fetching swap on page load
   useEffect(() => {
@@ -174,7 +77,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
                 setIsAddSwapModalOpen(true);
               }}
             >
-              <Plus size={20}/>
+              <Plus size={20} />
             </Button>
 
             <AddSwapModal
@@ -204,20 +107,6 @@ export default function SwapsListPage(props: SwapsListPageProps) {
         </div>
         {/* Filtri e toggle */}
         <div className="flex flex-col gap-4 mb-6">
-          {/* Categorie rapide */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            {categories.map((cat) => (
-              <Chip
-                key={cat}
-                variant={selectedCategory === cat ? "solid" : "flat"}
-                color="primary"
-                className="cursor-pointer"
-                onClick={() => setSelectedCategory(cat)}
-              >
-                {cat}
-              </Chip>
-            ))}
-          </div>
 
           {/* Filtri e toggle in riga */}
           <div className="flex justify-between items-center">
@@ -266,12 +155,12 @@ export default function SwapsListPage(props: SwapsListPageProps) {
         <div className="mb-6">
           <h1 className="text-2xl font-bold">Libri disponibili</h1>
           <p className="text-default-500">
-            {filteredBooks.length}{" "}
-            {filteredBooks.length === 1 ? "libro trovato" : "libri trovati"}
+            {swaps.length}{" "}
+            {swaps.length === 1 ? "libro trovato" : "libri trovati"}
           </p>
         </div>
         {/* Griglia/Lista libri */}
-        {filteredBooks.length > 0 ? (
+        {swaps.length > 0 ? (
           <div
             className={
               viewMode === "grid"
@@ -279,14 +168,13 @@ export default function SwapsListPage(props: SwapsListPageProps) {
                 : "flex flex-col gap-4"
             }
           >
-            {filteredBooks.map((book) => (
+            {swapss.map((swap) => (
               <div
-                key={book.id}
+                key={swap.id}
                 className={viewMode === "list" ? "w-full" : ""}
               >
                 <BookCard
-                  book={book}
-                  sellerName={`Venditore ${book.seller}`}
+                  swap={swap}
                   isListView={viewMode === "list"}
                 />
               </div>
@@ -295,7 +183,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
         ) : (
           <div className="text-center py-12">
             <p className="text-default-500 text-lg">
-              Nessun libro trovato per "{searchTerm}"
+              Nessun libro trovato
             </p>
           </div>
         )}{" "}

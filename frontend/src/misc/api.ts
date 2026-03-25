@@ -57,7 +57,6 @@ export async function register(
       message: data["message"],
       username: data["username"],
     };
-    console.log(result.message);
     return result;
   } catch (error) {
     console.log("error from php server:", error);
@@ -164,7 +163,6 @@ export async function getChatMessages(
       },
     });
     const data = response.data;
-    console.log(response.data);
     const result: SwappyBooksMessagesResponse = {
       successful: data["successful"],
       message: data["message"],
@@ -182,18 +180,25 @@ export async function getChatMessages(
   }
 }
 
-export async function getPersonalSwaps(): Promise<SwappyBooksSwapsResponse> {
+export async function getPersonalSwaps(searchString?: string, minPrice?: number, maxPrice?: number, condition?: string, type?:"academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
   try {
     const response = await apiSwaps.get("getPersonalSwaps.php", {
       headers: {
         "Content-Type": "application/json",
       },
+      params: {
+        search: searchString,
+        min_price: minPrice,
+        max_price: maxPrice,
+        condition_status: condition,
+        type:type
+      }
     });
     const data = response.data;
     const result: SwappyBooksSwapsResponse = {
       successful: data["successful"],
       message: data["message"],
-      swaps: [],
+      swaps: data["swaps"],
     };
     return result;
   } catch (error) {
@@ -207,46 +212,26 @@ export async function getPersonalSwaps(): Promise<SwappyBooksSwapsResponse> {
   }
 }
 
-export async function getSwaps(): Promise<SwappyBooksSwapsResponse> {
-  try {
-    const response = await apiSwaps.post("getSwaps.php", {
 
-    },{
+export async function getShopSwaps(searchString?: string, minPrice?: number, maxPrice?: number, condition?: string, type?:"academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
+  try {
+    const response = await apiSwaps.get("getSwaps.php", {
       headers: {
         "Content-Type": "application/json",
       },
-    });
-    const data = response.data;
-    console.log(data);
-    const result: SwappyBooksSwapsResponse = {
-      successful: data["successful"],
-      message: data["message"],
-      swaps: [],
-    };
-    return result;
-  } catch (error) {
-    console.log("error from php server:", error);
-    const result: SwappyBooksSwapsResponse = {
-      successful: false,
-      message: "server error",
-      swaps: [],
-    };
-    return result;
-  }
-}
-
-export async function getShopSwaps(): Promise<SwappyBooksSwapsResponse> {
-  try {
-    const response = await apiSwaps.get("getShopSwaps.php", {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      params: {
+        search: searchString,
+        min_price: minPrice,
+        max_price: maxPrice,
+        condition_status: condition,
+        type:type
+      }
     });
     const data = response.data;
     const result: SwappyBooksSwapsResponse = {
       successful: data["successful"],
       message: data["message"],
-      swaps: [],
+      swaps: data["swaps"],
     };
     return result;
   } catch (error) {

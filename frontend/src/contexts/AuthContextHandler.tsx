@@ -19,7 +19,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         (async () => {
             const response = await getAuthenticationInfo();
-            console.log(response.message)
             setIsAuthenticated(response.successful);
             setUsername(response.username);
             setIsLoadingAuthentication(false);

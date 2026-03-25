@@ -1,13 +1,12 @@
 // src/components/BookCard.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardBody, CardFooter, Image, Button, Avatar } from "@heroui/react";
 import { Heart, Eye } from "lucide-react";
 import { useNavigate } from 'react-router-dom';  // <-- IMPORT PER NAVIGARE
 import { Swap } from '@/types/interfaces';
 
 interface BookCardProps {
-  book: Swap;
-  sellerName?: string;
+  swap: Swap;
   sellerAvatar?: string;
   isListView?: boolean;
 }
@@ -31,30 +30,25 @@ const formatTimeAgo = (dateString: string) => {
   return `${days} ${days === 1 ? 'giorno' : 'giorni'} fa`;
 };
 
-const BookCard: React.FC<BookCardProps> = ({ 
-  book, 
-  sellerName = "Venditore", 
-  sellerAvatar,
-  isListView = false
-}) => {
+export default function BookCard(props:BookCardProps){
+
   const navigate = useNavigate();  // <-- HOOK PER NAVIGARE
   const [isLiked, setIsLiked] = useState(false);
   const [views] = useState(Math.floor(Math.random() * 500) + 50);
   
-  const truncatedDescription = book.description.length > (isListView ? 200 : 80) 
-    ? book.description.substring(0, isListView ? 200 : 80) + '...' 
-    : book.description;
+  const truncatedDescription = props.swap.description.length > (props.isListView ? 200 : 80) 
+    ? props.swap.description.substring(0, props.isListView ? 200 : 80) + '...' 
+    : props.swap.description;
 
-  const timeAgo = formatTimeAgo(book.createdAt);
+  const timeAgo = formatTimeAgo(props.swap.createdAt);
   const rating = (Math.random() * 1.5 + 3.5).toFixed(1);
 
   // Funzione per gestire il click sulla card
   const handleCardClick = () => {
-    navigate(`/book/${book.id}`);
+    navigate(`/book/${props.swap.id}`);
   };
 
-  // Se è vista lista, layout orizzontale
-  if (isListView) {
+  if (props.isListView) {
     return (
       <Card 
         className="w-full hover:scale-[1.02] transition-transform cursor-pointer"
@@ -65,9 +59,9 @@ const BookCard: React.FC<BookCardProps> = ({
           {/* Immagine a sinistra - dimensioni fisse quadrate */}
           <div className="w-[180px] h-[180px] flex-shrink-0">
             <Image
-              alt={book.title}
+              alt={props.swap.title}
               className="w-full h-full object-cover"
-              src={book.coverImage || 'https://via.placeholder.com/180x180?text=Libro'}
+              src={'https://via.placeholder.com/180x180?text=Libro'}
               radius="none"
             />
           </div>
@@ -77,15 +71,14 @@ const BookCard: React.FC<BookCardProps> = ({
             {/* Riga superiore con titolo e cuore */}
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="text-xl font-bold">{book.title}</h3>
-                <p className="text-default-500">{book.author}</p>
+                <h3 className="text-xl font-bold">{props.swap.title}</h3>
+                <p className="text-default-500">{props.swap.author}</p>
               </div>
               <Button
                 isIconOnly
                 size="sm"
                 variant="light"
-                onPress={(e) => {
-                  e.stopPropagation();  // Impedisce che il click arrivi alla card
+                onPress={() => {
                   setIsLiked(!isLiked);
                 }}
               >
@@ -107,10 +100,10 @@ const BookCard: React.FC<BookCardProps> = ({
                 {/* Avatar e nome venditore */}
                 <div className="flex items-center gap-2">
                   <Avatar 
-                    src={sellerAvatar || `https://i.pravatar.cc/150?u=${book.seller}`} 
+                    src={`https://i.pravatar.cc/150?u=`} 
                     size="sm"
                   />
-                  <span className="text-small text-default-600">{sellerName}</span>
+                  <span className="text-small text-default-600">{}</span>
                 </div>
                 
                 {/* Rating */}
@@ -132,12 +125,12 @@ const BookCard: React.FC<BookCardProps> = ({
 
               {/* Prezzo e condizione */}
               <div className="flex items-center gap-3">
-                <span className="text-primary font-bold text-xl">€{book.price}</span>
+                <span className="text-primary font-bold text-xl">€{props.swap.price}</span>
                 <span className="text-tiny text-default-400 bg-default-100 px-3 py-1 rounded-full">
-                  {book.condition === 'new' && 'Nuovo'}
-                  {book.condition === 'like-new' && 'Come nuovo'}
-                  {book.condition === 'good' && 'Buono'}
-                  {book.condition === 'acceptable' && 'Accettabile'}
+                  {props.swap.condition === 'new' && 'Nuovo'}
+                  {props.swap.condition === 'like-new' && 'Come nuovo'}
+                  {props.swap.condition === 'good' && 'Buono'}
+                  {props.swap.condition === 'acceptable' && 'Accettabile'}
                 </span>
               </div>
             </div>
@@ -156,9 +149,9 @@ const BookCard: React.FC<BookCardProps> = ({
     >
       <CardBody className="overflow-visible p-0 relative">
         <Image
-          alt={book.title}
+          alt={props.swap.title}
           className="w-full object-cover h-[180px]"
-          src={book.coverImage || 'https://via.placeholder.com/280x180?text=Libro'}
+          src={'https://via.placeholder.com/280x180?text=Libro'}
         />
         
         <Button
@@ -166,8 +159,7 @@ const BookCard: React.FC<BookCardProps> = ({
           className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm"
           size="sm"
           variant="flat"
-          onPress={(e) => {
-            e.stopPropagation();  // Impedisce che il click arrivi alla card
+          onPress={() => {
             setIsLiked(!isLiked);
           }}
         >
@@ -180,18 +172,18 @@ const BookCard: React.FC<BookCardProps> = ({
       
       <CardFooter className="flex flex-col items-start gap-3">
         <div className="w-full">
-          <h3 className="text-lg font-bold line-clamp-1">{book.title}</h3>
-          <p className="text-small text-default-500">{book.author}</p>
+          <h3 className="text-lg font-bold line-clamp-1">{props.swap.title}</h3>
+          <p className="text-small text-default-500">{props.swap.author}</p>
         </div>
 
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
             <Avatar 
-              src={sellerAvatar || `https://i.pravatar.cc/150?u=${book.seller}`} 
+              src={`https://i.pravatar.cc/150?u=${props.swap.seller}`} 
               size="sm"
               className="min-w-[24px]"
             />
-            <span className="text-small text-default-600">{sellerName}</span>
+            <span className="text-small text-default-600">{props.swap.seller}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-small text-yellow-500">★</span>
@@ -201,7 +193,7 @@ const BookCard: React.FC<BookCardProps> = ({
 
         <p className="text-small text-default-500 line-clamp-2 relative">
           {truncatedDescription}
-          {!isListView && book.description.length > 80 && (
+          {!props.isListView && props.swap.description.length > 80 && (
             <span className="absolute bottom-0 right-0 bg-gradient-to-l from-white dark:from-black to-transparent pl-2">
               {' '}
             </span>
@@ -218,17 +210,12 @@ const BookCard: React.FC<BookCardProps> = ({
         </div>
 
         <div className="flex w-full justify-between items-center mt-1">
-          <span className="text-primary font-bold text-lg">€{book.price}</span>
+          <span className="text-primary font-bold text-lg">€{props.swap.price}</span>
           <span className="text-tiny text-default-400 bg-default-100 px-2 py-1 rounded-full">
-            {book.condition === 'new' && 'Nuovo'}
-            {book.condition === 'like-new' && 'Come nuovo'}
-            {book.condition === 'good' && 'Buono'}
-            {book.condition === 'acceptable' && 'Accettabile'}
+            {props.swap.condition}
           </span>
         </div>
       </CardFooter>
     </Card>
   );
-};
-
-export default BookCard;
+}
