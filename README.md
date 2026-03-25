@@ -182,3 +182,6 @@ in poche parole bisogna fare un file php che accetta le informazioni su uno swap
 ---
 
 **Mi raccomando prendete come esempio gli altri file, non usate pdo e controllate che il db abbia le tabelle necessarie**
+
+
+Nel file getAllSwaps.php mettete che in richiesta vi arriva un campo chiamato materia, ma noi dividiamo gli swap tra academic e fiction (quindi in poche parole filtrate per una cosa non richiesta e non controllate il campo type come avevo scritto poco piu' sopra).
