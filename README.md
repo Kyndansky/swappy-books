@@ -94,134 +94,91 @@ This is a simple and temporary organizational scheme to simplify project plannin
 │   ├── .env                  # Variabili ambiente (URL API)
 │   └── package.json          # Dipendenze
 ```
+# Roba backend
 
-## File backend che mi servono per la feature dei messaggi (Riccobene)
+## FIle che ritorna tutti gli swap
+### Prende in input tramite post:
+	conditions: ["new","like-new","acceptable"]
+	minPrice: float
+	maxPrice: float
+	type: "academic" , "fiction"
+	searchString: "Matematica verde"
 
-### File che ritorna tutte le chat di un utente
-In poche parole un file che controlla l'username dell'utente che fa la richiesta **dalla session**  
+vincoli:
 
-**Ritorna**: tutte le chat in cui un utente ha mai ricevuto/inviato messaggi.
-
-Formato della risposta deve essere tipo cosi':
-
- ```
-$response = [
-    sucessful:true/false
-    message:"successfully retrieved user chats/failed/user is not logged in"
-    chats:[
-        {
-            username: "Riccardo Colaninno",
-            swapBookTitle: "Internetworking",
-            swapId: 3
-        },
-        {
-            username: "Galimberti Pietro",
-            swapBookTitle: "Matematica Verde",
-            swapId: 1
-        },
-        {
-            username: "Matteo Sartori",
-            swapBookTitle: "Protech",
-            swapId: 2
-        },
-        {
-            username: "Davide Riccobene",
-            swapBookTitle: "Matematica Verde",
-            swapId: 1
-        }
-]
-
- ```
-#### quindi campi per ogni oggetto chat:
 <ul>
-<li>username: l'username dell'utente con cui l'utente che ha mandato la richiesta ha chattato
-
-<li>swapBookTItle: il titolo dello swap di quella determinata chat
-
-<li>swapBookId: l'id dello swap di quella determinata chat
+<li>
+il file all'inizio deve guardare la session e se si e' loggati bisogna trovare solo gli swap che sono stati pubblicati da utenti diversi da chi ha fatto la richiesta (giustamente non ha senso che un utente che cerca libri trova gli stessi che ha messo in vendita)
+</li>
+<li>
+conditions deve avere solo valori che comprendono i seguenti:
+"new" | "like-new" | "good" | "acceptable" | "damaged"
+</li>
+<li>
+se type non viene passato di base si mostrano tutti i libri
+</li>
+<li>
+searchString e' una stringa di ricerca che bisogna confrontare con i titoli degli swap: quelli con quella stringa nel titolo vengono ritornati
+</li>
 </ul>
 
-#### Altre note importanti
+in poche parole bisogna fare un file php che funge da filtro ritornando tutti gli swaps che soddisfano determinate condizioni, dove ogni campo elencato in precedenza e' facoltativo
+
+### La risposta deve includere i seguenti campi:
+
+	successful: boolean
+	message: string
+	swaps:[
+	{
+		id: int,
+		title: string,
+		author: string,
+		description: string,
+		condition: string,
+		seller: string,
+		createdAtDate:string,
+		price: float
+		favorite: boolean
+	},
+	]
+
+il campo favorite e' true se l'utente e' loggato e se ha gia' quello swap nei preferiti.
+
+## File che aggiunge uno swap
+### Prende in input tramite post:
+	condition: "new"| "like-new" "etc...",
+	price:float,
+	type: "academic" | "fiction",
+	title: string,
+	author:string,
+	description:string,
+
+vincoli:
+
 <ul>
-<li>io uso il termine chat per indicare gli scambi tra due utenti relative ad un determinato swap, ma non necessariamente nel db esiste l'oggetto chat. vedete voi come organizzare i dati, a me basta che nella risposta ci sia una cosa simile
-
-<li>se chi fa la richiesta non e' loggato viene ritornato un messaggio di errore che avvisa che bisogna essere autenticati
-
-<li>non serve che nella risposta includete i messaggi dato che con essi sarebbero troppi dati in una solo risposta, quindi mi serve un'altro file nel backend per tutti i messaggi
-
-<li>organizzatevi voi per come chiamare il file o in che cartella metterlo
-
+<li>
+il file all'inizio deve guardare la session e se non si e' loggati bisogna ritornare un errore
+</li>
+<li>
+conditions deve avere solo valori che comprendono i seguenti:
+"new" | "like-new" | "good" | "acceptable" | "damaged"
+</li>
+<li>
+tutti  i campi sono obbligatori
+</li>
+<li>
+L'username dell'utente che pubblica lo swap va preso dalla session
+</li>
 </ul>
 
----
-### File che ritorna tutti i messaggi di una determinata chat
-Un file che controlla l'username dell'utente che fa la richiesta **dalla session** e accetta come parametri GET o POST (decidete voi) l'username dell'altro utente e lo swapId dello swap di quella determinata chat.
+in poche parole bisogna fare un file php che accetta le informazioni su uno swap in input e lo salva nel db
 
-**Ritorna**: tutti i messaggi di una chat
+### La risposta deve includere i seguenti campi:
 
-Formato della risposta deve essere tipo cosi':
-
- ```
-$response = [
-    sucessful:true/false,
-    message:"successfully retrieved chat messages/failed/user is not logged in",
-    
-    user1:"user che ha fatto la richiesta api"
-    user2:"altro user coinvolto nella chat",
-    swapId:1,
-
-    messages:[
-        {
-            content: "Ciaoo",
-            sender: "Sigma2",
-            receiver: "sigma",
-            messageDate:"1/01/2026"
-            messageTime:"15:45"
-        },
-        {
-            content: "Ciao a te",
-            sender: "sigma",
-            receiver: "Sigma2",
-            messageDate:"1/01/2026"
-            messageTime:"15:47"
-        },
-]
-
- ```
-#### quindi campi per ogni oggetto messaggio:
-<ul>
-<li>content: il contenutodel messaggio
-<li>sender: username di chi invia il messaggio
-<li>receiver: username di chi riceve il messaggio
-<li>messageDate: data del messaggio (vedeto voi come parsarla, io ho messo un esempio che potrebbe aver senso)
-<li>messageTime: ora del messaggio (vedeto voi come parsarla, io ho messo un esempio che potrebbe aver senso)
-</ul>
-
-#### Altre note importanti:
-<ul>
-<li>Pls ordinate le chat in ordine cronologico dato che farlo nel client e' un casino (forse si puo' fare direttamente quando fate la query, idk)
-
-<li>io uso il termine message per indicare un singolo messaggio tra due utenti, ma non necessariamente nel db esiste l'oggetto message cosi come lo voglio strutturato nella risposta (anche se credo che sarebbe comodo per voi averlo cosi nel db). vedete voi come organizzare i dati, a me basta che nella risposta ci sia una cosa simile
-
-<li>se chi fa la richiesta non e' loggato viene ritornato un messaggio di errore che avvisa che bisogna essere autenticati
-
-<li>non serve che nella risposta includete i messaggi dato che con essi sarebbero troppi dati in una solo risposta, quindi mi serve un'altro file nel backend per tutti i messaggi
-
-<li>organizzatevi voi per come chiamare il file o in che cartella metterlo
-</ul>
+	successful: boolean
+	message: string
+	
 
 ---
 
-Grazie della collaborazione fate con calma (probabilmente poi vi devo chiedere un'altro file nel backend per inviare messaggi)
-
-**P.S** Ah e se potete cambiate anche tutti gli altri file php in modo che abbiano una risposta con quel formato, quindi con il campo successful booleano e il campo message stringa. successful puo' anche avere un'altro nome basta che fate tutto uniforme per tutto il backend cosi che nel frontend sappiamo cosa aspettarci
-
-
----
-
-FIle che prende in richiesta tramite GET un messaggio di un utente e l'username del destinatario  (e lo swapId inerente alla chat) e aggiunge il messaggio al db:
-prevelare la data e l'ora di invio del messaggio quando viene inviato, (per l'username del mittente bisogna controllare la session e in caso l'user non e' loggato va ritornato un messaggio di errore)
-per i dettagli fate in modo simile a quello che vi ho chiesto negli altri file per metodologia ecc...
-naturalmente dovete anche controllare se il destinatario esiste (se non esiste il messaggio non viene inviato)
-ritornate una risposta con successful a true o false e un message, come al solito
-o chiedere un'altro file nel backend per inviare messaggi)
+**Mi raccomando prendete come esempio gli altri file, non usate pdo e controllate che il db abbia le tabelle necessarie**
