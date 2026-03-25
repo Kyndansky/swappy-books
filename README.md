@@ -97,12 +97,12 @@ This is a simple and temporary organizational scheme to simplify project plannin
 # Roba backend
 
 ## FIle che ritorna tutti gli swap
-### Prende in input tramite post:
-	conditions: ["new","like-new","acceptable"]
+### Prende in input tramite get:
+	conditions: ["new" | "like-new" | "good" | "acceptable" | "damaged"]
 	minPrice: float
 	maxPrice: float
 	type: "academic" , "fiction"
-	searchString: "Matematica verde"
+	searchString: string
 
 vincoli:
 
@@ -137,12 +137,15 @@ in poche parole bisogna fare un file php che funge da filtro ritornando tutti gl
 		condition: string,
 		seller: string,
 		createdAtDate:string,
-		price: float
-		favorite: boolean
+		price: float.
+		favorite: boolean,
+		condition:"new" | "like-new" | "good" | "acceptable" | "damaged",
+		
 	},
 	]
 
 il campo favorite e' true se l'utente e' loggato e se ha gia' quello swap nei preferiti.
+se l'utente che fa la richiesta non e' loggato allora puo' anche non essere passato
 
 ## File che aggiunge uno swap
 ### Prende in input tramite post:
@@ -186,3 +189,4 @@ in poche parole bisogna fare un file php che accetta le informazioni su uno swap
 
 Nel file getAllSwaps.php mettete che in richiesta vi arriva un campo chiamato materia, ma noi dividiamo gli swap tra academic e fiction (quindi in poche parole filtrate per una cosa non richiesta e non controllate il campo type come avevo scritto poco piu' sopra).
 getSwaps.php deve inoltre formattare la risposta come ho specificato dentro alla parte del readme (sopra) dove specifico tutti i campi ecc...
+pls chi l'ha fatto riguardi direttamente la parte del readme dove dico cosa fare e lo rifaccia (bene)
