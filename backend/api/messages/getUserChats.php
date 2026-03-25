@@ -42,7 +42,7 @@ try {
     $chats = array();
     
     // fetch_assoc() estrae le righe come array associativo
-    while ($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) { 
         array_push($chats, array(
             "username" => $row['username'],
             "swapBookTitle" => $row['swapBookTitle'],
