@@ -66,7 +66,7 @@ try {
         "successful" => true,
         "message" => "Libri recuperati con successo",
         "total_results" => count($books), //conteggio dei libri trovati 
-        "data" => $books
+        "swaps" => $books
     ]);
 
 } catch (Exception $e) { 
