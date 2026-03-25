@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownItem,
   addToast,
+  Slider,
 } from "@heroui/react";
 import { Search, Grid, List, ChevronDown, Plus } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
@@ -34,7 +35,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
   const [selectedCondition, setSelectedCondition] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isAddSwapModalOpen, setIsAddSwapModalOpen] = useState<boolean>(false);
-
+  const [priceFilter, setPriceFilter] = useState<number[]>([1, 100]);
   const swapss: Swap[] = [
     {
       id: 1,
@@ -97,7 +98,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
               inputWrapper:
                 "h-14 font-normal text-default-500 bg-default-100 dark:bg-default-50",
             }}
-            placeholder="Cerca libri per titolo, autore o descrizione..."
+            placeholder="Search books by title"
             size="lg"
             startContent={<Search size={20} className="text-default-400" />}
             value={searchTerm}
@@ -127,9 +128,44 @@ export default function SwapsListPage(props: SwapsListPageProps) {
                 </DropdownMenu>
               </Dropdown>
 
-              <Button variant="flat" className="min-w-[100px]">
-                Prezzo: €0 - €100
-              </Button>
+            </div>
+            
+            {/* price filter slider */}
+            <div className="w-1/6 flex flex-col mr-auto mx-7">
+              <div className="relative h-6 -mb-1.5">
+                <div
+                  className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
+                  style={{
+                    left: `${(priceFilter[0] / 100) * 100}%`,
+                    transform: 'translateX(-50%)',
+                    ...(priceFilter[0] > 85 && { transform: 'translateX(-100%)' }) // Se troppo a destra, allinea a sinistra
+                  }}
+                >
+                  ↓ €{priceFilter[0]}
+                </div>
+                <div
+                  className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
+                  style={{
+                    left: `${(priceFilter[1] / 100) * 100}%`,
+                    transform: priceFilter[1] > 85 ? 'translateX(-100%)' : 'translateX(-50%)',
+                    ...(priceFilter[1] < 15 && { transform: 'translateX(0%)' }) // Se troppo a sinistra, allinea a destra
+                  }}
+                >
+                  €{priceFilter[1]} ↑
+                </div>
+              </div>
+              <Slider
+                className="w-full"
+                size="sm"
+                formatOptions={{ style: "currency", currency: "USD" }}
+                maxValue={100}
+                minValue={0}
+                value={priceFilter}
+                step={5}
+                onChange={(value) => {
+                  setPriceFilter(value as number[]);
+                }}
+              />
             </div>
 
             {/* Toggle griglia/lista */}
