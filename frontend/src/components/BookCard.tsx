@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { Card, CardBody, CardFooter, Image, Button, Avatar } from "@heroui/react";
 import { Heart, Eye } from "lucide-react";
 import { useNavigate } from 'react-router-dom';  // <-- IMPORT PER NAVIGARE
-import { Book } from '@/types/interfaces';
+import { Swap } from '@/types/interfaces';
 
 interface BookCardProps {
-  book: Book;
+  book: Swap;
   sellerName?: string;
   sellerAvatar?: string;
   isListView?: boolean;

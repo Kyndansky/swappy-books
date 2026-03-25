@@ -1,13 +1,45 @@
-import { Modal, ModalContent } from "@heroui/react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@heroui/react";
 
 interface addSwapModalProps {
   isOpen: boolean;
-  onOpenChange: () => void;
+  closeModal: () => void;
 }
 export default function AddSwapModal(props: addSwapModalProps) {
   return (
-    <Modal isOpen={props.isOpen}>
-      <ModalContent>w</ModalContent>
+    <Modal
+      isOpen={props.isOpen}
+      onOpenChange={() => props.closeModal()}
+      size="5xl"
+    >
+      <ModalContent>
+        <ModalHeader>Add a swap here</ModalHeader>
+        <ModalBody>kdadkad</ModalBody>
+        <ModalFooter>
+          <Button
+            onPress={() => {
+              props.closeModal();
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            color="success"
+            onPress={() => {
+              //todo: api call to backend to add swap
+              props.closeModal();
+            }}
+          >
+            Conferma
+          </Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
 }

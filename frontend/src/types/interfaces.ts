@@ -9,7 +9,7 @@ export interface SwappyBooksProfileResponse extends SwappyBooksResponse{
 }
 
 // src/types/interfaces.ts - AGGIUNGIAMO:
-export interface Book {
+export interface Swap {
   id: number;
   title: string;
   author: string;
@@ -38,12 +38,6 @@ export interface SwappyBooksSendMessageResponse extends SwappyBooksResponse{
   sentMessage?:Message;
 }
 
-export interface Swap{
-    uploadDate:string;
-    sellDate?:string;
-    title:string;
-    description:string;   
-}
 
 export interface UserChatInfo{
     username:string;
@@ -65,7 +59,7 @@ export interface BookImage {
   isPrimary: boolean;
 }
 
-export interface BookDetail extends Book {
+export interface BookDetail extends Swap {
   images: BookImage[];
   isbn?: string;
   pages?: number;

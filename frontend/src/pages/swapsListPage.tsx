@@ -10,10 +10,10 @@ import {
   DropdownItem,
   addToast,
 } from "@heroui/react";
-import { Search, Grid, List, ChevronDown, PlusCircle } from "lucide-react";
+import { Search, Grid, List, ChevronDown, PlusCircle, Plus } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import BookCard from "@/components/BookCard";
-import { Book, Swap, SwappyBooksSwapsResponse } from "@/types/interfaces";
+import { Swap, SwappyBooksSwapsResponse } from "@/types/interfaces";
 import AddSwapModal from "@/components/addSwapModal";
 
 const categories = [
@@ -33,7 +33,7 @@ const conditions = [
   { key: "acceptable", label: "Accettabile" },
 ];
 
-const sampleBooks: Book[] = [
+const sampleBooks: Swap[] = [
   {
     id: 1,
     title: "Il Nome della Rosa",
@@ -174,13 +174,13 @@ export default function SwapsListPage(props: SwapsListPageProps) {
                 setIsAddSwapModalOpen(true);
               }}
             >
-              <PlusCircle />
+              <Plus size={20}/>
             </Button>
 
             <AddSwapModal
               isOpen={isAddSwapModalOpen}
-              onOpenChange={() => {
-                setIsAddSwapModalOpen(!isAddSwapModalOpen);
+              closeModal={() => {
+                setIsAddSwapModalOpen(false);
               }}
             />
           </div>

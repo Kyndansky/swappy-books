@@ -13,10 +13,10 @@
 import React, { useRef, useState } from 'react';
 import { Button, Card, CardBody, Image } from "@heroui/react";
 import { ChevronLeft, ChevronRight, ChevronRight as ChevronRightIcon } from "lucide-react";
-import { Book } from '@/types/interfaces';
+import { Swap } from '@/types/interfaces';
 
 interface bookSellerBooksProps {
-  books: Book[];                // Array di libri del venditore (escluso quello corrente)
+  books: Swap[];                // Array di libri del venditore (escluso quello corrente)
   sellerId: number;             // ID del venditore (per link "Vedi tutti")
   sellerName?: string;          // Nome venditore (opzionale, per il titolo)
   onBookClick?: (bookId: number) => void;  // Quando clicca un libro
