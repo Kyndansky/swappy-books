@@ -9,6 +9,7 @@ import {
   DropdownItem,
   addToast,
   Slider,
+  Checkbox,
 } from "@heroui/react";
 import { Search, Grid, List, ChevronDown, Plus } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
@@ -27,15 +28,20 @@ const conditions = [
 
 interface SwapsListPageProps {
   swapsCollection: "Shop" | "Personal";
-  retrieveSwapsFunction: () => Promise<SwappyBooksSwapsResponse>;
+  retrieveSwapsFunction: (searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fictional") => Promise<SwappyBooksSwapsResponse>;
 }
 export default function SwapsListPage(props: SwapsListPageProps) {
   const [swaps, setSwaps] = useState<Swap[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchString, setSearchString] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("all");
+  const [selectedConditions, setSelectedConditions] = useState<string[]>([]); //todo: implement in UI
+  const [bookCategory, setBookCategory] = useState<"any" | "fictional" | "academic">("any"); //todo: implement in UI
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isAddSwapModalOpen, setIsAddSwapModalOpen] = useState<boolean>(false);
-  const [priceFilter, setPriceFilter] = useState<number[]>([1, 100]);
+  const [priceFilter, setPriceFilter] = useState<number[]>([0, 100]); //where [0] is the min price and [1] is the max price
+  const [isEnabledMinPrice, setIsEnabledMinPrice] = useState(false);
+  const [isEnabledMaxPrice, setIsEnabledMaxPrice] = useState(false);
+
   const swapss: Swap[] = [
     {
       id: 1,
@@ -65,6 +71,68 @@ export default function SwapsListPage(props: SwapsListPageProps) {
     })();
   }, []);
 
+  //fetches swaps based on current filters and shows error if a problem occurs
+  async function handleSwapsFetch() {
+    const result: SwappyBooksSwapsResponse = await props.retrieveSwapsFunction(searchString,
+      isEnabledMinPrice === true ? priceFilter[0] : undefined,
+      isEnabledMaxPrice === true ? priceFilter[1] : undefined,
+      selectedConditions,
+      bookCategory !== "any" ? bookCategory : undefined);
+
+    if (!result.successful) {
+      addToast({
+        title: result.message,
+        color: "danger"
+      });
+      return;
+    }
+
+    setSwaps(result.swaps);
+
+  }
+
+  //debounced search when changing filters
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleSwapsFetch();
+    }, 500);
+
+    // Cleanup: last timer is deleted if something changes before it expires, renewing its count
+    return () => clearTimeout(timer);
+  }, [searchString, priceFilter]);
+
+
+  const handlePriceChange = (value: number | number[]) => {
+    const [newMin, newMax] = value as number[];
+
+    // Aggiorna i valori dello slider
+    setPriceFilter([newMin, newMax]);
+
+    // Abilita automaticamente i checkbox quando l'utente sposta gli handle
+    if (newMin !== priceFilter[0]) {
+      // Se l'handle sinistro si è mosso
+      if (!isEnabledMinPrice && newMin > 0) {
+        setIsEnabledMinPrice(true);
+      }
+      // Se l'handle sinistro torna a 0, disabilita
+      if (isEnabledMinPrice && newMin === 0 && newMax === 100) {
+        setIsEnabledMinPrice(false);
+      }
+    }
+
+    if (newMax !== priceFilter[1]) {
+      // Se l'handle destro si è mosso
+      if (!isEnabledMaxPrice && newMax < 100) {
+        setIsEnabledMaxPrice(true);
+      }
+      // Se l'handle destro torna a 100, disabilita
+      if (isEnabledMaxPrice && newMin === 0 && newMax === 100) {
+        setIsEnabledMaxPrice(false);
+      }
+    }
+  };
+
+
   return (
     <DefaultLayout>
       <div className="container mx-auto px-4 py-8 relative">
@@ -89,7 +157,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
             />
           </div>
         )}
-        {/* Barra di ricerca */}
+        {/* Search bar */}
         <div className="max-w-2xl mx-auto mb-6">
           <Input
             classNames={{
@@ -101,8 +169,8 @@ export default function SwapsListPage(props: SwapsListPageProps) {
             placeholder="Search books by title"
             size="lg"
             startContent={<Search size={20} className="text-default-400" />}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchString}
+            onChange={(e) => setSearchString(e.target.value)}
             radius="lg"
           />
         </div>
@@ -129,44 +197,70 @@ export default function SwapsListPage(props: SwapsListPageProps) {
               </Dropdown>
 
             </div>
-            
-            {/* price filter slider */}
-            <div className="w-1/6 flex flex-col mr-auto mx-7">
-              <div className="relative h-6 -mb-1.5">
-                <div
-                  className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
-                  style={{
-                    left: `${(priceFilter[0] / 100) * 100}%`,
-                    transform: 'translateX(-50%)',
-                    ...(priceFilter[0] > 85 && { transform: 'translateX(-100%)' }) // Se troppo a destra, allinea a sinistra
-                  }}
+
+            {/* price filter section */}
+            <div className="flex flex-row  ml-3 mr-auto w-2/5 items-center gap-3">
+
+              {/* min and max price checkboxes */}
+              <div className="flex flex-col">
+                <Checkbox
+                  size="sm"
+                  isSelected={isEnabledMinPrice}
+                  onValueChange={setIsEnabledMinPrice}
                 >
-                  ↓ €{priceFilter[0]}
-                </div>
-                <div
-                  className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
-                  style={{
-                    left: `${(priceFilter[1] / 100) * 100}%`,
-                    transform: priceFilter[1] > 85 ? 'translateX(-100%)' : 'translateX(-50%)',
-                    ...(priceFilter[1] < 15 && { transform: 'translateX(0%)' }) // Se troppo a sinistra, allinea a destra
-                  }}
+                  Min
+                </Checkbox>
+                <Checkbox
+                  size="sm"
+                  isSelected={isEnabledMaxPrice}
+                  onValueChange={setIsEnabledMaxPrice}
                 >
-                  €{priceFilter[1]} ↑
-                </div>
+                  Max
+                </Checkbox>
               </div>
-              <Slider
-                className="w-full"
-                size="sm"
-                formatOptions={{ style: "currency", currency: "USD" }}
-                maxValue={100}
-                minValue={0}
-                value={priceFilter}
-                step={5}
-                onChange={(value) => {
-                  setPriceFilter(value as number[]);
-                }}
-              />
+
+              {/* slider and labels on top of slider */}
+              <div className="flex flex-col w-1/3">
+                <div className="relative h-6 -mb-1.5">
+                  <div
+                    className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
+                    style={{
+                      left: `${(priceFilter[0] / 100) * 100}%`,
+                      transform: 'translateX(-50%)',
+                      ...(priceFilter[0] > 85 && { transform: 'translateX(-100%)' }) // Se troppo a destra, allinea a sinistra
+                    }}
+                  >
+                    ↓ €{isEnabledMinPrice === true ? priceFilter[0] : "-"}
+                  </div>
+                  <div
+                    className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
+                    style={{
+                      left: `${(priceFilter[1] / 100) * 100}%`,
+                      transform: priceFilter[1] > 85 ? 'translateX(-100%)' : 'translateX(-50%)',
+                      ...(priceFilter[1] < 15 && { transform: 'translateX(0%)' }) // Se troppo a sinistra, allinea a destra
+                    }}
+                  >
+                    €{isEnabledMaxPrice === true ? priceFilter[1] : "-"} ↑
+                  </div>
+                </div>
+
+                <Slider
+                  className="mx-3"
+                  size="sm"
+                  formatOptions={{ style: "currency", currency: "USD" }}
+                  maxValue={100}
+                  minValue={0}
+                  value={priceFilter}
+                  step={5}
+                  onChange={(value) => {
+                    // setPriceFilter(value as number[]);
+                    handlePriceChange(value);
+                  }}
+                  aria-label={"Price filter slider"}
+                />
+              </div>
             </div>
+
 
             {/* Toggle griglia/lista */}
             <div className="flex gap-1">

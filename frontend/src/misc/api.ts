@@ -213,7 +213,7 @@ export async function getPersonalSwaps(searchString?: string, minPrice?: number,
 }
 
 
-export async function getShopSwaps(searchString?: string, minPrice?: number, maxPrice?: number, condition?: string, type?:"academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
+export async function getShopSwaps(searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?:"academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
   try {
     const response = await apiSwaps.get("getSwaps.php", {
       headers: {
@@ -223,7 +223,7 @@ export async function getShopSwaps(searchString?: string, minPrice?: number, max
         search: searchString,
         min_price: minPrice,
         max_price: maxPrice,
-        condition_status: condition,
+        conditions: conditions,
         type:type
       }
     });
