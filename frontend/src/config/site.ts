@@ -1,3 +1,5 @@
+import { BookOpen, Heart, Home, MessageSquare, ShoppingBag } from "lucide-react";
+
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
@@ -7,18 +9,27 @@ export const siteConfig = {
     {
       label: "Home",
       href: "/",
-    },
-    {
-      label: "Shop",
-      href: "/shop",
-    },
-    {
-      label: "Your swaps",
-      href: "/swaps",
+      icon: Home,
     },
     {
       label: "Messages",
       href: "/messages",
+      icon: MessageSquare,
+    },
+    {
+      label: "Shop",
+      href: "/shop",
+      icon: ShoppingBag,
+    },
+    {
+      label: "Favorites",
+      href: "/favorites",
+      icon: Heart,
+    },
+    {
+      label: "Your swaps",
+      href: "/swaps",
+      icon: BookOpen,
     }
     
   ],

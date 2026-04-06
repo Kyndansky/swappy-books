@@ -6,7 +6,7 @@ import Messages from "./pages/messages";
 import NotFound from "./pages/404";
 import SwapsListPage from "./pages/swapsListPage";
 import BookPage from "./pages/book";  // <-- AGGIUNGI QUESTO IMPORT
-import { getPersonalSwaps, getShopSwaps } from "./misc/api";
+import { fetchFavoriteSwaps, fetchPersonalSwaps, fetchShopSwaps } from "./misc/api";
 
 function App() {
   return (
@@ -15,8 +15,9 @@ function App() {
       <Route element={<AuthenticatePage authType="login"/>} path="/login"/>
       <Route element={<AuthenticatePage authType="register"/>} path="/register"/>
       <Route element={<Messages/>} path="/messages"/>
-      <Route path="/swaps" element={<SwapsListPage retrieveSwapsFunction={getPersonalSwaps} swapsCollection="Personal"/>}/>
-      <Route path="/shop" element={<SwapsListPage retrieveSwapsFunction={getShopSwaps} swapsCollection="Shop"/>}/> 
+      <Route path="/swaps" element={<SwapsListPage retrieveSwapsFunction={fetchPersonalSwaps} swapsCollection="Personal"/>}/>
+      <Route path="/shop" element={<SwapsListPage retrieveSwapsFunction={fetchShopSwaps} swapsCollection="Shop"/>}/>
+      <Route path="/favorites" element={<SwapsListPage retrieveSwapsFunction={fetchFavoriteSwaps} swapsCollection="Favorite"/>}/> 
       <Route path="/book/:id" element={<BookPage />} />
       
       <Route path="*" element={<NotFound />}/>

@@ -1,17 +1,16 @@
 // src/pages/index.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Input,
   Button,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
   addToast,
   Slider,
   Checkbox,
+  Chip,
+  Tabs,
+  Tab,
 } from "@heroui/react";
-import { Search, Grid, List, ChevronDown, Plus } from "lucide-react";
+import { Search, Grid, List, Plus } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import BookCard from "@/components/BookCard";
 import { Swap, SwappyBooksSwapsResponse } from "@/types/interfaces";
@@ -19,24 +18,24 @@ import AddSwapModal from "@/components/addSwapModal";
 
 
 const conditions = [
-  { key: "all", label: "Tutte le condizioni" },
-  { key: "new", label: "Nuovo" },
-  { key: "like-new", label: "Come nuovo" },
-  { key: "good", label: "Buono" },
-  { key: "acceptable", label: "Accettabile" },
+  { key: "new", label: "New" },
+  { key: "good", label: "Good" },
+  { key: "acceptable", label: "Acceptable" },
+  { key: "damaged", label: "Damaged" }
 ];
 
 interface SwapsListPageProps {
-  swapsCollection: "Shop" | "Personal";
-  retrieveSwapsFunction: (searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fictional") => Promise<SwappyBooksSwapsResponse>;
+  swapsCollection: "Shop" | "Personal" | "Favorite";
+  retrieveSwapsFunction: (searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction") => Promise<SwappyBooksSwapsResponse>;
 }
 export default function SwapsListPage(props: SwapsListPageProps) {
+  const isFirstMount = useRef(true);
   const [swaps, setSwaps] = useState<Swap[]>([]);
   const [searchString, setSearchString] = useState("");
-  const [selectedCondition, setSelectedCondition] = useState("all");
-  const [selectedConditions, setSelectedConditions] = useState<string[]>([]); //todo: implement in UI
-  const [bookCategory, setBookCategory] = useState<"any" | "fictional" | "academic">("any"); //todo: implement in UI
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
+  const [bookCategory, setBookCategory] = useState<"any" | "fiction" | "academic">("any"); //todo: implement in UI
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid"); //todo: implement in UI
   const [isAddSwapModalOpen, setIsAddSwapModalOpen] = useState<boolean>(false);
   const [priceFilter, setPriceFilter] = useState<number[]>([0, 100]); //where [0] is the min price and [1] is the max price
   const [isEnabledMinPrice, setIsEnabledMinPrice] = useState(false);
@@ -56,20 +55,6 @@ export default function SwapsListPage(props: SwapsListPageProps) {
     }
   ]
 
-  //fetching swap on page load
-  useEffect(() => {
-    (async () => {
-      const response = await props.retrieveSwapsFunction();
-      if (response.successful) {
-        setSwaps(response.swaps);
-      } else {
-        addToast({
-          title: response.message,
-          color: "danger",
-        });
-      }
-    })();
-  }, []);
 
   //fetches swaps based on current filters and shows error if a problem occurs
   async function handleSwapsFetch() {
@@ -88,18 +73,23 @@ export default function SwapsListPage(props: SwapsListPageProps) {
     }
 
     setSwaps(result.swaps);
-
   }
 
   //debounced search when changing filters
   useEffect(() => {
+    if (isFirstMount.current) {
+      handleSwapsFetch();
+      isFirstMount.current = false;
+      return;
+    }
+
     const timer = setTimeout(() => {
       handleSwapsFetch();
     }, 500);
 
     // Cleanup: last timer is deleted if something changes before it expires, renewing its count
     return () => clearTimeout(timer);
-  }, [searchString, priceFilter]);
+  }, [searchString, priceFilter, selectedConditions, bookCategory, props.swapsCollection]);
 
 
   const handlePriceChange = (value: number | number[]) => {
@@ -135,6 +125,15 @@ export default function SwapsListPage(props: SwapsListPageProps) {
 
   return (
     <DefaultLayout>
+      <div className="flex flex-col items-center justify-center w-full">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+          <span className="bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
+            {props.swapsCollection}
+          </span>
+          <span className="text-default-900"> Swaps</span>
+        </h1>
+      </div>
+
       <div className="container mx-auto px-4 py-8 relative">
         {props.swapsCollection === "Personal" && (
           <div>
@@ -158,7 +157,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
           </div>
         )}
         {/* Search bar */}
-        <div className="max-w-2xl mx-auto mb-6">
+        <div className="max-w-2xl mx-auto mb-4">
           <Input
             classNames={{
               base: "w-full",
@@ -174,119 +173,133 @@ export default function SwapsListPage(props: SwapsListPageProps) {
             radius="lg"
           />
         </div>
-        {/* Filtri e toggle */}
-        <div className="flex flex-col gap-4 mb-6">
 
-          {/* Filtri e toggle in riga */}
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2">
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button variant="flat" endContent={<ChevronDown size={16} />}>
-                    {conditions.find((c) => c.key === selectedCondition)?.label}
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu
-                  aria-label="Condizioni"
-                  onAction={(key) => setSelectedCondition(key as string)}
-                >
-                  {conditions.map((cond) => (
-                    <DropdownItem key={cond.key}>{cond.label}</DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown>
 
+        {/* filters row */}
+        <div className="flex justify-between items-center gap-3 mb-2">
+
+          {/* Conditions filter section*/}
+          <div className="flex gap-1">
+            {conditions.map(({ key, label }) => (
+              <Chip
+                key={key}
+                variant={selectedConditions.includes(key) ? "solid" : "flat"}
+                color="primary"
+                className="cursor-pointer"
+                onClick={() => {
+                  // Toggle della selezione
+                  setSelectedConditions((prev) =>
+                    prev.includes(key)
+                      ? prev.filter((c) => c !== key)
+                      : [...prev, key]
+                  );
+                }}
+              >
+                {label}
+              </Chip>
+            ))}
+          </div>
+          {/* price filter section */}
+          <div className="flex flex-row w-1/5 items-center gap-3">
+
+            {/* min and max price checkboxes */}
+            <div className="flex flex-col">
+              <Checkbox
+                size="sm"
+                isSelected={isEnabledMinPrice}
+                onValueChange={setIsEnabledMinPrice}
+              >
+                Min
+              </Checkbox>
+              <Checkbox
+                size="sm"
+                isSelected={isEnabledMaxPrice}
+                onValueChange={setIsEnabledMaxPrice}
+              >
+                Max
+              </Checkbox>
             </div>
 
-            {/* price filter section */}
-            <div className="flex flex-row  ml-3 mr-auto w-2/5 items-center gap-3">
 
-              {/* min and max price checkboxes */}
-              <div className="flex flex-col">
-                <Checkbox
-                  size="sm"
-                  isSelected={isEnabledMinPrice}
-                  onValueChange={setIsEnabledMinPrice}
-                >
-                  Min
-                </Checkbox>
-                <Checkbox
-                  size="sm"
-                  isSelected={isEnabledMaxPrice}
-                  onValueChange={setIsEnabledMaxPrice}
-                >
-                  Max
-                </Checkbox>
-              </div>
-
-              {/* slider and labels on top of slider */}
-              <div className="flex flex-col w-1/3">
-                <div className="relative h-6 -mb-1.5">
-                  <div
-                    className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
-                    style={{
-                      left: `${(priceFilter[0] / 100) * 100}%`,
-                      transform: 'translateX(-50%)',
-                      ...(priceFilter[0] > 85 && { transform: 'translateX(-100%)' }) // Se troppo a destra, allinea a sinistra
-                    }}
-                  >
-                    ↓ €{isEnabledMinPrice === true ? priceFilter[0] : "-"}
-                  </div>
-                  <div
-                    className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
-                    style={{
-                      left: `${(priceFilter[1] / 100) * 100}%`,
-                      transform: priceFilter[1] > 85 ? 'translateX(-100%)' : 'translateX(-50%)',
-                      ...(priceFilter[1] < 15 && { transform: 'translateX(0%)' }) // Se troppo a sinistra, allinea a destra
-                    }}
-                  >
-                    €{isEnabledMaxPrice === true ? priceFilter[1] : "-"} ↑
-                  </div>
-                </div>
-
-                <Slider
-                  className="mx-3"
-                  size="sm"
-                  formatOptions={{ style: "currency", currency: "USD" }}
-                  maxValue={100}
-                  minValue={0}
-                  value={priceFilter}
-                  step={5}
-                  onChange={(value) => {
-                    // setPriceFilter(value as number[]);
-                    handlePriceChange(value);
+            {/* slider and labels on top of slider */}
+            <div className="flex flex-col w-full">
+              <div className="relative h-6 -mb-1.5">
+                <div
+                  className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
+                  style={{
+                    left: `${(priceFilter[0] / 100) * 100}%`,
+                    transform: 'translateX(-50%)',
+                    ...(priceFilter[0] > 85 && { transform: 'translateX(-100%)' }) // Se troppo a destra, allinea a sinistra
                   }}
-                  aria-label={"Price filter slider"}
-                />
+                >
+                  ↓ €{isEnabledMinPrice === true ? priceFilter[0] : "-"}
+                </div>
+                <div
+                  className="absolute text-xs text-primary cursor-pointer hover:scale-110 transition-transform whitespace-nowrap"
+                  style={{
+                    left: `${(priceFilter[1] / 100) * 100}%`,
+                    transform: priceFilter[1] > 85 ? 'translateX(-100%)' : 'translateX(-50%)',
+                    ...(priceFilter[1] < 15 && { transform: 'translateX(0%)' }) // Se troppo a sinistra, allinea a destra
+                  }}
+                >
+                  €{isEnabledMaxPrice === true ? priceFilter[1] : "-"} ↑
+                </div>
               </div>
-            </div>
 
-
-            {/* Toggle griglia/lista */}
-            <div className="flex gap-1">
-              <Button
-                isIconOnly
-                variant={viewMode === "grid" ? "solid" : "light"}
-                onPress={() => setViewMode("grid")}
-              >
-                <Grid size={18} />
-              </Button>
-              <Button
-                isIconOnly
-                variant={viewMode === "list" ? "solid" : "light"}
-                onPress={() => setViewMode("list")}
-              >
-                <List size={18} />
-              </Button>
+              <Slider
+                className="mx-3"
+                size="sm"
+                formatOptions={{ style: "currency", currency: "USD" }}
+                maxValue={100}
+                minValue={0}
+                value={priceFilter}
+                step={5}
+                onChange={(value) => {
+                  // setPriceFilter(value as number[]);
+                  handlePriceChange(value);
+                }}
+                aria-label={"Price filter slider"}
+              />
             </div>
           </div>
+
+          {/* Categories filter section */}
+          <div className="">
+            <Tabs className="items-center justify-center"
+              selectedKey={bookCategory}
+              onSelectionChange={(key) => setBookCategory(key as "any" || "academic" || "fiction")}
+            >
+              <Tab title="Any" key={"any"} />
+              <Tab title="Academic" key={"academic"} />
+              <Tab title="Fiction" key={"fiction"} />
+            </Tabs>
+          </div>
+
+          {/* Toggle grid/list view */}
+          <div className="flex gap-1">
+            <Button
+              isIconOnly
+              variant={viewMode === "grid" ? "solid" : "light"}
+              onPress={() => setViewMode("grid")}
+            >
+              <Grid size={18} />
+            </Button>
+            <Button
+              isIconOnly
+              variant={viewMode === "list" ? "solid" : "light"}
+              onPress={() => setViewMode("list")}
+            >
+              <List size={18} />
+            </Button>
+          </div>
+
         </div>
         {/* Header risultati */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold">Libri disponibili</h1>
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold">Available books</h1>
           <p className="text-default-500">
             {swaps.length}{" "}
-            {swaps.length === 1 ? "libro trovato" : "libri trovati"}
+            {swaps.length === 1 ? "book found" : "books found"}
           </p>
         </div>
         {/* Griglia/Lista libri */}
@@ -313,7 +326,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
         ) : (
           <div className="text-center py-12">
             <p className="text-default-500 text-lg">
-              Nessun libro trovato
+              No books found
             </p>
           </div>
         )}{" "}

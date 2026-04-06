@@ -14,7 +14,6 @@ import { BookMarked } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContextHandler";
 import { addToast, Button } from "@heroui/react";
 import { useNavigate } from "react-router-dom";
-import React from "react";
 import { logout } from "@/misc/api";
 
 export const Navbar = () => {
@@ -38,18 +37,21 @@ export const Navbar = () => {
         </NavbarBrand>
 
         {/* Navigazione sempre visibile */}
-        <div className="flex gap-4 justify-start ml-2">
+        <div className="flex gap-4 justify-start ml-4">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                  "flex items-center gap-1 transition-opacity hover:opacity-70",
+                  "data-[active=true]:text-primary data-[active=true]:font-semibold",
                 )}
                 color="foreground"
                 href={item.href}
               >
-                {item.label}
+                {/* Render dell'icona dinamica */}
+                {item.icon && <item.icon size={18} strokeWidth={2} />}
+                <span className="text-sm">{item.label}</span>
               </Link>
             </NavbarItem>
           ))}

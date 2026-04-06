@@ -180,51 +180,34 @@ export async function getChatMessages(
   }
 }
 
-export async function getPersonalSwaps(searchString?: string, minPrice?: number, maxPrice?: number, condition?: string, type?:"academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
-  try {
-    const response = await apiSwaps.get("getPersonalSwaps.php", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      params: {
-        search: searchString,
-        min_price: minPrice,
-        max_price: maxPrice,
-        condition_status: condition,
-        type:type
-      }
-    });
-    const data = response.data;
-    const result: SwappyBooksSwapsResponse = {
-      successful: data["successful"],
-      message: data["message"],
-      swaps: data["swaps"],
-    };
-    return result;
-  } catch (error) {
-    console.log("error from php server:", error);
-    const result: SwappyBooksSwapsResponse = {
-      successful: false,
-      message: "server error",
-      swaps: [],
-    };
-    return result;
-  }
+//calls getSwaps to retrieve personal swaps and returns the result
+export async function fetchPersonalSwaps(searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
+  return await fetchSwaps("getPersonalSwaps", searchString, minPrice, maxPrice, conditions, type);
 }
 
+//calls getSwaps to retrieve shop swaps and returns the result
+export async function fetchShopSwaps(searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
+  return await fetchSwaps("getSwaps", searchString, minPrice, maxPrice, conditions, type);
 
-export async function getShopSwaps(searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?:"academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
+}
+//calls getSwaps to retrieve favorite swaps and returns the result
+export async function fetchFavoriteSwaps(searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
+  return await fetchSwaps("getFavoriteSwaps", searchString, minPrice, maxPrice, conditions, type);
+}
+
+//retrieves swaps from the backend and returns them as a SwappyBooksSwapsResponse
+export async function fetchSwaps(endpoint: "getSwaps" | "getPersonalSwaps" | "getFavoriteSwaps", searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
+  console.log("ciao");
   try {
-    const response = await apiSwaps.get("getSwaps.php", {
+    const response = await apiSwaps.post(endpoint+".php", {
+      search: searchString,
+      min_price: minPrice,
+      max_price: maxPrice,
+      conditions: conditions,
+      type: type
+    }, {
       headers: {
         "Content-Type": "application/json",
-      },
-      params: {
-        search: searchString,
-        min_price: minPrice,
-        max_price: maxPrice,
-        conditions: conditions,
-        type:type
       }
     });
     const data = response.data;
@@ -238,7 +221,7 @@ export async function getShopSwaps(searchString?: string, minPrice?: number, max
     console.log("error from php server:", error);
     const result: SwappyBooksSwapsResponse = {
       successful: false,
-      message: "server error",
+      message: "error in "+endpoint+".php", //todo: change error when project is finished
       swaps: [],
     };
     return result;
