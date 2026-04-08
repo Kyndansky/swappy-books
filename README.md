@@ -135,3 +135,16 @@ se volete fare le cose bene vi consiglio di gestire tutto a classi come facciamo
 Qualsiasi cambiamento al db vedetevelo voi, vi chiedo solo, una volto finito di cambiare il db, esportatelo in un file .sql dentro alla cartella config (dove c'e' gia' un file .sql, sostituite quel file (e usate lo stesso nome))
 
 Leggete tutto prima di fare cose che non workano pls
+
+---
+Fate anche un file backand per inserire uno swap in vendita con i seguenti campi passati in post.
+si controlla dalla session se l'utente che manda la richiesta e' loggato (se no si restituisce un errore) 
+
+info per upload swap
+titolo libro
+isbn (opzionale)
+descrizione
+condizioni
+prezzo
+autore
+tipo (accademico o fiction)

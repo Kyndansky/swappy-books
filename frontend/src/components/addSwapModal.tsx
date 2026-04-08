@@ -20,7 +20,17 @@ export default function AddSwapModal(props: addSwapModalProps) {
     >
       <ModalContent>
         <ModalHeader>Add a swap here</ModalHeader>
-        <ModalBody>kdadkad</ModalBody>
+        <ModalBody>
+          {/* todo: inserimento info per upload swap
+titolo libro
+isbn (opzionale)
+descrizione
+condizioni
+prezzo
+autore
+tipo (accademico o fiction) */}
+          kdadkad
+        </ModalBody>
         <ModalFooter>
           <Button
             onPress={() => {

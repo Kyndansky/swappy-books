@@ -17,7 +17,7 @@ export interface Swap {
   description: string;
   price: number;
   isbn?: string;
-  condition: 'new' | 'like-new' | 'good' | 'acceptable';
+  condition: 'new' | 'good' | 'acceptable'| 'damaged';
   type: "academic" | "fiction";
   seller: string;
   createdAt: string;
