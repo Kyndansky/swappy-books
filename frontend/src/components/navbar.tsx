@@ -51,7 +51,7 @@ export const Navbar = () => {
                 className={clsx(
                   linkStyles({ color: "foreground" }),
                   "flex items-center gap-1 transition-all hover:opacity-70",
-                  isActive(item.href) && "bg-blue-900/60 border border-blue-400/40 rounded-lg px-3 py-1",
+                  isActive(item.href) && "bg-blue-200/70 dark:bg-blue-900/60 border border-blue-300 dark:border-blue-400/40 rounded-lg px-3 py-1",
                 )}
                 color="foreground"
                 href={item.href}
