@@ -13,13 +13,20 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { BookMarked } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContextHandler";
 import { addToast, Button } from "@heroui/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { logout } from "@/misc/api";
 
 export const Navbar = () => {
   const { username } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { setIsAuthenticated, setUsername } = useAuth();
+
+  const isActive = (href: string) => {
+    if (href === "/") return location.pathname === "/";
+    return location.pathname.startsWith(href);
+  };
+
   return (
     <HeroUINavbar maxWidth="xl" position="sticky" isBordered={true}>
       <NavbarContent className="basis-full" justify="start">
@@ -43,8 +50,8 @@ export const Navbar = () => {
               <Link
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "flex items-center gap-1 transition-opacity hover:opacity-70",
-                  "data-[active=true]:text-primary data-[active=true]:font-semibold",
+                  "flex items-center gap-1 transition-all hover:opacity-70",
+                  isActive(item.href) && "bg-blue-900/60 border border-blue-400/40 rounded-lg px-3 py-1",
                 )}
                 color="foreground"
                 href={item.href}
