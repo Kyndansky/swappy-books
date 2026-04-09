@@ -5,8 +5,7 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@heroui/navbar";
-import { link as linkStyles } from "@heroui/theme";
-import clsx from "clsx";
+import { motion } from "framer-motion";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -44,21 +43,23 @@ export const Navbar = () => {
         </NavbarBrand>
 
         {/* Navigazione sempre visibile */}
-        <div className="flex gap-4 justify-start ml-4">
+        <div className="flex gap-1 justify-start ml-4">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "flex items-center gap-1 transition-all hover:opacity-70",
-                  isActive(item.href) && "bg-blue-200/70 dark:bg-blue-900/60 border border-blue-300 dark:border-blue-400/40 rounded-lg px-3 py-1",
-                )}
+                className="relative px-3 py-1.5 flex items-center gap-1.5 text-sm font-medium"
                 color="foreground"
                 href={item.href}
               >
-                {/* Render dell'icona dinamica */}
-                {item.icon && <item.icon size={18} strokeWidth={2} />}
-                <span className="text-sm">{item.label}</span>
+                {isActive(item.href) && (
+                  <motion.div
+                    layoutId="active-pill"
+                    className="absolute inset-0 bg-default-200/80 dark:bg-default-800/80 rounded-lg shadow-sm -z-10"
+                    transition={{ type: "spring", stiffness: 350, damping: 35 }}
+                  />
+                )}
+                {item.icon && <item.icon size={16} strokeWidth={2} />}
+                <span className="relative z-10">{item.label}</span>
               </Link>
             </NavbarItem>
           ))}
