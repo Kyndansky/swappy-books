@@ -54,7 +54,7 @@ export const Navbar = () => {
                 {isActive(item.href) && (
                   <motion.div
                     layoutId="active-pill"
-                    className="absolute inset-0 bg-default-200/80 dark:bg-default-800/80 rounded-lg shadow-sm -z-10"
+                    className="absolute inset-0 bg-default-200 dark:bg-default-600/30 rounded-lg shadow-sm shadow-black/5 dark:shadow-black/20 -z-10"
                     transition={{ type: "spring", stiffness: 350, damping: 35 }}
                   />
                 )}
