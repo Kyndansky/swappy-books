@@ -47,7 +47,7 @@ export const Navbar = () => {
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
-                className="relative px-3 py-1.5 flex items-center gap-1.5 text-sm font-medium"
+                className="relative px-3 py-1.5 flex items-center gap-1.5 text-sm font-medium transition-colors duration-150"
                 color="foreground"
                 href={item.href}
               >
