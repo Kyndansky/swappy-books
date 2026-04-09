@@ -19,6 +19,7 @@ import AddSwapModal from "@/components/addSwapModal";
 
 const conditions = [
   { key: "new", label: "New" },
+  { key: "like-new", label: "Like New" },
   { key: "good", label: "Good" },
   { key: "acceptable", label: "Acceptable" },
   { key: "damaged", label: "Damaged" }

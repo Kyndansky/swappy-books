@@ -6,12 +6,20 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/react";
+import { useState } from "react";
 
 interface addSwapModalProps {
   isOpen: boolean;
   closeModal: () => void;
 }
 export default function AddSwapModal(props: addSwapModalProps) {
+  const [bookTitle, setBookTitle] = useState<string>("");
+  const [bookIsbn, setBookIsbn] = useState<string>("");
+  const [bookAuthor, setBookAuthor] = useState<string>("");
+  const [bookDescription, setBookDescription] = useState<string>("");
+  const [bookCondition, setBookCondition] = useState<"new" | "like-new" | "good" | "acceptable" | "damaged">("new");
+  const [bookPrice, setBookPrice] = useState<number>(10);
+  const [bookType, setBookType] = useState<"academic" | "fiction">("academic");
   return (
     <Modal
       isOpen={props.isOpen}

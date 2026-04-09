@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 // Inclusione file di configurazione
 include_once '../../config/cors.php';

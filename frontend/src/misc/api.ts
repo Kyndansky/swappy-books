@@ -197,7 +197,6 @@ export async function fetchFavoriteSwaps(searchString?: string, minPrice?: numbe
 
 //retrieves swaps from the backend and returns them as a SwappyBooksSwapsResponse
 export async function fetchSwaps(endpoint: "getSwaps" | "getPersonalSwaps" | "getFavoriteSwaps", searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
-  console.log("ciao");
   try {
     const response = await apiSwaps.post(endpoint+".php", {
       search: searchString,
