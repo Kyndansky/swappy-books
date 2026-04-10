@@ -15,15 +15,7 @@ import DefaultLayout from "@/layouts/default";
 import BookCard from "@/components/BookCard";
 import { Swap, SwappyBooksSwapsResponse } from "@/types/interfaces";
 import AddSwapModal from "@/components/addSwapModal";
-
-
-const conditions = [
-  { key: "new", label: "New" },
-  { key: "like-new", label: "Like New" },
-  { key: "good", label: "Good" },
-  { key: "acceptable", label: "Acceptable" },
-  { key: "damaged", label: "Damaged" }
-];
+import { BOOK_CONDITIONS } from "@/types/bookInfoTypes";
 
 interface SwapsListPageProps {
   swapsCollection: "Shop" | "Personal" | "Favorite";
@@ -181,7 +173,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
 
           {/* Conditions filter section*/}
           <div className="flex gap-1">
-            {conditions.map(({ key, label }) => (
+            {BOOK_CONDITIONS.map(({ key, label }) => (
               <Chip
                 key={key}
                 variant={selectedConditions.includes(key) ? "solid" : "flat"}
