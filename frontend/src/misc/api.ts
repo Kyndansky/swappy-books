@@ -1,6 +1,8 @@
+import { BookCondition } from "@/types/bookInfoTypes";
 import {
   SwappyBooksMessagesResponse,
   SwappyBooksProfileResponse,
+  SwappyBooksResponse,
   SwappyBooksSendMessageResponse,
   SwappyBooksSwapsResponse,
   SwappyBooksUserChatsResponse,
@@ -198,7 +200,7 @@ export async function fetchFavoriteSwaps(searchString?: string, minPrice?: numbe
 //retrieves swaps from the backend and returns them as a SwappyBooksSwapsResponse
 export async function fetchSwaps(endpoint: "getSwaps" | "getPersonalSwaps" | "getFavoriteSwaps", searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
   try {
-    const response = await apiSwaps.post(endpoint+".php", {
+    const response = await apiSwaps.post(endpoint + ".php", {
       search: searchString,
       min_price: minPrice,
       max_price: maxPrice,
@@ -220,7 +222,7 @@ export async function fetchSwaps(endpoint: "getSwaps" | "getPersonalSwaps" | "ge
     console.log("error from php server:", error);
     const result: SwappyBooksSwapsResponse = {
       successful: false,
-      message: "error in "+endpoint+".php", //todo: change error when project is finished
+      message: "error in " + endpoint + ".php", //todo: change error when project is finished
       swaps: [],
     };
     return result;
@@ -254,6 +256,41 @@ export async function sendMessage(
     const result: SwappyBooksSendMessageResponse = {
       successful: false,
       message: "server error",
+    };
+    return result;
+  }
+}
+
+
+export async function createSwap
+  (bookTitle: string, bookAuthor: string, bookDescription: string, bookCondition: BookCondition["key"], bookPrice: number, bookCategory: "academic" | "fiction", bookIsbn?: string
+  ): Promise<SwappyBooksResponse> {
+  try {
+    const response = await apiSwaps.post("createSwap.php", {
+      title: bookTitle,
+      description: bookDescription,
+      condition: bookCondition,
+      price: bookPrice,
+      author: bookAuthor,
+      type: bookCategory,
+      isbn: bookIsbn
+
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    const result: SwappyBooksResponse = {
+      successful: data["successful"],
+      message: data["message"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error in create.php:", error);
+    const result: SwappyBooksResponse = {
+      successful: false,
+      message: "error in create.php",
     };
     return result;
   }

@@ -9,6 +9,7 @@ import {
   Chip,
   Tabs,
   Tab,
+  Alert,
 } from "@heroui/react";
 import { Search, Grid, List, Plus } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
@@ -16,6 +17,7 @@ import BookCard from "@/components/BookCard";
 import { Swap, SwappyBooksSwapsResponse } from "@/types/interfaces";
 import AddSwapModal from "@/components/addSwapModal";
 import { BOOK_CONDITIONS } from "@/types/bookInfoTypes";
+import { useAuth } from "@/contexts/AuthContextHandler";
 
 interface SwapsListPageProps {
   swapsCollection: "Shop" | "Personal" | "Favorite";
@@ -34,20 +36,20 @@ export default function SwapsListPage(props: SwapsListPageProps) {
   const [isEnabledMinPrice, setIsEnabledMinPrice] = useState(false);
   const [isEnabledMaxPrice, setIsEnabledMaxPrice] = useState(false);
 
-  const swapss: Swap[] = [
-    {
-      id: 1,
-      author: "GuiltyThree",
-      title: "Shadow Slave",
-      condition: "new",
-      createdAt: "",
-      description: "This is a very cool book which talks about the adventures of Sunless",
-      price: 25.12,
-      seller: "Kynda",
-      type: "fiction"
-    }
-  ]
-
+  const { isAuthenticated } = useAuth();
+  // const swapss: Swap[] = [
+  //   {
+  //     id: 1,
+  //     author: "GuiltyThree",
+  //     title: "Shadow Slave",
+  //     condition: "new",
+  //     createdAt: "",
+  //     description: "This is a very cool book which talks about the adventures of Sunless",
+  //     price: 25.12,
+  //     seller: "Kynda",
+  //     type: "fiction"
+  //   }
+  // ]
 
   //fetches swaps based on current filters and shows error if a problem occurs
   async function handleSwapsFetch() {
@@ -56,7 +58,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
       isEnabledMaxPrice === true ? priceFilter[1] : undefined,
       selectedConditions,
       bookCategory !== "any" ? bookCategory : undefined);
-
+      console.log(result);
     if (!result.successful) {
       addToast({
         title: result.message,
@@ -115,6 +117,15 @@ export default function SwapsListPage(props: SwapsListPageProps) {
     }
   };
 
+  if (props.swapsCollection === "Personal" || props.swapsCollection === "Favorite") {
+    if (!isAuthenticated) {
+      return (
+        <DefaultLayout>
+          <Alert color="danger">You must be authenticated to access this page!</Alert>
+        </DefaultLayout>
+      )
+    }
+  }
 
   return (
     <DefaultLayout>
@@ -304,7 +315,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
                 : "flex flex-col gap-4"
             }
           >
-            {swapss.map((swap) => (
+            {swaps.map((swap) => (
               <div
                 key={swap.id}
                 className={viewMode === "list" ? "w-full" : ""}
