@@ -4,6 +4,7 @@ import {
   SwappyBooksProfileResponse,
   SwappyBooksResponse,
   SwappyBooksSendMessageResponse,
+  SwappyBooksSwapResponse,
   SwappyBooksSwapsResponse,
   SwappyBooksUserChatsResponse,
   UserChatInfo,
@@ -229,6 +230,34 @@ export async function fetchSwaps(endpoint: "getSwaps" | "getPersonalSwaps" | "ge
   }
 }
 
+export async function fetchSwap(swapId:number): Promise<SwappyBooksSwapResponse> {
+  try {
+    const response = await apiSwaps.post("getSwapInfo.php", {
+      swapId:swapId
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+    const data = response.data;
+    console.log(data);
+    const result: SwappyBooksSwapResponse = {
+      successful: data["successful"],
+      message: data["message"],
+      swap: data["swap"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: SwappyBooksSwapResponse = {
+      successful: false,
+      message: "error in getSwapInfo.php",
+    };
+    return result;
+  }
+}
+
+
 export async function sendMessage(
   content: string,
   chat: UserChatInfo,
@@ -295,3 +324,5 @@ export async function createSwap
     return result;
   }
 }
+
+

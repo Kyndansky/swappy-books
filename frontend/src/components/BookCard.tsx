@@ -38,7 +38,7 @@ export default function BookCard(props: BookCardProps) {
     ? props.swap.description.substring(0, props.isListView ? 200 : 80) + '...'
     : props.swap.description;
 
-  const timeAgo = formatTimeAgo(props.swap.createdAt);
+  const timeAgo = formatTimeAgo(props.swap.createdAtDate);
   const rating = (Math.random() * 1.5 + 3.5).toFixed(1);
 
   // Funzione per gestire il click sulla card

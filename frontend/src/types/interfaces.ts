@@ -20,12 +20,17 @@ export interface Swap {
   condition: 'new' | 'like-new' | 'good' | 'acceptable' | 'damaged';
   type: "academic" | "fiction";
   seller: string;
-  createdAt: string;
+  createdAtDate: string;
+  favorite?:boolean
 }
 
 //inherits base backend response and contains info about swaps (either being sold, in the personal swaps of a user, or in favorites, etc..)
 export interface SwappyBooksSwapsResponse extends SwappyBooksResponse {
   swaps: Swap[]
+}
+
+export interface SwappyBooksSwapResponse extends SwappyBooksResponse {
+  swap?: Swap
 }
 
 //inherits base backend response and contains all the chats a user has ever involved themselves in

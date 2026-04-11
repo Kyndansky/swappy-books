@@ -29,7 +29,7 @@ export default function DefaultLayout({
         All rights reserved to swappy books
         <Link
           isExternal
-          className="ml-1 flex items-center gap-1 text-current text-xs text-primary"
+          className="ml-1 flex items-center gap-1 text-xs text-primary"
           href="https://github.com/Kyndansky/swappy-books/"
           title="Swappy books project"
           showAnchorIcon={true}
