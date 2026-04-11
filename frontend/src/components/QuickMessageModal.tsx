@@ -8,9 +8,8 @@ import {
     ModalFooter,
     ModalHeader,
     addToast,
-    Avatar,
 } from "@heroui/react";
-import { MessageCircle, SendHorizontal } from "lucide-react";
+import {  SendHorizontal } from "lucide-react";
 import { useState } from "react";
 import MessageAvatar from "./chat/MessageAvatar";
 
@@ -40,7 +39,7 @@ export default function QuickMessageModal(props: QuickMessageModalProps) {
                 <ModalHeader className="flex flex-col gap-1">Send message</ModalHeader>
                 <ModalBody>
                     <div className="flex flex-col items-center gap-4 py-2">
-                        <MessageAvatar username={props.messageReceiver} />
+                        <MessageAvatar username={props.messageReceiver} size="lg"/>
                         <div className="text-center">
                             <p className="text-small text-default-500">Sending a message to</p>
                             <p className="text-medium font-semibold">@{props.messageReceiver}</p>

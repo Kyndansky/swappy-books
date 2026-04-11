@@ -1,7 +1,8 @@
 import { Avatar } from "@heroui/react"
 
 interface MessageAvatarProps {
-    username: string
+    username: string;
+    size: "lg" | "md" | "sm";
 }
 
 export default function MessageAvatar(props: MessageAvatarProps) {
@@ -12,7 +13,7 @@ export default function MessageAvatar(props: MessageAvatarProps) {
                 base: "bg-gradient-to-br from-[#FFB457] to-[#FF705B]",
                 icon: "text-black/80",
             }}
-            size="lg"
+            size={props.size}
         />
     )
 

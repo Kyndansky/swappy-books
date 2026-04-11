@@ -58,7 +58,6 @@ export default function SwapsListPage(props: SwapsListPageProps) {
       isEnabledMaxPrice === true ? priceFilter[1] : undefined,
       selectedConditions,
       bookCategory !== "any" ? bookCategory : undefined);
-      console.log(result);
     if (!result.successful) {
       addToast({
         title: result.message,

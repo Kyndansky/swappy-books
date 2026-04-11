@@ -43,8 +43,6 @@ export default function Messages(props: MessagesPageProps) {
     (async () => {
       if (selectedChat) {
         const response = await getChatMessages(selectedChat);
-        console.log(selectedChat);
-        console.log(response);
         if (response.successful) {
           setCurrentChatMessages(response.messages);
         } else {
@@ -58,20 +56,22 @@ export default function Messages(props: MessagesPageProps) {
   }, [selectedChat]);
 
   async function handleSendMessage() {
-    if (selectedChat && username) {
-      const response = await sendMessage(messageInput, selectedChat);
-      if (response.successful) {
-        const newMsg = response.sentMessage;
-        if (newMsg) {
-          setCurrentChatMessages((prevMessages) => [...prevMessages, newMsg]);
+    if (messageInput !== "") {
+      if (selectedChat && username) {
+        const response = await sendMessage(messageInput, selectedChat);
+        if (response.successful) {
+          const newMsg = response.sentMessage;
+          if (newMsg) {
+            setCurrentChatMessages((prevMessages) => [...prevMessages, newMsg]);
+          }
+        } else {
+          addToast({
+            title: response.message,
+            color: "danger",
+          });
         }
-      } else {
-        addToast({
-          title: response.message,
-          color: "danger",
-        });
+        setMessageInput("");
       }
-      setMessageInput("");
     }
   }
 
@@ -102,6 +102,7 @@ export default function Messages(props: MessagesPageProps) {
                 <ChatUserInfo
                   username={chat.username}
                   bookName={chat.swapBookTitle}
+                  bookId={chat.swapId}
                   showAsSelected={
                     selectedChat?.swapId === chat.swapId &&
                       selectedChat.username === chat.username
@@ -113,7 +114,7 @@ export default function Messages(props: MessagesPageProps) {
             ))}
           </Listbox>
           <Divider orientation="vertical" className="mx-10 h-auto" />
-          <div className="flex w-3/4 justify-center align-items-center">
+          <div className="flex w-3/4 justify-center align-items-center items-stretch h-[80vh]">
             {selectedChat ? (
               <div className="flex flex-col items-center w-full">
                 <Chat
@@ -131,9 +132,7 @@ export default function Messages(props: MessagesPageProps) {
                     placeholder="Type message here"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        if (messageInput !== "") {
-                          handleSendMessage();
-                        }
+                        handleSendMessage();
                       }
                     }}
                     onChange={(e) => {
@@ -144,7 +143,6 @@ export default function Messages(props: MessagesPageProps) {
                     color="primary"
                     onPress={() => {
                       handleSendMessage();
-                      setMessageInput("");
                     }}
                   >
                     <SendHorizonal />

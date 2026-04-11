@@ -1,5 +1,5 @@
 import { Message, UserChatInfo } from "@/types/interfaces";
-import { Button, User } from "@heroui/react";
+import { Button } from "@heroui/react";
 import React from "react";
 import ChatUserInfo from "./ChatUserInfo";
 import MessageBox from "./messageBox";
@@ -12,12 +12,11 @@ interface ChatProps {
   onClose: () => void;
 }
 export default function Chat(props: ChatProps) {
-  // const { username } = useAuth();
-  // const username = "sigma2";
-  const username = "sigma";
+  const { username } = useAuth();
+
   return (
     <React.Fragment>
-      <div className="flex flex-col gap-4 w-full relative ">
+      <div className="flex flex-col gap-5 w-full relative h-full flex-1 min-h-0">
         <Button
           isIconOnly
           variant="flat"
@@ -31,20 +30,29 @@ export default function Chat(props: ChatProps) {
         >
           <X size={15} className="transition-transform duration-200 ease-in-out group-hover:rotate-[180deg]" />
         </Button>
-        <div className="mx-auto">
+        <div className="mx-auto flex-none">
           <ChatUserInfo
+            bookId={props.chatInfo.swapId}
             bookName={props.chatInfo.swapBookTitle}
             username={props.chatInfo.username}
           />
         </div>
 
-        <div className="flex flex-col overflow-y-scroll flex-1 w-auto gap-2 ">
-          {props.messages.map((msg, index) => (
-            <MessageBox key={index}
-              message={msg}
-              sender={username === msg.sender ? "Self" : "Other"} />
-          ))}
-
+        <div className="flex flex-col overflow-y-auto flex-1 w-auto gap-3 min-h-0 mb-6">
+          {props.messages.map((msg, index) => {
+            const isSelf = username === msg.sender;
+            return (
+              <div
+                key={index}
+                className={`flex flex-col w-full ${index === 0 ? "mt-auto" : ""} ${isSelf ? "items-end" : "items-start"}`}
+              >
+                <MessageBox
+                  message={msg}
+                  sender={isSelf ? "Self" : "Other"}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </React.Fragment>

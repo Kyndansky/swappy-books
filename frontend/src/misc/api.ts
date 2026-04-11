@@ -169,7 +169,7 @@ export async function getChatMessages(
     const result: SwappyBooksMessagesResponse = {
       successful: data["successful"],
       message: data["message"],
-      messages: [],
+      messages: data["messages"],
     };
     return result;
   } catch (error) {
@@ -240,7 +240,6 @@ export async function fetchSwap(swapId:number): Promise<SwappyBooksSwapResponse>
       }
     });
     const data = response.data;
-    console.log(data);
     const result: SwappyBooksSwapResponse = {
       successful: data["successful"],
       message: data["message"],
