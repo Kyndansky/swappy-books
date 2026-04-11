@@ -156,7 +156,7 @@ export async function getChatMessages(
   chatInfo: UserChatInfo,
 ): Promise<SwappyBooksMessagesResponse> {
   try {
-    const response = await apiChats.get("getchat.php", {
+    const response = await apiChats.get("getChat.php", {
       params: {
         other_user: chatInfo.username,
         swapId: chatInfo.swapId,

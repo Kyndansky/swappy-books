@@ -16,103 +16,10 @@ import {
 import { SendHorizonal } from "lucide-react";
 import { useEffect, useState } from "react";
 
-interface MessagesPageProps {}
+interface MessagesPageProps { }
 
 export default function Messages(props: MessagesPageProps) {
-  const chatss: UserChatInfo[] = [
-    {
-      username: "Riccardo Colaninno",
-      swapBookTitle: "Internetworking",
-      swapId: 3,
-    },
-    {
-      username: "Galimberti Pietro",
-      swapBookTitle: "Matematica Verde",
-      swapId: 1,
-    },
-    {
-      username: "Matteo Sartori",
-      swapBookTitle: "Protech",
-      swapId: 2,
-    },
-    {
-      username: "Davide Riccobene",
-      swapBookTitle: "Matematica Verde",
-      swapId: 1,
-    },
-  ];
-  // const messages: Message[] = [
-  //   {
-  //     content: "ciao",
-  //     sender: "Sigma2",
-  //     receiver: "sigma",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  //   {
-  //     content: "ho detto ciaoo",
-  //     sender: "sigma",
-  //     receiver: "Sigma2",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  //   {
-  //     content: "come va?",
-  //     sender: "Sigma2",
-  //     receiver: "sigma",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  //   {
-  //     content: "ci sei? ",
-  //     sender: "sigma",
-  //     receiver: "Sigma2",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  //   {
-  //     content: "ho detto ciaoo",
-  //     sender: "Sigma2",
-  //     receiver: "sigma",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  //   {
-  //     content: "come va?",
-  //     sender: "sigma",
-  //     receiver: "Sigma2",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  //   {
-  //     content: "ci sei? ",
-  //     sender: "Sigma2",
-  //     receiver: "sigma",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  //   {
-  //     content: "ho detto ciaoo",
-  //     sender: "sigma",
-  //     receiver: "Sigma2",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  //   {
-  //     content: "come va?",
-  //     sender: "sigma",
-  //     receiver: "Sigma2",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  //   {
-  //     content: "ci sei? ",
-  //     sender: "sigma",
-  //     receiver: "Sigma2",
-  //     swapId: 1,
-  //     messageTime: "15:45",
-  //   },
-  // ];
+
   const [chats, setChats] = useState<UserChatInfo[]>([]);
   const [selectedChat, setSelectedChat] = useState<UserChatInfo>();
   const [currentChatMessages, setCurrentChatMessages] = useState<Message[]>([]);
@@ -136,6 +43,8 @@ export default function Messages(props: MessagesPageProps) {
     (async () => {
       if (selectedChat) {
         const response = await getChatMessages(selectedChat);
+        console.log(selectedChat);
+        console.log(response);
         if (response.successful) {
           setCurrentChatMessages(response.messages);
         } else {
@@ -182,7 +91,7 @@ export default function Messages(props: MessagesPageProps) {
             className="w-auto"
             selectionBehavior={"replace"}
           >
-            {chatss?.map((chat, index) => (
+            {chats?.map((chat, index) => (
               <ListboxItem
                 key={index}
                 onClick={() => {
@@ -195,7 +104,7 @@ export default function Messages(props: MessagesPageProps) {
                   bookName={chat.swapBookTitle}
                   showAsSelected={
                     selectedChat?.swapId === chat.swapId &&
-                    selectedChat.username === chat.username
+                      selectedChat.username === chat.username
                       ? true
                       : false
                   }

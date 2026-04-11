@@ -12,7 +12,6 @@ import {
   Divider,
   Card,
   CardBody,
-  Avatar,
   Table,
   TableHeader,
   TableColumn,
@@ -24,6 +23,7 @@ import {
 import { fetchSwap } from '@/misc/api';
 import { useAuth } from '@/contexts/AuthContextHandler';
 import React from 'react';
+import QuickMessageModal from '@/components/QuickMessageModal';
 
 export default function SwapInfoPage() {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +34,7 @@ export default function SwapInfoPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLiked, setIsLiked] = useState(false);
   const { isAuthenticated, username } = useAuth();
+  const [isMessageMOdalOpen, setIsMessageModalOpen] = useState<boolean>(false);
 
   useEffect(function () {
     async function loadSwap() {
@@ -173,9 +174,12 @@ export default function SwapInfoPage() {
                         color="primary"
                         className="w-full font-semibold"
                         startContent={<MessageCircle size={20} />}
-                        onPress={()=>{
-                          if(isAuthenticated===false){
+                        onPress={() => {
+                          if (isAuthenticated === false) {
                             navigate("/login")
+                          }
+                          else {
+                            setIsMessageModalOpen(true);
                           }
                         }}
                       >
@@ -210,6 +214,12 @@ export default function SwapInfoPage() {
           </div>
         </div>
       </div>
+      <QuickMessageModal
+        isOpen={isMessageMOdalOpen}
+        closeModal={() => { setIsMessageModalOpen(false) }} 
+        messageReceiver={swap.seller}
+        swapId={swap.id}
+        />
     </DefaultLayout>
   );
 }
