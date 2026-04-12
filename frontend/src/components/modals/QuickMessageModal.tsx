@@ -70,7 +70,7 @@ export default function QuickMessageModal(props: QuickMessageModalProps) {
                         onPress={async () => {
                             if (messageContent === "") return;
                             const result = await sendMessage(messageContent, {
-                                swapId: 1,
+                                swapId: props.swapId,
                                 swapBookTitle: "",
                                 username: props.messageReceiver
                             });

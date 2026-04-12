@@ -261,6 +261,7 @@ export async function sendMessage(
   content: string,
   chat: UserChatInfo,
 ): Promise<SwappyBooksSendMessageResponse> {
+  console.log(chat);
   try {
     const response = await apiChats.get("sendMessage.php", {
       params: {
