@@ -40,5 +40,5 @@ while ($row = $result->fetch_assoc()) {
 echo json_encode([
     "successful" => true,
     "message" => "successfully retrieved favorites",
-    "favorites" => $favorites
+    "swaps" => $favorites
 ]);

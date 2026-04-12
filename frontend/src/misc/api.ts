@@ -185,7 +185,7 @@ export async function getChatMessages(
 
 //calls getSwaps to retrieve personal swaps and returns the result
 export async function fetchPersonalSwaps(searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
-  return await fetchSwaps("getPersonalSwaps", searchString, minPrice, maxPrice, conditions, type);
+  return await fetchSwaps("getUserSwaps", searchString, minPrice, maxPrice, conditions, type);
 }
 
 //calls getSwaps to retrieve shop swaps and returns the result
@@ -195,11 +195,11 @@ export async function fetchShopSwaps(searchString?: string, minPrice?: number, m
 }
 //calls getSwaps to retrieve favorite swaps and returns the result
 export async function fetchFavoriteSwaps(searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
-  return await fetchSwaps("getFavoriteSwaps", searchString, minPrice, maxPrice, conditions, type);
+  return await fetchSwaps("getFavorite", searchString, minPrice, maxPrice, conditions, type);
 }
 
 //retrieves swaps from the backend and returns them as a SwappyBooksSwapsResponse
-export async function fetchSwaps(endpoint: "getSwaps" | "getPersonalSwaps" | "getFavoriteSwaps", searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
+export async function fetchSwaps(endpoint: "getSwaps" | "getUserSwaps" | "getFavorite", searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
   try {
     const response = await apiSwaps.post(endpoint + ".php", {
       search: searchString,
@@ -213,6 +213,7 @@ export async function fetchSwaps(endpoint: "getSwaps" | "getPersonalSwaps" | "ge
       }
     });
     const data = response.data;
+    console.log(data);
     const result: SwappyBooksSwapsResponse = {
       successful: data["successful"],
       message: data["message"],
