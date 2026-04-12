@@ -203,8 +203,8 @@ export async function fetchSwaps(endpoint: "getSwaps" | "getUserSwaps" | "getFav
   try {
     const response = await apiSwaps.post(endpoint + ".php", {
       search: searchString,
-      min_price: minPrice,
-      max_price: maxPrice,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
       conditions: conditions,
       type: type
     }, {
