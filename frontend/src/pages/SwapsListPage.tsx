@@ -39,19 +39,6 @@ export default function SwapsListPage(props: SwapsListPageProps) {
   const [isLoadingSwaps, setIsLoadingSwaps] = useState<boolean>(true);
 
   const { isAuthenticated } = useAuth();
-  // const swapss: Swap[] = [
-  //   {
-  //     id: 1,
-  //     author: "GuiltyThree",
-  //     title: "Shadow Slave",
-  //     condition: "new",
-  //     createdAt: "",
-  //     description: "This is a very cool book which talks about the adventures of Sunless",
-  //     price: 25.12,
-  //     seller: "Kynda",
-  //     type: "fiction"
-  //   }
-  // ]
 
   //fetches swaps based on current filters and shows error if a problem occurs
   async function handleSwapsFetch() {
