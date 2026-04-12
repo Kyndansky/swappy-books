@@ -35,6 +35,7 @@ export default function Chat(props: ChatProps) {
             bookId={props.chatInfo.swapId}
             bookName={props.chatInfo.swapBookTitle}
             username={props.chatInfo.username}
+            isBookTitleLink
           />
         </div>
 

@@ -21,7 +21,8 @@ export interface Swap {
   type: "academic" | "fiction";
   seller: string;
   createdAtDate: string;
-  favorite?:boolean
+  favorite?:boolean;
+  sellDate:string;
 }
 
 //inherits base backend response and contains info about swaps (either being sold, in the personal swaps of a user, or in favorites, etc..)

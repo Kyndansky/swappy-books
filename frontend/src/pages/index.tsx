@@ -16,17 +16,17 @@ export default function LandingPage() {
         <TypewriterTitle />
         
         <p className="text-lg md:text-xl text-default-500 text-center max-w-2xl">
-          Scambia e vendi libri usati con la tua comunità
+          Swap and sell used books with your community
         </p>
 
         <LandingFeatures />
         
         <div className="flex flex-col sm:flex-row gap-4">
           <Button as={Link} href="/shop" color="primary" size="lg" endContent={<ArrowRight size={18} />}>
-            Esplora libri
+            Explore books
           </Button>
           <Button as={Link} href="/register" color="default" size="lg" variant="bordered">
-            Crea account gratuito
+            Create free account
           </Button>
         </div>
       </section>

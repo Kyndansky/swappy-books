@@ -43,7 +43,7 @@ export default function BookCard(props: BookCardProps) {
 
   // Funzione per gestire il click sulla card
   const handleCardClick = () => {
-    navigate(`/book/${props.swap.id}`);
+    navigate(`/swap/${props.swap.id}`);
   };
 
   // Funzione per gestire il click sul cuore senza propagazione

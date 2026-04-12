@@ -18,7 +18,7 @@ function App() {
       <Route path="/swaps" element={<SwapsListPage retrieveSwapsFunction={fetchPersonalSwaps} swapsCollection="Personal"/>}/>
       <Route path="/shop" element={<SwapsListPage retrieveSwapsFunction={fetchShopSwaps} swapsCollection="Shop"/>}/>
       <Route path="/favorites" element={<SwapsListPage retrieveSwapsFunction={fetchFavoriteSwaps} swapsCollection="Favorite"/>}/> 
-      <Route path="/swaps/:id" element={<SwapInfoPage />} />
+      <Route path="/swap/:id" element={<SwapInfoPage />} />
       
       <Route path="*" element={<NotFound />}/>
     </Routes>

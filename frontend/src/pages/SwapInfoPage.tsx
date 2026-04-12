@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, MessageCircle, Share2, User } from "lucide-react";
+import { Heart, MessageCircle, Share2 } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import { Swap } from '@/types/interfaces';
 import {
@@ -24,6 +24,7 @@ import { fetchSwap } from '@/misc/api';
 import { useAuth } from '@/contexts/AuthContextHandler';
 import React from 'react';
 import QuickMessageModal from '@/components/QuickMessageModal';
+import MessageAvatar from '@/components/chat/MessageAvatar';
 
 export default function SwapInfoPage() {
   const { id } = useParams<{ id: string }>();
@@ -101,8 +102,19 @@ export default function SwapInfoPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-success" />
-                  <span className="text-success">Available</span>
+
+                  {!swap.sellDate ? (
+                    <React.Fragment>
+                      <div className="w-2 h-2 rounded-full bg-success" />
+                      <span className="text-success">Available</span>
+                    </React.Fragment>
+
+                  ) : (
+                    <React.Fragment>
+                      <div className="w-2 h-2 rounded-full bg-danger" />
+                      <span className="text-danger">Unavailable</span>
+                    </React.Fragment>
+                  )}
                 </div>
               </div>
 
@@ -159,7 +171,7 @@ export default function SwapInfoPage() {
             <Card className="shadow-sm border-none bg-default-50 sticky top-6">
               <CardBody className="p-6">
                 <div className="flex items-center gap-4 mb-6">
-                  <User size={30} />
+                  <MessageAvatar username={swap.seller} size={'lg'}/>
                   <div>
                     <h3 className="text-xl font-semibold">
                       {username === swap.seller ? username + " (You)" : swap.seller}
@@ -216,10 +228,10 @@ export default function SwapInfoPage() {
       </div>
       <QuickMessageModal
         isOpen={isMessageMOdalOpen}
-        closeModal={() => { setIsMessageModalOpen(false) }} 
+        closeModal={() => { setIsMessageModalOpen(false) }}
         messageReceiver={swap.seller}
         swapId={swap.id}
-        />
+      />
     </DefaultLayout>
   );
 }

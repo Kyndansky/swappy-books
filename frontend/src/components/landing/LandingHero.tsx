@@ -53,9 +53,9 @@ export function TypewriterTitle() {
 }
 
 const features = [
-  { icon: BookOpen, label: "Migliaia di libri" },
-  { icon: Users, label: "Comunità attiva" },
-  { icon: ShieldCheck, label: "Transazioni sicure" },
+  { icon: BookOpen, label: "Thousands of books" },
+  { icon: Users, label: "Active community" },
+  { icon: ShieldCheck, label: "Secure transactions" },
 ];
 
 export function LandingFeatures() {

@@ -10,6 +10,7 @@ import {
   Tabs,
   Tab,
   Alert,
+  Spinner,
 } from "@heroui/react";
 import { Search, Grid, List, Plus } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
@@ -35,6 +36,7 @@ export default function SwapsListPage(props: SwapsListPageProps) {
   const [priceFilter, setPriceFilter] = useState<number[]>([0, 100]); //where [0] is the min price and [1] is the max price
   const [isEnabledMinPrice, setIsEnabledMinPrice] = useState(false);
   const [isEnabledMaxPrice, setIsEnabledMaxPrice] = useState(false);
+  const [isLoadingSwaps, setIsLoadingSwaps] = useState<boolean>(true);
 
   const { isAuthenticated } = useAuth();
   // const swapss: Swap[] = [
@@ -71,14 +73,18 @@ export default function SwapsListPage(props: SwapsListPageProps) {
 
   //debounced search when changing filters
   useEffect(() => {
+    setIsLoadingSwaps(true);
+    setSwaps([]);
     if (isFirstMount.current) {
       handleSwapsFetch();
+      setIsLoadingSwaps(false);
       isFirstMount.current = false;
       return;
     }
 
     const timer = setTimeout(() => {
       handleSwapsFetch();
+      setIsLoadingSwaps(false);
     }, 500);
 
     // Cleanup: last timer is deleted if something changes before it expires, renewing its count
@@ -125,6 +131,8 @@ export default function SwapsListPage(props: SwapsListPageProps) {
       )
     }
   }
+
+
 
   return (
     <DefaultLayout>
@@ -306,7 +314,11 @@ export default function SwapsListPage(props: SwapsListPageProps) {
           </p>
         </div>
         {/* Griglia/Lista libri */}
-        {swaps.length > 0 ? (
+        {isLoadingSwaps === true ? (
+          <div className="flex flex-col flex-1 items-center justify-center min-h-[400px]">
+            <Spinner>Loading swaps...</Spinner>
+          </div>
+        ) : swaps.length > 0 ? (
           <div
             className={
               viewMode === "grid"
@@ -332,7 +344,9 @@ export default function SwapsListPage(props: SwapsListPageProps) {
               No books found
             </p>
           </div>
-        )}{" "}
+        )
+        }
+
       </div>
     </DefaultLayout>
   );

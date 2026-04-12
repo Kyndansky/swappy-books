@@ -109,6 +109,7 @@ export default function Messages(props: MessagesPageProps) {
                       ? true
                       : false
                   }
+                  isBookTitleLink={false}
                 />
               </ListboxItem>
             ))}
