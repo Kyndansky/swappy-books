@@ -20,7 +20,7 @@ import {
   TableCell
 } from "@heroui/react";
 
-import { fetchSwap } from '@/misc/api';
+import { fetchSwap, swapToggleFavorite } from '@/misc/api';
 import { useAuth } from '@/contexts/AuthContextHandler';
 import React from 'react';
 import MessageAvatar from '@/components/chat/MessageAvatar';
@@ -171,7 +171,7 @@ export default function SwapInfoPage() {
             <Card className="shadow-sm border-none bg-default-50 sticky top-6">
               <CardBody className="p-6">
                 <div className="flex items-center gap-4 mb-6">
-                  <MessageAvatar username={swap.seller} size={'lg'}/>
+                  <MessageAvatar username={swap.seller} size={'lg'} />
                   <div>
                     <h3 className="text-xl font-semibold">
                       {username === swap.seller ? username + " (You)" : swap.seller}
@@ -204,7 +204,20 @@ export default function SwapInfoPage() {
                           color={isLiked ? "danger" : "default"}
                           className="flex-1 font-semibold"
                           startContent={<Heart size={20} fill={isLiked ? "currentColor" : "none"} />}
-                          onPress={function () { setIsLiked(!isLiked) }}
+                          onPress={async () => {
+                            setIsLiked(!isLiked);
+                            const result = await swapToggleFavorite(swap.id);
+                            console.log(result);
+                            if (result.successful === false) {
+                              addToast(
+                                {
+                                  title: result.message,
+                                  color: "danger"
+                                }
+                              )
+                            }
+                          }
+                          }
                         >
                           {isLiked ? "In Favorites" : "Favorites"}
                         </Button>

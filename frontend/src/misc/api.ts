@@ -213,7 +213,6 @@ export async function fetchSwaps(endpoint: "getSwaps" | "getUserSwaps" | "getFav
       }
     });
     const data = response.data;
-    console.log(data);
     const result: SwappyBooksSwapsResponse = {
       successful: data["successful"],
       message: data["message"],
@@ -231,10 +230,10 @@ export async function fetchSwaps(endpoint: "getSwaps" | "getUserSwaps" | "getFav
   }
 }
 
-export async function fetchSwap(swapId:number): Promise<SwappyBooksSwapResponse> {
+export async function fetchSwap(swapId: number): Promise<SwappyBooksSwapResponse> {
   try {
     const response = await apiSwaps.post("getSwapInfo.php", {
-      swapId:swapId
+      swapId: swapId
     }, {
       headers: {
         "Content-Type": "application/json",
@@ -325,5 +324,29 @@ export async function createSwap
   }
 }
 
+export async function swapToggleFavorite(swapId: number): Promise<SwappyBooksResponse> {
+  try {
+    const response = await apiSwaps.post("toggleFavorite.php", {
+      swapId: swapId
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    const result: SwappyBooksResponse = {
+      successful: data["successful"],
+      message: data["message"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error in create.php:", error);
+    const result: SwappyBooksResponse = {
+      successful: false,
+      message: "error in create.php",
+    };
+    return result;
+  }
+}
 
-export const delay = (ms:number) => new Promise(resolve => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
