@@ -16,7 +16,7 @@ import { Search, Grid, List, Plus } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
 import BookCard from "@/components/BookCard";
 import { Swap, SwappyBooksSwapsResponse } from "@/types/interfaces";
-import AddSwapModal from "@/components/addSwapModal";
+import AddSwapModal from "@/components/modals/addSwapModal";
 import { BOOK_CONDITIONS } from "@/types/bookInfoTypes";
 import { useAuth } from "@/contexts/AuthContextHandler";
 

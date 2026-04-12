@@ -2,7 +2,11 @@ import DefaultLayout from "@/layouts/default";
 import { Link } from "@heroui/link";
 import { Button } from "@heroui/button";
 import { ArrowRight } from "lucide-react";
-import { TypewriterTitle, LandingFeatures, LandingBenefits, LandingSteps, LandingCTA } from "@/components/landing";
+import { LandingBenefits } from "@/components/landing/LandingBenefits";
+import { LandingCTA } from "@/components/landing/LandingCTA";
+import { TypewriterTitle, LandingFeatures } from "@/components/landing/LandingHero";
+import { LandingSteps } from "@/components/landing/LandingSteps";
+
 
 export default function LandingPage() {
   return (

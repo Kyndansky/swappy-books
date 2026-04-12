@@ -8,7 +8,7 @@ import {
 import { motion } from "framer-motion";
 
 import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/components/theme-switch";
+import { ThemeSwitch } from "@/components/misc/theme-switch";
 import { BookMarked } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContextHandler";
 import { addToast, Button } from "@heroui/react";

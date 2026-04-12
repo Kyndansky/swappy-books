@@ -11,7 +11,8 @@ import {
 } from "@heroui/react";
 import {  SendHorizontal } from "lucide-react";
 import { useState } from "react";
-import MessageAvatar from "./chat/MessageAvatar";
+import MessageAvatar from "../chat/MessageAvatar";
+
 
 interface QuickMessageModalProps {
     messageReceiver: string;

@@ -2,7 +2,7 @@ import { Link } from "@heroui/link";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 
-import { Navbar } from "@/components/navbar";
+import { Navbar } from "@/components/misc/navbar";
 
 export default function DefaultLayout({
   children,

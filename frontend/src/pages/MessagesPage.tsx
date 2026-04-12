@@ -16,9 +16,7 @@ import {
 import { SendHorizonal } from "lucide-react";
 import { useEffect, useState } from "react";
 
-interface MessagesPageProps { }
-
-export default function Messages(props: MessagesPageProps) {
+export default function MessagesPage() {
 
   const [chats, setChats] = useState<UserChatInfo[]>([]);
   const [selectedChat, setSelectedChat] = useState<UserChatInfo>();

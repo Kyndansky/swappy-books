@@ -23,8 +23,8 @@ import {
 import { fetchSwap } from '@/misc/api';
 import { useAuth } from '@/contexts/AuthContextHandler';
 import React from 'react';
-import QuickMessageModal from '@/components/QuickMessageModal';
 import MessageAvatar from '@/components/chat/MessageAvatar';
+import QuickMessageModal from '@/components/modals/QuickMessageModal';
 
 export default function SwapInfoPage() {
   const { id } = useParams<{ id: string }>();
