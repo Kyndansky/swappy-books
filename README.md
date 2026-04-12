@@ -7,10 +7,7 @@
  2. `sudo docker compose up --build -d`
 
 **Cleaning up**
-To stop all running containers:
-`sudo docker stop $(sudo docker ps -q)`
- To delete all containers that are not running:
- `sudo docker system prune -a --volumes -f`
+Use `sudo docker compose down` to stop the container
 
 ## Introduction
 **SwappyBooks is an online marketplace** designed **for the exchange of used academic textbooks**. 
