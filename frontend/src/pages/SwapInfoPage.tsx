@@ -205,7 +205,7 @@ export default function SwapInfoPage() {
                           startContent={<Heart size={20} fill={swap.favorite===true ? "currentColor" : "none"} />}
                           onPress={async () => {
                             const result = await swapToggleFavorite(swap.id);
-                            swap.favorite=!swap.favorite;
+                            swap.favorite= swap.favorite===true?true:false;
                             console.log(result);
                             if (result.successful === false) {
                               addToast(

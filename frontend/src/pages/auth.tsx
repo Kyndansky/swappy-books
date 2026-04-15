@@ -3,7 +3,7 @@ import DefaultLayout from "@/layouts/default";
 import { login, register } from "@/misc/api";
 import { SwappyBooksProfileResponse } from "@/types/interfaces";
 import { Input } from "@heroui/input";
-import { addToast, Button, Card, CardBody, CardFooter, CardHeader, divider } from "@heroui/react";
+import { addToast, Button, Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
