@@ -10,26 +10,31 @@ export const siteConfig = {
       label: "Home",
       href: "/",
       icon: Home,
+      authRequired:false
     },
     {
       label: "Messages",
       href: "/messages",
       icon: MessageSquare,
+      authRequired:true
     },
     {
       label: "Shop",
       href: "/shop",
       icon: ShoppingBag,
+      authRequired:false
     },
     {
       label: "Favorites",
       href: "/favorites",
       icon: Heart,
+      authRequired:true
     },
     {
       label: "Your swaps",
       href: "/swaps",
       icon: BookOpen,
+      authRequired:true
     }
     
   ],

@@ -33,7 +33,6 @@ export default function SwapInfoPage() {
 
   const [swap, setSwap] = useState<Swap>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isLiked, setIsLiked] = useState(false);
   const { isAuthenticated, username } = useAuth();
   const [isMessageMOdalOpen, setIsMessageModalOpen] = useState<boolean>(false);
 
@@ -201,12 +200,12 @@ export default function SwapInfoPage() {
                       <div className="flex gap-2">
                         <Button
                           variant="flat"
-                          color={isLiked ? "danger" : "default"}
+                          color={swap.favorite===true ? "danger" : "default"}
                           className="flex-1 font-semibold"
-                          startContent={<Heart size={20} fill={isLiked ? "currentColor" : "none"} />}
+                          startContent={<Heart size={20} fill={swap.favorite===true ? "currentColor" : "none"} />}
                           onPress={async () => {
-                            setIsLiked(!isLiked);
                             const result = await swapToggleFavorite(swap.id);
+                            swap.favorite=!swap.favorite;
                             console.log(result);
                             if (result.successful === false) {
                               addToast(
@@ -219,7 +218,7 @@ export default function SwapInfoPage() {
                           }
                           }
                         >
-                          {isLiked ? "In Favorites" : "Favorites"}
+                          {swap.favorite===true ? "In favorites" : "Add to favorites"}
                         </Button>
 
                         <Button

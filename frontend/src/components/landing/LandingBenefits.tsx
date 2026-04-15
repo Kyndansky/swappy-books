@@ -9,7 +9,7 @@ const benefits = [
   { 
     icon: Repeat, 
     title: "Flexible swaps", 
-    description: "Choose whether to sell, buy, or swap. You decide how to proceed." 
+    description: "Choose whether to sell or buy. You decide how to proceed." 
   },
   { 
     icon: ShieldCheck, 
