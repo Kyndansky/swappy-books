@@ -23,10 +23,14 @@ $allowed_origins = [
     'http://127.0.0.1',
 ];
 
-// if request comes from allowed origins or if the request is empty (this condition was added because i use postman (postman origin is generally empty))
-// it is allowed (i would use * directly but doing so apparently makes session not work)
-if (in_array($origin, $allowed_origins) || empty($origin)) {
-    header("Access-Control-Allow-Origin: " . ($origin ?: '*'));
+// if request comes from allowed origins
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: " . $origin);
+} else {
+    http_response_code(403);
+    header("content-type: application/json; charset=UTF-8");
+    echo json_encode(["error" => "origin not allowed"]);
+    exit();
 }
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");

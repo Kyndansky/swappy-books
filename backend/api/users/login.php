@@ -17,6 +17,25 @@ if (!isset($username) || !isset($password)) {
     echo json_encode($response);
     exit();
 }
+
+if (!is_string($username) || !preg_match('/^[a-zA-Z0-9_]{3,20}$/', $username)) {
+    $response = [
+        "successful" => false,
+        "message" => "Invalid username format"
+    ];
+    echo json_encode($response);
+    exit();
+}
+
+if (!is_string($password) || strlen($password) < 6) {
+    $response = [
+        "successful" => false,
+        "message" => "Password must be at least 6 characters"
+    ];
+    echo json_encode($response);
+    exit();
+}
+
 require_once("../../config/database.php");
 
 $stmt = $dbConnection->prepare("SELECT * FROM users WHERE username = ?");
@@ -48,12 +67,11 @@ if (password_verify($input_password, $dbPass) === false) {
     echo json_encode($response);
     exit();
 } else {
+    session_regenerate_id(true);
+    $_SESSION['username'] = $username;
     $response = [
         "successful" => true,
         "message" => "Login successful",
         "username" => $username
     ];
 }
-
-$_SESSION['username'] = $username;
-echo json_encode($response);

@@ -26,6 +26,24 @@ if (!$username || !$password) {
     exit();
 }
 
+if (!is_string($username) || !preg_match('/^[a-zA-Z0-9_]{3,20}$/', $username)) {
+    echo json_encode([
+        "successful" => false,
+        "message" => "Username must be 3-20 alphanumeric characters",
+        "username" => ""
+    ]);
+    exit();
+}
+
+if (!is_string($password) || strlen($password) < 6) {
+    echo json_encode([
+        "successful" => false,
+        "message" => "Password must be at least 6 characters",
+        "username" => ""
+    ]);
+    exit();
+}
+
 require_once("../../config/database.php");
 
 // Controlla se l'utente esiste già
@@ -52,6 +70,7 @@ $hashed_password = password_hash($input_password, PASSWORD_BCRYPT);
 $stmt->bind_param("ss", $username, $hashed_password);
 $stmt->execute();
 
+session_regenerate_id(true);
 $_SESSION["username"] = $username;
 
 echo json_encode([
