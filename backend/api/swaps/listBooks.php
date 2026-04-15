@@ -1,67 +1,71 @@
 <?php
-// Includiamo i file di configurazione
+session_start();
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
-$query = "SELECT 
-            book_id, 
-            title, 
-            subject, 
-            price, 
-            condition_status, 
-            isbn, 
-            created_at,
-            seller_username AS seller_name 
-          FROM 
-            books 
-          WHERE 
-            buyer_username IS NULL
-          ORDER BY 
-            created_at DESC";
+$logged_username = $_SESSION['username'] ?? null;
 
-// Esecuzione con mysqli
+$query = "SELECT b.book_id as id, b.title, b.author, b.description, b.type,
+                 b.condition_status as `condition`, b.seller_username as seller, 
+                 b.created_at as createdAtDate, b.price, b.isbn ";
+
+if ($logged_username) {
+    $query .= ", IF(f.book_id IS NOT NULL, 1, 0) as favorite ";
+} else {
+    $query .= ", 0 as favorite ";
+}
+
+$query .= " FROM books b ";
+
+if ($logged_username) {
+    $query .= " LEFT JOIN favorites f ON b.book_id = f.book_id AND f.username = ? ";
+}
+
+$query .= " WHERE b.buyer_username IS NULL ORDER BY b.created_at DESC ";
+
+$params = [];
+$types = "";
+
+if ($logged_username) {
+    $params[] = $logged_username;
+    $types .= "s";
+}
+
 $stmt = $dbConnection->prepare($query);
+if (!$stmt) {
+    echo json_encode(["successful" => false, "message" => "Errore SQL"]);
+    exit();
+}
+
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
 
 try {
     $stmt->execute();
-    
-    // Otteniamo il set di risultati
     $result = $stmt->get_result();
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
 
-    // Contiamo le righe
-    $num = $result->num_rows;
-
-    if($num > 0) {
-        $books_arr = array();
-
-        while ($row = $result->fetch_assoc()){
-            extract($row);
-
-            $book_item = array(
-                "id" => $book_id,
-                "title" => html_entity_decode($title),
-                "subject" => $subject,
-                "price" => $price,
-                "condition" => $condition_status,
-                "isbn" => $isbn,
-                "seller" => $seller_name,
-                "posted_at" => $created_at
-            );
-
-            array_push($books_arr, $book_item);
-        }
-
-        echo json_encode($books_arr);
-
-    } else {
-        // Nessun libro trovato
-        echo json_encode(array()); 
+    $books = [];
+    foreach ($rows as $row) {
+        $books[] = [
+            "id" => (int)$row['id'],
+            "title" => $row['title'],
+            "author" => $row['author'],
+            "description" => $row['description'],
+            "type" => $row['type'],
+            "isbn" => $row['isbn'],
+            "condition" => $row['condition'],
+            "seller" => $row['seller'],
+            "createdAtDate" => date("d/m/Y", strtotime($row['createdAtDate'])),
+            "price" => (float)$row['price'],
+            "favorite" => $logged_username ? ($row['favorite'] == 1) : false
+        ];
     }
 
-    $stmt->close();
+    echo json_encode(["successful" => true, "message" => "Libri recuperati con successo", "books" => $books]);
 
 } catch (Exception $e) {
-    // In caso di errore SQL restituisce un array vuoto o gestisci l'errore diversamente
-    echo json_encode(array());
+    echo json_encode(["successful" => false, "message" => "Errore durante il recupero dei libri"]);
 }
 ?>

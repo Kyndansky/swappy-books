@@ -1,72 +1,89 @@
 <?php
-// Includiamo i file di configurazione
+session_start();
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
-if(isset($_GET['id']) && !empty($_GET['id'])) {
+$json_data = file_get_contents('php://input');
+$_DATA = json_decode($json_data, true) ?: [];
 
-    // Cast a intero per maggiore sicurezza
-    $book_id = (int)$_GET['id'];
-    
-    // Query adattata al nuovo schema del database.
-    // Nessuna JOIN necessaria: il seller_username è già nella tabella books.
-    $query = "SELECT 
-                book_id, 
-                title, 
-                subject, 
-                price, 
-                condition_status, 
-                isbn, 
-                buyer_username, 
-                created_at,
-                seller_username
-              FROM 
-                books
-              WHERE 
-                book_id = ?
-              LIMIT 1";
+$logged_username = $_SESSION['username'] ?? null;
 
-    $stmt = $dbConnection->prepare($query);
-    
-    // "i" indica un parametro di tipo intero
-    $stmt->bind_param("i", $book_id);
-    
-    try {
-        $stmt->execute();
-        $result = $stmt->get_result();
+if(empty($_DATA['id'])) {
+    echo json_encode(["successful" => false, "message" => "Specificare un ID valido."]);
+    exit();
+}
 
-        if($result->num_rows > 0) {
-            
-            $row = $result->fetch_assoc();
+$book_id = (int)$_DATA['id'];
 
-            $book_detail = array(
+$query = "SELECT 
+            b.book_id, 
+            b.title, 
+            b.author,
+            b.description,
+            b.type,
+            b.price, 
+            b.condition_status, 
+            b.isbn, 
+            b.buyer_username, 
+            b.created_at,
+            b.seller_username
+          FROM books b
+          WHERE b.book_id = ?
+          LIMIT 1";
+
+$stmt = $dbConnection->prepare($query);
+if (!$stmt) {
+    echo json_encode(["successful" => false, "message" => "Errore SQL"]);
+    exit();
+}
+
+$stmt->bind_param("i", $book_id);
+
+try {
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        
+        $isFavorite = false;
+        if ($logged_username) {
+            $favSql = "SELECT 1 FROM favorites WHERE username = ? AND book_id = ?";
+            $favStmt = $dbConnection->prepare($favSql);
+            $favStmt->bind_param("si", $logged_username, $book_id);
+            $favStmt->execute();
+            $favResult = $favStmt->get_result();
+            $isFavorite = $favResult->num_rows > 0;
+        }
+
+        $book_detail = [
+            "successful" => true,
+            "message" => "Dettagli libro recuperati",
+            "book" => [
                 "id" => $row['book_id'],
-                "title" => html_entity_decode($row['title']), 
-                "subject" => $row['subject'],
+                "title" => $row['title'],
+                "author" => $row['author'],
+                "description" => $row['description'],
+                "type" => $row['type'],
                 "isbn" => $row['isbn'],
-                "price" => $row['price'],
+                "price" => (float)$row['price'],
                 "condition" => $row['condition_status'],
                 "status" => is_null($row['buyer_username']) ? "available" : "sold",
-                "posted_at" => $row['created_at'],
-                "seller" => array(
-                    "username" => $row['seller_username']
-                    // Nota: il campo email non è presente nel database attuale
-                )
-            );
+                "createdAtDate" => date("d/m/Y", strtotime($row['created_at'])),
+                "seller" => $row['seller_username'],
+                "favorite" => $isFavorite
+            ]
+        ];
 
-            echo json_encode($book_detail);
+        echo json_encode($book_detail);
 
-        } else {
-            echo json_encode(array("message" => "Libro non trovato."));
-        }
-        
-        $stmt->close();
-
-    } catch (Exception $e) {
-        echo json_encode(array("message" => "Errore di connessione o query."));
+    } else {
+        echo json_encode(["successful" => false, "message" => "Libro non trovato."]);
     }
+    
+    $stmt->close();
 
-} else {
-    echo json_encode(array("message" => "Specificare un ID valido."));
+} catch (Exception $e) {
+    echo json_encode(["successful" => false, "message" => "Errore di connessione o query."]);
 }
 ?>

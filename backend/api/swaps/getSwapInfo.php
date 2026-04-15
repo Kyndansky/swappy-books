@@ -1,16 +1,26 @@
 <?php
 session_start();
-require_once("../../config/cors.php");
-require_once("../../config/database.php");
+include_once '../../config/cors.php';
+include_once '../../config/database.php';
 
-$json = file_get_contents('php://input');
-$data = json_decode($json, true);
+$json_data = file_get_contents('php://input');
+$_DATA = json_decode($json_data, true) ?: [];
 
-$swapId = $data["swapId"] ?? null;
+$swapId = $_DATA["swapId"] ?? null;
 $logged_username = $_SESSION['username'] ?? null;
+
+if (!$swapId) {
+    echo json_encode(["successful" => false, "message" => "missing swapId"]);
+    exit();
+}
 
 $sql = "SELECT * FROM books WHERE book_id = ?";
 $stmt = $dbConnection->prepare($sql);
+if (!$stmt) {
+    echo json_encode(["successful" => false, "message" => "Errore SQL"]);
+    exit();
+}
+
 $stmt->bind_param("i", $swapId);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -42,7 +52,6 @@ if ($row) {
         "createdAtDate" => date("d/m/Y", strtotime($row['created_at'])),
         "price" => (float)$row['price'],
         "favorite" => $isFavorite,
-        
     ];
 
     echo json_encode([

@@ -3,8 +3,11 @@ session_start();
 include_once '../../config/cors.php';
 include_once '../../config/database.php';
 
-$logged_username = isset($_SESSION['username']) ? $_SESSION['username'] : null;
-$target_user = $_GET['username'] ?? $logged_username;
+$json_data = file_get_contents('php://input');
+$_DATA = json_decode($json_data, true) ?: [];
+
+$logged_username = $_SESSION['username'] ?? null;
+$target_user = $_DATA['username'] ?? $logged_username;
 
 if (!$target_user) {
     echo json_encode(["successful" => false, "message" => "no user specified"]);
@@ -30,7 +33,6 @@ if ($logged_username) {
 
 $query .= " WHERE b.seller_username = ? ";
 
-// Parametri iniziali: [logged_user (per join), target_user (per seller)]
 $params = [];
 $types = "";
 
@@ -41,45 +43,46 @@ if ($logged_username) {
 $params[] = $target_user;
 $types .= "s";
 
-// 2. AGGIUNTA FILTRI (Identica logica)
-if (!empty($_GET['type']) && in_array($_GET['type'], ['academic', 'fiction'])) {
+if (!empty($_DATA['type']) && in_array($_DATA['type'], ['academic', 'fiction'])) {
     $query .= " AND b.type = ? ";
-    $params[] = $_GET['type'];
+    $params[] = $_DATA['type'];
     $types .= "s";
 }
 
-if (!empty($_GET['searchString'])) {
+if (!empty($_DATA['searchString'])) {
     $query .= " AND b.title LIKE ? ";
-    $params[] = '%' . $_GET['searchString'] . '%';
+    $params[] = '%' . $_DATA['searchString'] . '%';
     $types .= "s";
 }
 
-if (isset($_GET['minPrice']) && is_numeric($_GET['minPrice'])) {
+if (isset($_DATA['minPrice']) && is_numeric($_DATA['minPrice'])) {
     $query .= " AND b.price >= ? ";
-    $params[] = $_GET['minPrice'];
+    $params[] = $_DATA['minPrice'];
     $types .= "d";
 }
 
-if (isset($_GET['maxPrice']) && is_numeric($_GET['maxPrice'])) {
+if (isset($_DATA['maxPrice']) && is_numeric($_DATA['maxPrice'])) {
     $query .= " AND b.price <= ? ";
-    $params[] = $_GET['maxPrice'];
+    $params[] = $_DATA['maxPrice'];
     $types .= "d";
 }
 
-// Filtro Condizioni
-$conditions_input = isset($_GET['conditions']) ? $_GET['conditions'] : [];
+$conditions_input = $_DATA['conditions'] ?? [];
 if (!is_array($conditions_input) && !empty($conditions_input)) {
     $conditions_input = explode(',', $conditions_input);
 }
+
 if (!empty($conditions_input) && is_array($conditions_input)) {
     $valid_conditions = ["new", "like-new", "good", "acceptable", "damaged"];
-    $passed_conditions = array_intersect($conditions_input, $valid_conditions);
+    $passed_conditions = array_filter($conditions_input, function($c) use ($valid_conditions) {
+        return in_array(trim($c), $valid_conditions);
+    });
     
     if (!empty($passed_conditions)) {
         $placeholders = implode(',', array_fill(0, count($passed_conditions), '?'));
         $query .= " AND b.condition_status IN ($placeholders) ";
         foreach ($passed_conditions as $c) {
-            $params[] = $c;
+            $params[] = trim($c);
             $types .= "s";
         }
     }
@@ -89,7 +92,15 @@ $query .= " ORDER BY b.created_at DESC ";
 
 
 $stmt = $dbConnection->prepare($query);
-$stmt->bind_param($types, ...$params);
+if (!$stmt) {
+    echo json_encode(["successful" => false, "message" => "Errore SQL"]);
+    exit();
+}
+
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+
 $stmt->execute();
 $result = $stmt->get_result();
 $rows = $result->fetch_all(MYSQLI_ASSOC);
@@ -106,8 +117,9 @@ foreach ($rows as $row) {
         "seller" => $row['seller'],
         "createdAtDate" => date("d/m/Y", strtotime($row['createdAtDate'])),
         "price" => (float)$row['price'],
-        "favorite" => $row['favorite'] == 1 ? true : false
+        "favorite" => $logged_username ? ($row['favorite'] == 1) : false
     ];
 }
 
-echo json_encode(["successful" => true, "swaps" => $swaps]);
+echo json_encode(["successful" => true, "message" => "Swaps recuperati con successo", "swaps" => $swaps]);
+?>

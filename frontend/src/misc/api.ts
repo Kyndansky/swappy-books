@@ -202,7 +202,7 @@ export async function fetchFavoriteSwaps(searchString?: string, minPrice?: numbe
 export async function fetchSwaps(endpoint: "getSwaps" | "getUserSwaps" | "getFavorite", searchString?: string, minPrice?: number, maxPrice?: number, conditions?: string[], type?: "academic" | "fiction"): Promise<SwappyBooksSwapsResponse> {
   try {
     const response = await apiSwaps.post(endpoint + ".php", {
-      search: searchString,
+      searchString: searchString,
       minPrice: minPrice,
       maxPrice: maxPrice,
       conditions: conditions,
