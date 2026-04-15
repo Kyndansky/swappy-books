@@ -58,11 +58,13 @@ if(isset($_GET['other_user']) && isset($_GET['swapId'])) {
                 "swapId" => $swapId,
                 "messages" => $formatted_messages
             ]);
+            exit();
         } else {
             echo json_encode([
                 "successful" => false,
                 "message" => "failed: " . $stmt->error
             ]);
+            exit();
         }
         $stmt->close();
     } else {
@@ -70,12 +72,14 @@ if(isset($_GET['other_user']) && isset($_GET['swapId'])) {
             "successful" => false,
             "message" => "failed to prepare statement: " . $dbConnection->error
         ]);
+        exit();
     }
 
 } else {
-    echo json_encode([
+echo json_encode([
         "successful" => false,
         "message" => "failed: missing other_user or swapId parameters"
     ]);
+    exit();
 }
 ?>

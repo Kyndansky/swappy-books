@@ -38,6 +38,7 @@ if ($row) {
         if ($favResult->num_rows > 0) {
             $isFavorite = true;
         }
+        $favStmt->close();
     }
 
     $swap = [
