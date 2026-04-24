@@ -1,4 +1,4 @@
-import { createSwap, uploadBookImages, getImageUrl } from "@/misc/api";
+import { createSwap, uploadBookImages } from "@/misc/api";
 import { BOOK_CONDITIONS, BookCondition } from "@/types/bookInfoTypes";
 import {
   Button,
@@ -221,23 +221,23 @@ export default function AddSwapModal(props: addSwapModalProps) {
             </div>
 
             {imagePreviews.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="flex flex-wrap gap-3 mt-2">
                 {imagePreviews.map((preview, index) => (
-                  <div key={index} className="relative group">
+                  <div key={index} className="relative w-20 h-20 group">
                     <Image
                       src={preview}
                       alt={`Preview ${index + 1}`}
-                      className="w-20 h-20 object-cover rounded-lg"
+                      className="w-full h-full object-cover rounded-lg"
                     />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-1">
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center gap-1">
                       <Button
                         size="sm"
                         color={primaryImageIndex === index ? "success" : "default"}
                         variant="flat"
                         onPress={() => setPrimaryImageIndex(index)}
-                        className="text-tiny"
+                        className="text-tiny px-1"
                       >
-                        {primaryImageIndex === index ? "Primary" : "Set Primary"}
+                        {primaryImageIndex === index ? "★" : "○"}
                       </Button>
                       <Button
                         size="sm"
@@ -246,9 +246,14 @@ export default function AddSwapModal(props: addSwapModalProps) {
                         onPress={() => removeImage(index)}
                         className="text-tiny"
                       >
-                        X
+                        ✕
                       </Button>
                     </div>
+                    {primaryImageIndex === index && (
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-success rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">★</span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
