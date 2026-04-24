@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
-import { Swap, BookImage } from '@/types/interfaces';
+import { Swap } from '@/types/interfaces';
 import {
   Button,
   Spinner,
@@ -17,8 +17,7 @@ import {
   TableColumn,
   TableBody,
   TableRow,
-  TableCell,
-  Image
+  TableCell
 } from "@heroui/react";
 
 import { fetchSwap, swapToggleFavorite } from '@/misc/api';
@@ -79,203 +78,172 @@ export default function SwapInfoPage() {
   return (
     <DefaultLayout>
       <div className="mx-auto px-4 py-6 max-w-7xl">
-        <div className="flex flex-col md:flex-row gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-          {/* Left Column: Images */}
-          <div className="w-full md:w-1/3 flex-shrink-0">
-            {(swap.images && swap.images.length > 0) ? (
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <Image
-                    src={swap.images[0].data ? `data:${swap.images[0].image_type};base64,${swap.images[0].data}` : 'https://via.placeholder.com/400x500?text=No+Image'}
-                    alt={swap.title}
-                    className="w-full aspect-[3/4] object-cover rounded-lg"
-                  />
+          {/* Main Column: Book Info */}
+          <div className="md:col-span-2 space-y-6">
+            <div className="flex flex-col gap-8">
+              {/* 1. Header Info */}
+              <div className="space-y-4">
+                <div>
+                  <h1 className="text-3xl font-bold">{swap.title}</h1>
+                  <p className="text-xl text-default-500 mt-1">{swap.author}</p>
                 </div>
-                {swap.images.length > 1 && (
-                  <div className="flex gap-2 overflow-x-auto">
-                    {swap.images.map((img: BookImage, idx: number) => (
-                      <Image
-                        key={img.id}
-                        src={img.data ? `data:${img.image_type};base64,${img.data}` : 'https://via.placeholder.com/100x100?text=No+Img'}
-                        alt={`${swap.title} - ${idx + 1}`}
-                        className="w-16 h-16 object-cover rounded-lg cursor-pointer"
-                      />
-                    ))}
-                  </div>
-                )}
+
+                <div className="flex items-center gap-4">
+                  <span className="text-4xl font-bold text-primary">€{swap.price}</span>
+                  <Chip
+                    variant="flat"
+                    size="lg"
+                    color={swap.condition === "damaged" ? "danger" : swap.condition === "acceptable" ? "warning" : swap.condition === "good" ? "primary" : "success"}>
+                    {swap.condition.toUpperCase()}
+                  </Chip>
+                </div>
+
+                <div className="flex items-center gap-2">
+
+                  {!swap.sellDate ? (
+                    <React.Fragment>
+                      <div className="w-2 h-2 rounded-full bg-success" />
+                      <span className="text-success">Available</span>
+                    </React.Fragment>
+
+                  ) : (
+                    <React.Fragment>
+                      <div className="w-2 h-2 rounded-full bg-danger" />
+                      <span className="text-danger">Unavailable</span>
+                    </React.Fragment>
+                  )}
+                </div>
               </div>
-            ) : (
-              <Image
-                src={'https://via.placeholder.com/400x500?text=No+Image'}
-                alt={swap.title}
-                className="w-full aspect-[3/4] object-cover rounded-lg"
-              />
-            )}
-          </div>
 
-          {/* Right Column: Book Info + Seller Sidebar */}
-          <div className="flex-1 flex flex-col xl:flex-row gap-6">
-            {/* Main Content */}
-            <div className="flex-1 space-y-6">
-              <div className="flex flex-col gap-8">
-                {/* 1. Header Info */}
-                <div className="space-y-4">
-                  <div>
-                    <h1 className="text-3xl font-bold">{swap.title}</h1>
-                    <p className="text-xl text-default-500 mt-1">{swap.author}</p>
-                  </div>
+              <Divider />
 
-                  <div className="flex items-center gap-4">
-                    <span className="text-4xl font-bold text-primary">€{swap.price}</span>
-                    <Chip
-                      variant="flat"
-                      size="lg"
-                      color={swap.condition === "damaged" ? "danger" : swap.condition === "acceptable" ? "warning" : swap.condition === "good" ? "primary" : "success"}>
-                      {swap.condition.toUpperCase()}
-                    </Chip>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {!swap.sellDate ? (
-                      <React.Fragment>
-                        <div className="w-2 h-2 rounded-full bg-success" />
-                        <span className="text-success">Available</span>
-                      </React.Fragment>
-                    ) : (
-                      <React.Fragment>
-                        <div className="w-2 h-2 rounded-full bg-danger" />
-                        <span className="text-danger">Unavailable</span>
-                      </React.Fragment>
-                    )}
-                  </div>
+              {/* 2. Description and Details */}
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <h2 className="text-xl font-semibold">Description</h2>
+                  <p className="text-default-700 leading-relaxed whitespace-pre-line">{swap.description}</p>
                 </div>
 
-                <Divider />
+                <div className="space-y-3">
+                  <h2 className="text-xl font-semibold">Details</h2>
+                  <Table
+                    aria-label="Book details"
+                    hideHeader
+                    isStriped
+                    className="max-w-md"
+                  >
+                    <TableHeader>
+                      <TableColumn>Label</TableColumn>
+                      <TableColumn>Value</TableColumn>
+                    </TableHeader>
+                    <TableBody>
+                      {[
+                        { key: "seller", label: "Seller", value: swap.seller },
+                        { key: "price", label: "Price", value: "€" + swap.price },
+                        { key: "type", label: "Category", value: swap.type.toUpperCase() },
+                        { key: "condition", label: "Condition", value: swap.condition.toUpperCase() },
+                        // Aggiunge l'ISBN solo se esiste
+                        ...(swap.isbn ? [{ key: "isbn", label: "ISBN", value: swap.isbn, mono: true }] : []),
+                        { key: "date", label: "Listing Date", value: swap.createdAtDate }
+                      ].map((row) => (
+                        <TableRow key={row.key}>
+                          <TableCell className="text-tiny text-default-400 uppercase font-bold">
+                            {row.label}
+                          </TableCell>
+                          <TableCell className={`text-default-700 font-medium ${row.mono ? "font-mono" : ""}`}>
+                            {row.value}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
 
-                {/* 2. Description and Details */}
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <h2 className="text-xl font-semibold">Description</h2>
-                    <p className="text-default-700 leading-relaxed whitespace-pre-line">{swap.description}</p>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h2 className="text-xl font-semibold">Details</h2>
-                    <Table
-                      aria-label="Book details"
-                      hideHeader
-                      isStriped
-                      className="max-w-md"
-                    >
-                      <TableHeader>
-                        <TableColumn>Label</TableColumn>
-                        <TableColumn>Value</TableColumn>
-                      </TableHeader>
-                      <TableBody>
-                        {[
-                          { key: "seller", label: "Seller", value: swap.seller },
-                          { key: "price", label: "Price", value: "€" + swap.price },
-                          { key: "type", label: "Category", value: swap.type.toUpperCase() },
-                          { key: "condition", label: "Condition", value: swap.condition.toUpperCase() },
-                          ...(swap.isbn ? [{ key: "isbn", label: "ISBN", value: swap.isbn, mono: true }] : []),
-                          { key: "date", label: "Listing Date", value: swap.createdAtDate }
-                        ].map((row) => (
-                          <TableRow key={row.key}>
-                            <TableCell className="text-tiny text-default-400 uppercase font-bold">
-                              {row.label}
-                            </TableCell>
-                            <TableCell className={`text-default-700 font-medium ${row.mono ? "font-mono" : ""}`}>
-                              {row.value}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Sidebar: Seller Card and Actions */}
-            <div className="w-full xl:w-80 flex-shrink-0">
-              <Card className="shadow-sm border-none bg-default-50 xl:sticky xl:top-6">
-                <CardBody className="p-6">
-                  <div className="flex items-center gap-4 mb-6">
-                    <MessageAvatar username={swap.seller} size={'lg'} />
-                    <div>
-                      <h3 className="text-xl font-semibold">
-                        {username === swap.seller ? username + " (You)" : swap.seller}
-                      </h3>
-                    </div>
+          {/* Sidebar: Seller Card and Actions */}
+          <div className="md:col-span-1">
+            <Card className="shadow-sm border-none bg-default-50 sticky top-6">
+              <CardBody className="p-6">
+                <div className="flex items-center gap-4 mb-6">
+                  <MessageAvatar username={swap.seller} size={'lg'} />
+                  <div>
+                    <h3 className="text-xl font-semibold">
+                      {username === swap.seller ? username + " (You)" : swap.seller}
+                    </h3>
                   </div>
+                </div>
 
-                  {username !== swap.seller ? (
-                    <React.Fragment>
-                      <div className="flex flex-col gap-3">
+                {username !== swap.seller ? (
+                  <React.Fragment>
+                    <div className="flex flex-col gap-3">
+                      <Button
+                        color="primary"
+                        className="w-full font-semibold"
+                        startContent={<MessageCircle size={20} />}
+                        onPress={() => {
+                          if (isAuthenticated === false) {
+                            navigate("/login")
+                          }
+                          else {
+                            setIsMessageModalOpen(true);
+                          }
+                        }}
+                      >
+                        Contact Seller
+                      </Button>
+
+                      <div className="flex gap-2">
                         <Button
-                          color="primary"
-                          className="w-full font-semibold"
-                          startContent={<MessageCircle size={20} />}
-                          onPress={() => {
-                            if (isAuthenticated === false) {
-                              navigate("/login")
+                          variant="flat"
+                          color={swap.favorite===true ? "danger" : "default"}
+                          className="flex-1 font-semibold"
+                          startContent={<Heart size={20} fill={swap.favorite===true ? "currentColor" : "none"} />}
+                          onPress={async () => {
+                            const result = await swapToggleFavorite(swap.id);
+                            swap.favorite= swap.favorite===true?true:false;
+                            console.log(result);
+                            if (result.successful === false) {
+                              addToast(
+                                {
+                                  title: result.message,
+                                  color: "danger"
+                                }
+                              )
                             }
-                            else {
-                              setIsMessageModalOpen(true);
-                            }
-                          }}
+                          }
+                          }
                         >
-                          Contact Seller
+                          {swap.favorite===true ? "In favorites" : "Add to favorites"}
                         </Button>
 
-                        <div className="flex gap-2">
-                          <Button
-                            variant="flat"
-                            color={swap.favorite===true ? "danger" : "default"}
-                            className="flex-1 font-semibold"
-                            startContent={<Heart size={20} fill={swap.favorite===true ? "currentColor" : "none"} />}
-                            onPress={async () => {
-                              const result = await swapToggleFavorite(swap.id);
-                              swap.favorite= swap.favorite===true?true:false;
-                              console.log(result);
-                              if (result.successful === false) {
-                                addToast(
-                                  {
-                                    title: result.message,
-                                    color: "danger"
-                                  }
-                                )
-                              }
-                            }}
-                          >
-                            {swap.favorite===true ? "In favorites" : "Add to favorites"}
-                          </Button>
-
-                          <Button
-                            isIconOnly
-                            variant="flat"
-                            aria-label="Share"
-                          >
-                            <Share2 size={20} />
-                          </Button>
-                        </div>
+                        <Button
+                          isIconOnly
+                          variant="flat"
+                          aria-label="Share"
+                        >
+                          <Share2 size={20} />
+                        </Button>
                       </div>
-                    </React.Fragment>
-                  ) : (null)}
-                </CardBody>
-              </Card>
-            </div>
+                    </div>
+                  </React.Fragment>
+                ) : (null)}
+
+              </CardBody>
+            </Card>
           </div>
         </div>
-
-        <QuickMessageModal
-          isOpen={isMessageMOdalOpen}
-          closeModal={() => { setIsMessageModalOpen(false) }}
-          messageReceiver={swap.seller}
-          swapId={swap.id}
-        />
       </div>
+      <QuickMessageModal
+        isOpen={isMessageMOdalOpen}
+        closeModal={() => { setIsMessageModalOpen(false) }}
+        messageReceiver={swap.seller}
+        swapId={swap.id}
+      />
     </DefaultLayout>
   );
 }

@@ -18,13 +18,6 @@ export default function BookCard(props: BookCardProps) {
     navigate(`/swap/${props.swap.id}`);
   };
 
-  const imageSrc = (() => {
-    if (props.swap.primaryImageData && props.swap.primaryImageType) {
-      return `data:${props.swap.primaryImageType};base64,${props.swap.primaryImageData}`;
-    }
-    return 'https://via.placeholder.com/280x180?text=Libro';
-  })();
-
   if (props.isListView) {
     return (
       <div onClick={handleCardClick} className="cursor-pointer w-full">
@@ -34,7 +27,7 @@ export default function BookCard(props: BookCardProps) {
               <Image
                 alt={props.swap.title}
                 className="w-full h-full object-cover"
-                src={imageSrc}
+                src={'https://via.placeholder.com/180x180?text=Libro'}
                 radius="none"
               />
             </div>
@@ -82,7 +75,7 @@ export default function BookCard(props: BookCardProps) {
           <Image
             alt={props.swap.title}
             className="w-full object-cover h-[180px]"
-            src={imageSrc}
+            src={'https://via.placeholder.com/280x180?text=Libro'}
           />
         </CardBody>
 

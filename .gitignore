@@ -24,3 +24,8 @@ frontend/*.local
 *.njsproj
 *.sln
 *.sw?
+
+
+# Backend config (contains sensitive data)
+backend/config/database.php
+backend/createDB.php

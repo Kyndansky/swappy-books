@@ -46,8 +46,7 @@ if(
     $stmt->bind_param("sssssdss", $seller_username, $title, $author, $description, $type, $price, $condition, $isbn);
 
     if($stmt->execute()){
-        $book_id = $stmt->insert_id;
-        echo json_encode(["successful" => true, "message" => "swap created successfully", "bookId" => $book_id]);
+        echo json_encode(["successful" => true, "message" => "swap created successfully"]);
     } else {
         echo json_encode(["successful" => false, "message" => "database error"]);
     }

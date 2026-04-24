@@ -41,23 +41,6 @@ if ($row) {
         $favStmt->close();
     }
 
-    $imgSql = "SELECT id, image_type, image_data, is_primary FROM book_images WHERE book_id = ? ORDER BY is_primary DESC, id ASC";
-    $imgStmt = $dbConnection->prepare($imgSql);
-    $imgStmt->bind_param("i", $swapId);
-    $imgStmt->execute();
-    $imgResult = $imgStmt->get_result();
-
-    $images = [];
-    while ($imgRow = $imgResult->fetch_assoc()) {
-        $images[] = [
-            "id" => (int)$imgRow['id'],
-            "image_type" => $imgRow['image_type'],
-            "is_primary" => (bool)$imgRow['is_primary'],
-            "data" => base64_encode($imgRow['image_data'])
-        ];
-    }
-    $imgStmt->close();
-
     $swap = [
         "id" => (int)$row['book_id'],
         "title" => $row['title'],
@@ -70,7 +53,6 @@ if ($row) {
         "createdAtDate" => date("d/m/Y", strtotime($row['created_at'])),
         "price" => (float)$row['price'],
         "favorite" => $isFavorite,
-        "images" => $images
     ];
 
     echo json_encode([

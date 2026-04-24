@@ -1,4 +1,4 @@
-import { createSwap, uploadBookImages } from "@/misc/api";
+import { createSwap } from "@/misc/api";
 import { BOOK_CONDITIONS, BookCondition } from "@/types/bookInfoTypes";
 import {
   Button,
@@ -14,9 +14,8 @@ import {
   Radio,
   Divider,
   addToast,
-  Image,
 } from "@heroui/react";
-import { useState, useRef } from "react";
+import { useState } from "react";
 // Importa il tipo Selection per TypeScript
 
 interface addSwapModalProps {
@@ -30,10 +29,6 @@ export default function AddSwapModal(props: addSwapModalProps) {
   const [bookAuthor, setBookAuthor] = useState<string>("");
   const [bookDescription, setBookDescription] = useState<string>("");
   const [bookPrice, setBookPrice] = useState<number>(10.00);
-  const [bookImages, setBookImages] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [primaryImageIndex, setPrimaryImageIndex] = useState<number>(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Gestione stato tramite Selection (Set)
   const [bookCondition, setBookCondition] = useState<BookCondition['key']>("new");
@@ -47,31 +42,6 @@ export default function AddSwapModal(props: addSwapModalProps) {
     !bookCategory ||
     bookPrice <= 0;
 
-  function handleImageSelect(files: FileList | null) {
-    if (!files) return;
-    const newFiles: File[] = [];
-    const newPreviews: string[] = [];
-    
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (file.type.startsWith('image/')) {
-        newFiles.push(file);
-        newPreviews.push(URL.createObjectURL(file));
-      }
-    }
-    
-    setBookImages(prev => [...prev, ...newFiles]);
-    setImagePreviews(prev => [...prev, ...newPreviews]);
-  }
-
-  function removeImage(index: number) {
-    setBookImages(prev => prev.filter((_, i) => i !== index));
-    setImagePreviews(prev => prev.filter((_, i) => i !== index));
-    if (primaryImageIndex >= index && primaryImageIndex > 0) {
-      setPrimaryImageIndex(prev => prev - 1);
-    }
-  }
-
   function resetFields() {
     setBookTitle("");
     setBookAuthor("");
@@ -80,9 +50,6 @@ export default function AddSwapModal(props: addSwapModalProps) {
     setBookCondition("new");
     setBookCategory("academic");
     setBookPrice(10.00);
-    setBookImages([]);
-    setImagePreviews([]);
-    setPrimaryImageIndex(0);
   }
   return (
     <Modal
@@ -197,114 +164,18 @@ export default function AddSwapModal(props: addSwapModalProps) {
               </div>
             </div>
           </div>
-
-          <Divider className="my-4" />
-
-          <div className="flex flex-col gap-3">
-            <div className="flex justify-between items-center">
-              <h1 className="text-lg">Book Images</h1>
-              <input
-                type="file"
-                ref={fileInputRef}
-                multiple
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleImageSelect(e.target.files)}
-              />
-              <Button
-                size="sm"
-                variant="flat"
-                onPress={() => fileInputRef.current?.click()}
-              >
-                Add Images
-              </Button>
-            </div>
-
-            {imagePreviews.length > 0 && (
-              <div className="flex flex-wrap gap-3 mt-2">
-                {imagePreviews.map((preview, index) => (
-                  <div key={index} className="relative w-20 h-20 group">
-                    <Image
-                      src={preview}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center gap-1">
-                      <Button
-                        size="sm"
-                        color={primaryImageIndex === index ? "success" : "default"}
-                        variant="flat"
-                        onPress={() => setPrimaryImageIndex(index)}
-                        className="text-tiny px-1"
-                      >
-                        {primaryImageIndex === index ? "★" : "○"}
-                      </Button>
-                      <Button
-                        size="sm"
-                        color="danger"
-                        variant="flat"
-                        onPress={() => removeImage(index)}
-                        className="text-tiny"
-                      >
-                        ✕
-                      </Button>
-                    </div>
-                    {primaryImageIndex === index && (
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-success rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs">★</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {imagePreviews.length === 0 && (
-              <div className="border-2 border-dashed border-default-300 rounded-lg p-6 text-center">
-                <p className="text-default-400 text-small">
-                  No images added. Click "Add Images" to upload photos of the book.
-                </p>
-              </div>
-            )}
-          </div>
         </ModalBody>
         <ModalFooter>
           <Button variant="flat" onPress={props.closeModal}>Cancel</Button>
           <Button
             color="success"
             isDisabled={isInvalid}
-            isLoading={false}
             onPress={async () => {
               const result = await createSwap(bookTitle, bookAuthor, bookDescription, bookCondition, bookPrice, bookCategory, bookIsbn !== "" ? bookIsbn : undefined);
-              
-              if (!result.successful) {
-                addToast({
-                  title: result.message,
-                  color: "danger"
-                })
-                return;
-              }
-
-              if (bookImages.length > 0 && result.bookId) {
-                const imageResult = await uploadBookImages(result.bookId, bookImages, primaryImageIndex);
-                if (!imageResult.successful) {
-                  addToast({
-                    title: "Book created but images failed to upload",
-                    color: "warning"
-                  })
-                } else {
-                  addToast({
-                    title: result.message,
-                    color: "success"
-                  })
-                }
-              } else {
-                addToast({
-                  title: result.message,
-                  color: "success"
-                })
-              }
-              
+              addToast({
+                title: result.message,
+                color: result.successful === true ? "success" : "danger"
+              })
               resetFields();
               props.closeModal();
             }}

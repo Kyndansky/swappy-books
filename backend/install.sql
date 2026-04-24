@@ -24,21 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `book_images`
---
-
-CREATE TABLE `book_images` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `book_id` int(11) NOT NULL,
-  `image_data` longblob NOT NULL,
-  `image_type` varchar(50) DEFAULT NULL,
-  `is_primary` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `book_id` (`book_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
 -- Struttura della tabella `books`
 --
 
@@ -175,15 +160,9 @@ ALTER TABLE `favorites`
 -- Limiti per la tabella `messages`
 --
 ALTER TABLE `messages`
-  ADD CONSTRAINT `fk_msg_book` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_msg_receiver` FOREIGN KEY (`receiver_username`) REFERENCES `users`(`username`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_msg_sender` FOREIGN KEY (`sender_username`) REFERENCES `users`(`username`) ON DELETE CASCADE;
-
---
--- Limiti per la tabella `book_images`
---
-ALTER TABLE `book_images`
-  ADD CONSTRAINT `fk_book_images_book` FOREIGN KEY (`book_id`) REFERENCES `books`(`book_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_msg_book` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_msg_receiver` FOREIGN KEY (`receiver_username`) REFERENCES `users` (`username`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_msg_sender` FOREIGN KEY (`sender_username`) REFERENCES `users` (`username`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
