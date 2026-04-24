@@ -41,7 +41,7 @@ if ($row) {
         $favStmt->close();
     }
 
-    $imgSql = "SELECT id, image_type, is_primary FROM book_images WHERE book_id = ? ORDER BY is_primary DESC, id ASC";
+    $imgSql = "SELECT id, image_type, image_data, is_primary FROM book_images WHERE book_id = ? ORDER BY is_primary DESC, id ASC";
     $imgStmt = $dbConnection->prepare($imgSql);
     $imgStmt->bind_param("i", $swapId);
     $imgStmt->execute();
@@ -52,7 +52,8 @@ if ($row) {
         $images[] = [
             "id" => (int)$imgRow['id'],
             "image_type" => $imgRow['image_type'],
-            "is_primary" => (bool)$imgRow['is_primary']
+            "is_primary" => (bool)$imgRow['is_primary'],
+            "data" => base64_encode($imgRow['image_data'])
         ];
     }
     $imgStmt->close();

@@ -2,7 +2,6 @@ import { Card, CardBody, CardFooter, Image } from "@heroui/react";
 import { useNavigate } from 'react-router-dom';
 import { Swap } from '@/types/interfaces';
 import MessageAvatar from './chat/MessageAvatar';
-import { getImageUrl } from "@/misc/api";
 
 interface BookCardProps {
   swap: Swap;
@@ -19,9 +18,12 @@ export default function BookCard(props: BookCardProps) {
     navigate(`/swap/${props.swap.id}`);
   };
 
-  const imageSrc = props.swap.primaryImageId 
-    ? getImageUrl(props.swap.primaryImageId) 
-    : 'https://via.placeholder.com/280x180?text=Libro';
+  const imageSrc = (() => {
+    if (props.swap.primaryImageData && props.swap.primaryImageType) {
+      return `data:${props.swap.primaryImageType};base64,${props.swap.primaryImageData}`;
+    }
+    return 'https://via.placeholder.com/280x180?text=Libro';
+  })();
 
   if (props.isListView) {
     return (

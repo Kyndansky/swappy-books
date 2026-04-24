@@ -70,6 +70,7 @@ export interface BookImage {
   image_type?: string;
   is_primary: boolean;
   created_at?: string;
+  data?: string;
 }
 
 export interface Swap {
@@ -87,6 +88,8 @@ export interface Swap {
   sellDate:string;
   images?: BookImage[];
   primaryImageId?: number | null;
+  primaryImageData?: string | null;
+  primaryImageType?: string | null;
 }
 
 export interface BookDetail extends Swap {

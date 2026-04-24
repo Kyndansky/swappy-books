@@ -21,7 +21,7 @@ import {
   Image
 } from "@heroui/react";
 
-import { fetchSwap, swapToggleFavorite, getImageUrl } from '@/misc/api';
+import { fetchSwap, swapToggleFavorite } from '@/misc/api';
 import { useAuth } from '@/contexts/AuthContextHandler';
 import React from 'react';
 import MessageAvatar from '@/components/chat/MessageAvatar';
@@ -87,7 +87,7 @@ export default function SwapInfoPage() {
               <div className="space-y-3">
                 <div className="space-y-2">
                   <Image
-                    src={getImageUrl(swap.images[0].id)}
+                    src={swap.images[0].data ? `data:${swap.images[0].image_type};base64,${swap.images[0].data}` : 'https://via.placeholder.com/400x500?text=No+Image'}
                     alt={swap.title}
                     className="w-full aspect-[3/4] object-cover rounded-lg"
                   />
@@ -97,7 +97,7 @@ export default function SwapInfoPage() {
                     {swap.images.map((img: BookImage, idx: number) => (
                       <Image
                         key={img.id}
-                        src={getImageUrl(img.id)}
+                        src={img.data ? `data:${img.image_type};base64,${img.data}` : 'https://via.placeholder.com/100x100?text=No+Img'}
                         alt={`${swap.title} - ${idx + 1}`}
                         className="w-16 h-16 object-cover rounded-lg cursor-pointer"
                       />

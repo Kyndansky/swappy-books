@@ -16,7 +16,9 @@ $logged_username = $_SESSION['username'] ?? null;
 $query = "SELECT b.book_id as id, b.title, b.author, b.description, 
                  b.condition_status as `condition`, b.seller_username as seller, 
                  b.created_at as createdAtDate, b.price,
-                 (SELECT bi.id FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_id ";
+                 (SELECT bi.id FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_id,
+                 (SELECT bi.image_type FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_type,
+                 (SELECT TO_BASE64(bi.image_data) FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_data ";
 
 if ($logged_username) {
     $query .= ", IF(f.book_id IS NOT NULL, 1, 0) as favorite ";
@@ -117,6 +119,14 @@ $swaps_db = $result->fetch_all(MYSQLI_ASSOC);
 // ==========================================
 $swaps = [];
 foreach ($swaps_db as $row) {
+    $primaryImageData = null;
+    $primaryImageType = null;
+    
+    if (!empty($row['primary_image_data'])) {
+        $primaryImageData = $row['primary_image_data'];
+        $primaryImageType = $row['primary_image_type'];
+    }
+    
     $swaps[] = [
         "id" => (int)$row['id'],
         "title" => $row['title'],
@@ -127,7 +137,9 @@ foreach ($swaps_db as $row) {
         "createdAtDate" => date("d/m/Y", strtotime($row['createdAtDate'])),
         "price" => (float)$row['price'],
         "favorite" => $logged_username ? ($row['favorite'] == 1) : false,
-        "primaryImageId" => $row['primary_image_id'] ? (int)$row['primary_image_id'] : null
+        "primaryImageId" => $row['primary_image_id'] ? (int)$row['primary_image_id'] : null,
+        "primaryImageData" => $primaryImageData,
+        "primaryImageType" => $primaryImageType
     ];
 }
 
