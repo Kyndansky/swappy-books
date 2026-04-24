@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import DefaultLayout from "@/layouts/default";
-import { Swap } from '@/types/interfaces';
+import { Swap, BookImage } from '@/types/interfaces';
 import {
   Button,
   Spinner,
@@ -17,10 +17,11 @@ import {
   TableColumn,
   TableBody,
   TableRow,
-  TableCell
+  TableCell,
+  Image
 } from "@heroui/react";
 
-import { fetchSwap, swapToggleFavorite } from '@/misc/api';
+import { fetchSwap, swapToggleFavorite, getImageUrl } from '@/misc/api';
 import { useAuth } from '@/contexts/AuthContextHandler';
 import React from 'react';
 import MessageAvatar from '@/components/chat/MessageAvatar';
@@ -79,6 +80,39 @@ export default function SwapInfoPage() {
     <DefaultLayout>
       <div className="mx-auto px-4 py-6 max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          {/* Side Column: Images */}
+          <div className="md:col-span-1 space-y-4">
+            {(swap.images && swap.images.length > 0) ? (
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <Image
+                    src={getImageUrl(swap.images[0].id)}
+                    alt={swap.title}
+                    className="w-full aspect-[3/4] object-cover rounded-lg"
+                  />
+                </div>
+                {swap.images.length > 1 && (
+                  <div className="flex gap-2 overflow-x-auto">
+                    {swap.images.map((img: BookImage, idx: number) => (
+                      <Image
+                        key={img.id}
+                        src={getImageUrl(img.id)}
+                        alt={`${swap.title} - ${idx + 1}`}
+                        className="w-16 h-16 object-cover rounded-lg cursor-pointer"
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Image
+                src={'https://via.placeholder.com/400x500?text=No+Image'}
+                alt={swap.title}
+                className="w-full aspect-[3/4] object-cover rounded-lg"
+              />
+            )}
+          </div>
 
           {/* Main Column: Book Info */}
           <div className="md:col-span-2 space-y-6">

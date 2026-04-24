@@ -293,7 +293,7 @@ export async function sendMessage(
 
 export async function createSwap
   (bookTitle: string, bookAuthor: string, bookDescription: string, bookCondition: BookCondition["key"], bookPrice: number, bookCategory: "academic" | "fiction", bookIsbn?: string
-  ): Promise<SwappyBooksResponse> {
+  ): Promise<SwappyBooksResponse & { bookId?: number }> {
   try {
     const response = await apiSwaps.post("createSwap.php", {
       title: bookTitle,
@@ -310,14 +310,15 @@ export async function createSwap
       },
     });
     const data = response.data;
-    const result: SwappyBooksResponse = {
+    const result: SwappyBooksResponse & { bookId?: number } = {
       successful: data["successful"],
       message: data["message"],
+      bookId: data["bookId"],
     };
     return result;
   } catch (error) {
     console.log("error in create.php:", error);
-    const result: SwappyBooksResponse = {
+    const result: SwappyBooksResponse & { bookId?: number } = {
       successful: false,
       message: "error in create.php",
     };
@@ -348,6 +349,102 @@ export async function swapToggleFavorite(swapId: number): Promise<SwappyBooksRes
     };
     return result;
   }
+}
+
+export interface BookImageResponse {
+  id: number;
+  image_type: string;
+  is_primary: boolean;
+  created_at?: string;
+}
+
+export interface UploadImagesResponse extends SwappyBooksResponse {
+  images?: { id: number; is_primary: boolean }[];
+}
+
+export async function uploadBookImages(
+  bookId: number,
+  files: File[],
+  primaryIndex: number = 0
+): Promise<UploadImagesResponse> {
+  try {
+    const formData = new FormData();
+    formData.append("book_id", bookId.toString());
+    formData.append("primary_index", primaryIndex.toString());
+    files.forEach((file) => {
+      formData.append("images[]", file);
+    });
+
+    const response = await apiSwaps.post("uploadImages.php", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    const data = response.data;
+    return {
+      successful: data["successful"],
+      message: data["message"],
+      images: data["images"],
+    };
+  } catch (error) {
+    console.log("error in uploadImages.php:", error);
+    return {
+      successful: false,
+      message: "error uploading images",
+    };
+  }
+}
+
+export async function getBookImages(
+  bookId: number
+): Promise<{ successful: boolean; message: string; images: BookImageResponse[] }> {
+  try {
+    const response = await apiSwaps.get("getImages.php", {
+      params: { book_id: bookId },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    return {
+      successful: data["successful"],
+      message: data["message"],
+      images: data["images"] || [],
+    };
+  } catch (error) {
+    console.log("error in getImages.php:", error);
+    return {
+      successful: false,
+      message: "error fetching images",
+      images: [],
+    };
+  }
+}
+
+export async function deleteBookImage(imageId: number): Promise<SwappyBooksResponse> {
+  try {
+    const response = await apiSwaps.get("deleteImage.php", {
+      params: { image_id: imageId },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    return {
+      successful: data["successful"],
+      message: data["message"],
+    };
+  } catch (error) {
+    console.log("error in deleteImage.php:", error);
+    return {
+      successful: false,
+      message: "error deleting image",
+    };
+  }
+}
+
+export function getImageUrl(imageId: number): string {
+  return `${BACKEND_API_URL}/swaps/getImageData.php?image_id=${imageId}`;
 }
 
 export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

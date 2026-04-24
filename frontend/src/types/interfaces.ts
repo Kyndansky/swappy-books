@@ -67,8 +67,26 @@ export interface Message {
 
 export interface BookImage {
   id: number;
-  url: string;
-  isPrimary: boolean;
+  image_type?: string;
+  is_primary: boolean;
+  created_at?: string;
+}
+
+export interface Swap {
+  id: number;
+  title: string;
+  author: string;
+  description: string;
+  price: number;
+  isbn?: string;
+  condition: 'new' | 'like-new' | 'good' | 'acceptable' | 'damaged';
+  type: "academic" | "fiction";
+  seller: string;
+  createdAtDate: string;
+  favorite?:boolean;
+  sellDate:string;
+  images?: BookImage[];
+  primaryImageId?: number | null;
 }
 
 export interface BookDetail extends Swap {

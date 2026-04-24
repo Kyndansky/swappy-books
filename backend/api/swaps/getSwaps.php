@@ -15,7 +15,8 @@ $logged_username = $_SESSION['username'] ?? null;
 // ==========================================
 $query = "SELECT b.book_id as id, b.title, b.author, b.description, 
                  b.condition_status as `condition`, b.seller_username as seller, 
-                 b.created_at as createdAtDate, b.price ";
+                 b.created_at as createdAtDate, b.price,
+                 (SELECT bi.id FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_id ";
 
 if ($logged_username) {
     $query .= ", IF(f.book_id IS NOT NULL, 1, 0) as favorite ";
@@ -125,7 +126,8 @@ foreach ($swaps_db as $row) {
         "seller" => $row['seller'],
         "createdAtDate" => date("d/m/Y", strtotime($row['createdAtDate'])),
         "price" => (float)$row['price'],
-        "favorite" => $logged_username ? ($row['favorite'] == 1) : false
+        "favorite" => $logged_username ? ($row['favorite'] == 1) : false,
+        "primaryImageId" => $row['primary_image_id'] ? (int)$row['primary_image_id'] : null
     ];
 }
 
