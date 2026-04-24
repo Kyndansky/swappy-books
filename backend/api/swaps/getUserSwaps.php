@@ -20,7 +20,7 @@ $query = "SELECT b.book_id as id, b.title, b.author, b.description,
                  b.created_at as createdAtDate, b.price,
                  (SELECT bi.id FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_id,
                  (SELECT bi.image_type FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_type,
-                 (SELECT TO_BASE64(bi.image_data) FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_data ";
+                 (SELECT bi.image_data FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_data ";
 
 if ($logged_username) {
     $query .= ", IF(f.book_id IS NOT NULL, 1, 0) as favorite ";
@@ -115,7 +115,7 @@ foreach ($rows as $row) {
     $primaryImageType = null;
     
     if (!empty($row['primary_image_data'])) {
-        $primaryImageData = $row['primary_image_data'];
+        $primaryImageData = base64_encode($row['primary_image_data']);
         $primaryImageType = $row['primary_image_type'];
     }
     
