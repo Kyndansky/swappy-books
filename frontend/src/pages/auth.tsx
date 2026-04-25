@@ -36,7 +36,7 @@ export default function AuthenticatePage(props: AuthenticationPageProps) {
         <DefaultLayout>
             <div className="flex w-full h-full items-center justify-center min-h-[80vh]">
                 <Card shadow="lg" className="md:w-1/2 lg:w-1/3 p-2" disableRipple>
-                    <CardHeader>
+                    <CardHeader className="text-xl font-bold">
                         {props.authType === "login" ? "Login" : "Register"}
                     </CardHeader>
                     <CardBody className="gap-3">
@@ -44,16 +44,14 @@ export default function AuthenticatePage(props: AuthenticationPageProps) {
                             placeholder="insert here"
                             label="Username"
                             type="text"
-                            onChange={(e) => {
-                                setPageUsername(e.target.value);
-                            }} />
+                            onValueChange={setPageUsername} 
+                        />
                         <Input
                             placeholder="insert here"
                             label="Password"
                             type="password"
-                            onChange={(e) => {
-                                setPagePassword(e.target.value);
-                            }} />
+                            onValueChange={setPagePassword} 
+                        />
                         <Button color="primary"
                             onPress={() => {
                                 authenticate();
@@ -61,22 +59,21 @@ export default function AuthenticatePage(props: AuthenticationPageProps) {
                             {props.authType === "login" ? "Login" : "Register"}
                         </Button>
                     </CardBody>
-                    <CardFooter>
-                        <p className="pr-1.5">
-                            {props.authType==="login"?
-                            (
-                                <div>Need to register?</div>):
-                                (<div>Need to login?</div>)}
-                        </p>
+                    <CardFooter className="flex items-center">
+                        <div className="pr-1.5 text-default-500">
+                            {props.authType === "login" ? 
+                                "Need to register?" : 
+                                "Need to login?"
+                            }
+                        </div>
                         <Link
                             to={props.authType === "login" ? "/register" : "/login"}
-                            className="text-primary">
+                            className="text-primary hover:underline">
                             Click here
                         </Link>
                     </CardFooter>
                 </Card>
             </div>
-
         </DefaultLayout>
     )
 }

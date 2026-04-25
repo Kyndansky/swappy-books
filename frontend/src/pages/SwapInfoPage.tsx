@@ -114,12 +114,10 @@ export default function SwapInfoPage() {
             )}
           </div>
 
-          {/* Right Column: Book Info + Seller Sidebar */}
           <div className="flex-1 flex flex-col xl:flex-row gap-6">
             {/* Main Content */}
             <div className="flex-1 space-y-6">
               <div className="flex flex-col gap-8">
-                {/* 1. Header Info */}
                 <div className="space-y-4">
                   <div>
                     <h1 className="text-3xl font-bold">{swap.title}</h1>
@@ -153,7 +151,7 @@ export default function SwapInfoPage() {
 
                 <Divider />
 
-                {/* 2. Description and Details */}
+                {/* Description and Details */}
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <h2 className="text-xl font-semibold">Description</h2>
@@ -238,7 +236,6 @@ export default function SwapInfoPage() {
                             onPress={async () => {
                               const result = await swapToggleFavorite(swap.id);
                               swap.favorite= swap.favorite===true?true:false;
-                              console.log(result);
                               if (result.successful === false) {
                                 addToast(
                                   {
