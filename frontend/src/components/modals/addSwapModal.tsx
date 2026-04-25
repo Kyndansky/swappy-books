@@ -17,7 +17,6 @@ import {
   Image,
 } from "@heroui/react";
 import { useState, useRef } from "react";
-// Importa il tipo Selection per TypeScript
 
 interface addSwapModalProps {
   isOpen: boolean;
@@ -35,7 +34,6 @@ export default function AddSwapModal(props: addSwapModalProps) {
   const [primaryImageIndex, setPrimaryImageIndex] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Gestione stato tramite Selection (Set)
   const [bookCondition, setBookCondition] = useState<BookCondition['key']>("new");
   const [bookCategory, setBookCategory] = useState<"academic" | "fiction">("academic");
 
@@ -65,14 +63,20 @@ export default function AddSwapModal(props: addSwapModalProps) {
   }
 
   function removeImage(index: number) {
+    // Revoke URL to prevent memory leak
+    URL.revokeObjectURL(imagePreviews[index]);
+    
     setBookImages(prev => prev.filter((_, i) => i !== index));
     setImagePreviews(prev => prev.filter((_, i) => i !== index));
     if (primaryImageIndex >= index && primaryImageIndex > 0) {
       setPrimaryImageIndex(prev => prev - 1);
+    } else if (primaryImageIndex === index && imagePreviews.length === 1) {
+        setPrimaryImageIndex(0);
     }
   }
 
   function resetFields() {
+    imagePreviews.forEach(url => URL.revokeObjectURL(url));
     setBookTitle("");
     setBookAuthor("");
     setBookDescription("");
@@ -91,18 +95,14 @@ export default function AddSwapModal(props: addSwapModalProps) {
       size="4xl"
       scrollBehavior="inside"
       shouldCloseOnInteractOutside={(element) => {
-        // Se l'elemento cliccato appartiene a un popover, non chiudere/bloccare
         return !element.closest('[data-role="popover"]');
-
       }}
-
     >
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">Add a new book swap</ModalHeader>
         <ModalBody>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-4">
-
               <Input
                 label="Book Title"
                 placeholder="Enter title"
@@ -126,10 +126,7 @@ export default function AddSwapModal(props: addSwapModalProps) {
                   value={bookIsbn}
                   onValueChange={setBookIsbn}
                 />
-
-
               </div>
-
               <Textarea
                 label="Description"
                 placeholder="Describe the book..."
@@ -223,35 +220,43 @@ export default function AddSwapModal(props: addSwapModalProps) {
             {imagePreviews.length > 0 && (
               <div className="flex flex-wrap gap-3 mt-2">
                 {imagePreviews.map((preview, index) => (
-                  <div key={index} className="relative w-20 h-20 group">
+                  /* FIX CONTAINER: overflow-hidden e relative */
+                  <div key={index} className="relative w-24 h-24 rounded-xl overflow-hidden border border-default-200 shadow-sm group">
                     <Image
                       src={preview}
                       alt={`Preview ${index + 1}`}
-                      className="w-full h-full object-cover rounded-lg"
+                      /* FIX IMAGE: z-0 e rounded-none per adattarsi al parent */
+                      className="z-0 w-full h-full object-cover rounded-none"
+                      removeWrapper
                     />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center gap-1">
+                    
+                    {/* FIX OVERLAY: Posizione in alto a destra, flex-row-reverse per i tasti, z-10 */}
+                    <div className="absolute top-0 right-0 p-1 flex flex-row-reverse gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <Button
-                        size="sm"
-                        color={primaryImageIndex === index ? "success" : "default"}
-                        variant="flat"
-                        onPress={() => setPrimaryImageIndex(index)}
-                        className="text-tiny px-1"
-                      >
-                        {primaryImageIndex === index ? "★" : "○"}
-                      </Button>
-                      <Button
+                        isIconOnly
                         size="sm"
                         color="danger"
                         variant="flat"
                         onPress={() => removeImage(index)}
-                        className="text-tiny"
+                        className="w-6 h-6 min-w-6 bg-black/60 backdrop-blur-sm text-white hover:bg-danger"
                       >
                         ✕
                       </Button>
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        color={primaryImageIndex === index ? "success" : "default"}
+                        variant="flat"
+                        onPress={() => setPrimaryImageIndex(index)}
+                        className={`w-6 h-6 min-w-6 bg-black/60 backdrop-blur-sm ${primaryImageIndex === index ? 'text-success' : 'text-white'}`}
+                      >
+                        {primaryImageIndex === index ? "★" : "○"}
+                      </Button>
                     </div>
+                    
                     {primaryImageIndex === index && (
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-success rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs">★</span>
+                      <div className="absolute bottom-1 left-1 px-2 py-0.5 bg-success rounded-full z-10">
+                        <span className="text-white text-tiny font-bold">Primary</span>
                       </div>
                     )}
                   </div>

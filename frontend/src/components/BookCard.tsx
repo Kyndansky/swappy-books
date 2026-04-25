@@ -28,14 +28,14 @@ export default function BookCard(props: BookCardProps) {
   if (props.isListView) {
     return (
       <div onClick={handleCardClick} className="cursor-pointer w-full">
-        <Card className="w-full hover:scale-[1.02] transition-transform overflow-hidden">
+        <Card className="w-full hover:scale-[1.01] transition-transform overflow-hidden">
           <div className="flex flex-row">
             <div className="w-[180px] h-[180px] flex-shrink-0">
               <Image
+                removeWrapper
                 alt={props.swap.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-none"
                 src={imageSrc}
-                radius="none"
               />
             </div>
 
@@ -78,16 +78,16 @@ export default function BookCard(props: BookCardProps) {
   return (
     <div onClick={handleCardClick} className="cursor-pointer h-full w-full">
       <Card className="w-full h-full hover:scale-105 transition-transform flex flex-col overflow-hidden">
-        <CardBody className="overflow-visible p-0 relative flex-none">
+        <CardBody className="p-0 relative flex-none h-[220px] w-full overflow-hidden">
           <Image
+            removeWrapper
             alt={props.swap.title}
-            className="w-full object-cover h-[180px]"
+            className="z-0 w-full h-full object-cover rounded-none"
             src={imageSrc}
           />
         </CardBody>
 
         <CardFooter className="flex flex-col items-start gap-3 flex-grow p-4 min-w-0">
-          {/* Altezza fissa e min-w-0 per evitare overflow del testo */}
           <div className="w-full h-[48px] min-w-0">
             <h3 className="text-medium font-bold line-clamp-1 break-words">{props.swap.title}</h3>
             <p className="text-small text-default-500 line-clamp-1">{props.swap.author}</p>

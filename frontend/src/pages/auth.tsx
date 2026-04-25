@@ -34,7 +34,7 @@ export default function AuthenticatePage(props: AuthenticationPageProps) {
 
     return (
         <DefaultLayout>
-            <div className="flex w-full h-full items-center justify-center w-1/2 ">
+            <div className="flex w-full h-full items-center justify-center min-h-[80vh]">
                 <Card shadow="lg" className="md:w-1/2 lg:w-1/3 p-2" disableRipple>
                     <CardHeader>
                         {props.authType === "login" ? "Login" : "Register"}
