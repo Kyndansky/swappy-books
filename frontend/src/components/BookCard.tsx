@@ -9,7 +9,7 @@ interface BookCardProps {
 }
 
 export default function BookCard(props: BookCardProps) {
-  let swapConditionClassName = "text-tiny bg-default-100 px-2 py-1 rounded-full text-";
+  let swapConditionClassName = "text-tiny bg-default-100 px-3 py-1 rounded-full whitespace-nowrap text-";
   swapConditionClassName += props.swap.condition === "damaged" ? "danger" : props.swap.condition === "acceptable" ? "warning" : "success";
   
   const navigate = useNavigate();
@@ -63,7 +63,7 @@ export default function BookCard(props: BookCardProps) {
 
                 <div className="flex items-center gap-3 flex-shrink-0">
                   <span className="text-primary font-bold text-xl">€{props.swap.price}</span>
-                  <span className="text-tiny text-default-400 bg-default-100 px-3 py-1 rounded-full">
+                  <span className={swapConditionClassName}>
                     {props.swap.condition}
                   </span>
                 </div>
@@ -110,7 +110,7 @@ export default function BookCard(props: BookCardProps) {
             </div>
             <div className="flex w-full justify-between items-center gap-2">
               <span className="text-primary font-bold text-lg">€{props.swap.price}</span>
-              <span className={`${swapConditionClassName} whitespace-nowrap`}>
+              <span className={swapConditionClassName}>
                 {props.swap.condition}
               </span>
             </div>
