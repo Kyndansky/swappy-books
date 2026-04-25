@@ -17,12 +17,12 @@ import { SendHorizonal } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function MessagesPage() {
-
   const [chats, setChats] = useState<UserChatInfo[]>([]);
   const [selectedChat, setSelectedChat] = useState<UserChatInfo>();
   const [currentChatMessages, setCurrentChatMessages] = useState<Message[]>([]);
   const [messageInput, setMessageInput] = useState<string>("");
   const { isAuthenticated, isLoadingAuthentication, username } = useAuth();
+
   useEffect(() => {
     (async () => {
       const response = await getUserChats();
@@ -54,7 +54,7 @@ export default function MessagesPage() {
   }, [selectedChat]);
 
   async function handleSendMessage() {
-    if (messageInput !== "") {
+    if (messageInput.trim() !== "") {
       if (selectedChat && username) {
         const response = await sendMessage(messageInput, selectedChat);
         if (response.successful) {
@@ -87,11 +87,13 @@ export default function MessagesPage() {
             variant="faded"
             color="primary"
             className="w-auto"
-            selectionBehavior={"replace"}
+            selectionBehavior="replace"
+            aria-label="List of user chats"
           >
-            {chats?.map((chat, index) => (
+            {chats?.map((chat) => (
               <ListboxItem
-                key={index}
+                key={`${chat.swapId}-${chat.username}`}
+                textValue={`${chat.username} - ${chat.swapBookTitle}`}
                 onClick={() => {
                   setSelectedChat(chat);
                 }}
@@ -103,16 +105,16 @@ export default function MessagesPage() {
                   bookId={chat.swapId}
                   showAsSelected={
                     selectedChat?.swapId === chat.swapId &&
-                      selectedChat.username === chat.username
-                      ? true
-                      : false
+                    selectedChat.username === chat.username
                   }
                   isBookTitleLink={false}
                 />
               </ListboxItem>
             ))}
           </Listbox>
+          
           <Divider orientation="vertical" className="mx-10 h-auto" />
+          
           <div className="flex w-3/4 justify-center align-items-center items-stretch h-[80vh]">
             {selectedChat ? (
               <div className="flex flex-col items-center w-full">
@@ -125,6 +127,7 @@ export default function MessagesPage() {
                 />
                 <div className="flex flex-row gap-2 w-full mt-auto">
                   <Input
+                    aria-label="Write a message"
                     value={messageInput}
                     type="text"
                     className="mt-auto"
@@ -134,22 +137,20 @@ export default function MessagesPage() {
                         handleSendMessage();
                       }
                     }}
-                    onChange={(e) => {
-                      setMessageInput(e.target.value);
-                    }}
+                    onValueChange={setMessageInput}
                   />
                   <Button
+                    isIconOnly
+                    aria-label="Send message"
                     color="primary"
-                    onPress={() => {
-                      handleSendMessage();
-                    }}
+                    onPress={handleSendMessage}
                   >
-                    <SendHorizonal />
+                    <SendHorizonal size={20} />
                   </Button>
                 </div>
               </div>
             ) : (
-              <p className="my-auto">select a chat to view messages</p>
+              <p className="my-auto">Select a chat to view messages</p>
             )}
           </div>
         </div>
