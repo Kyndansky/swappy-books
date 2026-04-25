@@ -15,10 +15,13 @@ $_DATA = json_decode($json_data, true) ?: [];
 
 $query = "SELECT b.book_id as id, b.title, b.author, b.description, 
                  b.condition_status as `condition`, b.seller_username as seller, 
-                 b.created_at as createdAtDate, b.price, 1 as favorite 
-           FROM books b 
-           JOIN favorites f ON b.book_id = f.book_id 
-           WHERE f.username = ? AND b.buyer_username IS NULL ";
+                 b.created_at as createdAtDate, b.price, 1 as favorite,
+                 (SELECT bi.id FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_id,
+                 (SELECT bi.image_type FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_type,
+                 (SELECT bi.image_data FROM book_images bi WHERE bi.book_id = b.book_id AND bi.is_primary = 1 LIMIT 1) as primary_image_data 
+             FROM books b 
+             JOIN favorites f ON b.book_id = f.book_id 
+             WHERE f.username = ? AND b.buyer_username IS NULL ";
 
 $params = [$logged_username];
 $types = "s";
@@ -88,6 +91,14 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
 
 $favorites = [];
 foreach ($rows as $row) {
+    $primaryImageData = null;
+    $primaryImageType = null;
+    
+    if (!empty($row['primary_image_data'])) {
+        $primaryImageData = base64_encode($row['primary_image_data']);
+        $primaryImageType = $row['primary_image_type'];
+    }
+    
     $favorites[] = [
         "id" => (int)$row['id'],
         "title" => $row['title'],
@@ -97,7 +108,10 @@ foreach ($rows as $row) {
         "seller" => $row['seller'],
         "createdAtDate" => date("d/m/Y", strtotime($row['createdAtDate'])),
         "price" => (float)$row['price'],
-        "favorite" => true
+        "favorite" => true,
+        "primaryImageId" => $row['primary_image_id'] ? (int)$row['primary_image_id'] : null,
+        "primaryImageData" => $primaryImageData,
+        "primaryImageType" => $primaryImageType
     ];
 }
 
