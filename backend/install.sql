@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Creato il: Apr 08, 2026 alle 13:30
--- Versione del server: 10.4.32-MariaDB
--- Versione PHP: 8.2.12
+-- Host: localhost
+-- Generation Time: Apr 25, 2026 at 03:11 PM
+-- Server version: 12.2.2-MariaDB
+-- PHP Version: 8.5.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `books`
+-- Table structure for table `books`
 --
 
 CREATE TABLE `books` (
@@ -46,7 +46,22 @@ CREATE TABLE `books` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `favorites`
+-- Table structure for table `book_images`
+--
+
+CREATE TABLE `book_images` (
+  `id` int(11) NOT NULL,
+  `book_id` int(11) NOT NULL,
+  `image_data` longblob NOT NULL,
+  `image_type` varchar(50) DEFAULT NULL,
+  `is_primary` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `favorites`
 --
 
 CREATE TABLE `favorites` (
@@ -57,7 +72,7 @@ CREATE TABLE `favorites` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `messages`
+-- Table structure for table `messages`
 --
 
 CREATE TABLE `messages` (
@@ -72,7 +87,7 @@ CREATE TABLE `messages` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -82,18 +97,11 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dump dei dati per la tabella `users`
---
-
-INSERT INTO `users` (`username`, `password_hash`, `created_at`) VALUES
-('Kynda', '$2y$12$TBkygz7opFmqc/uMvxe.AeLMe8jjuAbuAlog14Pxu7n1HVTigbpyS', '2026-03-08 18:29:43');
-
---
--- Indici per le tabelle scaricate
+-- Indexes for dumped tables
 --
 
 --
--- Indici per le tabelle `books`
+-- Indexes for table `books`
 --
 ALTER TABLE `books`
   ADD PRIMARY KEY (`book_id`),
@@ -101,14 +109,21 @@ ALTER TABLE `books`
   ADD KEY `buyer_username` (`buyer_username`);
 
 --
--- Indici per le tabelle `favorites`
+-- Indexes for table `book_images`
+--
+ALTER TABLE `book_images`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `book_id` (`book_id`);
+
+--
+-- Indexes for table `favorites`
 --
 ALTER TABLE `favorites`
   ADD PRIMARY KEY (`username`,`book_id`),
   ADD KEY `book_id` (`book_id`);
 
 --
--- Indici per le tabelle `messages`
+-- Indexes for table `messages`
 --
 ALTER TABLE `messages`
   ADD PRIMARY KEY (`message_id`),
@@ -117,47 +132,59 @@ ALTER TABLE `messages`
   ADD KEY `book_id` (`book_id`);
 
 --
--- Indici per le tabelle `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`username`);
 
 --
--- AUTO_INCREMENT per le tabelle scaricate
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT per la tabella `books`
+-- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `book_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT per la tabella `messages`
+-- AUTO_INCREMENT for table `book_images`
+--
+ALTER TABLE `book_images`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Limiti per le tabelle scaricate
+-- Constraints for dumped tables
 --
 
 --
--- Limiti per la tabella `books`
+-- Constraints for table `books`
 --
 ALTER TABLE `books`
   ADD CONSTRAINT `fk_books_buyer` FOREIGN KEY (`buyer_username`) REFERENCES `users` (`username`) ON DELETE SET NULL,
   ADD CONSTRAINT `fk_books_seller` FOREIGN KEY (`seller_username`) REFERENCES `users` (`username`) ON DELETE CASCADE;
 
 --
--- Limiti per la tabella `favorites`
+-- Constraints for table `book_images`
+--
+ALTER TABLE `book_images`
+  ADD CONSTRAINT `fk_book_images_book` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `favorites`
 --
 ALTER TABLE `favorites`
   ADD CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE,
   ADD CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE;
 
 --
--- Limiti per la tabella `messages`
+-- Constraints for table `messages`
 --
 ALTER TABLE `messages`
   ADD CONSTRAINT `fk_msg_book` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE,

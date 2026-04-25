@@ -35,14 +35,14 @@ if (!is_string($username) || !preg_match('/^[a-zA-Z0-9_]{3,20}$/', $username)) {
     exit();
 }
 
-if (!is_string($password) || strlen($password) < 6) {
-    echo json_encode([
-        "successful" => false,
-        "message" => "Password must be at least 6 characters",
-        "username" => ""
-    ]);
-    exit();
-}
+// if (!is_string($password) || strlen($password) < 6) {
+//     echo json_encode([
+//         "successful" => false,
+//         "message" => "Password must be at least 6 characters",
+//         "username" => ""
+//     ]);
+//     exit();
+// }
 
 require_once("../../config/database.php");
 
